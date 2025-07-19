@@ -41,7 +41,10 @@ export async function GET(request: Request) {
       ORDER BY code
     `
 
-    let outcomes = await executeQuery(query, [eloId])
+    // Define the type for outcomes
+    type Outcome = { id: number; code: string; description: string; }
+    
+    let outcomes: Outcome[] = await executeQuery(query, [eloId]) as Outcome[]
 
     // If no results from database, use mock data
     if (!outcomes || (Array.isArray(outcomes) && outcomes.length === 0)) {
