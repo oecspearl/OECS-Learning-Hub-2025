@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { users } from "@/lib/schema"
-import { eq } from "drizzle-orm"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 
@@ -50,13 +48,10 @@ export async function POST(request: NextRequest) {
     // Update user's avatar_url in database
     const avatarUrl = `/uploads/avatars/${fileName}`
     
-    await db
-      .update(users)
-      .set({ 
-        avatar_url: avatarUrl,
-        updated_at: new Date().toISOString()
-      })
-      .where(eq(users.id, parseInt(session.user.id)))
+    await db.users.update(parseInt(session.user.id), { 
+      avatar_url: avatarUrl,
+      updated_at: new Date().toISOString()
+    })
 
     return NextResponse.json({ 
       success: true, 
@@ -81,13 +76,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Update user's avatar_url to null in database
-    await db
-      .update(users)
-      .set({ 
-        avatar_url: null,
-        updated_at: new Date().toISOString()
-      })
-      .where(eq(users.id, parseInt(session.user.id)))
+    await db.users.update(parseInt(session.user.id), { 
+      avatar_url: null,
+      updated_at: new Date().toISOString()
+    })
 
     return NextResponse.json({ 
       success: true, 
