@@ -1,0 +1,255 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model with role-based access control
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  password      String
+  role          String    @default("user")
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  teacherClasses    Class[]         @relation("TeacherClasses")
+  studentClasses    StudentClass[]
+  parentChildren    ParentChild[]   @relation("ParentToChild")
+  childParents      ParentChild[]   @relation("ChildToParent")
+  createdLessons    Lesson[]
+  createdAssessments Assessment[]
+  assessmentResults AssessmentResult[]
+  messages          Message[]       @relation("MessageSender")
+  receivedMessages  Message[]       @relation("MessageReceiver")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+// Class model for grouping students
+model Class {
+  id          String   @id @default(cuid())
+  name        String
+  gradeLevel  Int
+  schoolYear  String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  teacherId      String
+  teacher        User           @relation("TeacherClasses", fields: [teacherId], references: [id])
+  students       StudentClass[]
+  lessons        Lesson[]
+  assessments    Assessment[]
+}
+
+// Junction table for students in classes
+model StudentClass {
+  id        String   @id @default(cuid())
+  joinedAt  DateTime @default(now())
+
+  // Relations
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+
+  @@unique([studentId, classId])
+}
+
+// Junction table for parent-child relationships
+model ParentChild {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  parentId  String
+  parent    User     @relation("ParentToChild", fields: [parentId], references: [id])
+  childId   String
+  child     User     @relation("ChildToParent", fields: [childId], references: [id])
+
+  @@unique([parentId, childId])
+}
+
+// Curriculum content organization
+model Subject {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  gradeLevel  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  units       Unit[]
+  lessons     Lesson[]
+}
+
+model Unit {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  lessons     Lesson[]
+}
+
+// Lesson model
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  objectives  String   // Store as JSON string
+  content     String?  // Store as JSON string
+  status      String   @default("draft") // draft, published
+  scheduledFor DateTime?
+  duration    Int?     // in minutes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  unitId      String?
+  unit        Unit?    @relation(fields: [unitId], references: [id])
+  classId     String?
+  class       Class?   @relation(fields: [classId], references: [id])
+  resources   Resource[]
+  assessments Assessment[]
+  standards   LessonStandard[]
+}
+
+// New model to track standards used in lessons
+model LessonStandard {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  standardId String
+  standard  CurriculumStandard @relation(fields: [standardId], references: [id])
+  relevance String   // How this standard is relevant to the lesson
+  alignment String   // How this standard aligns with learning objectives
+
+  @@unique([lessonId, standardId])
+}
+
+// Add CurriculumStandard model if it doesn't exist
+model CurriculumStandard {
+  id          String   @id @default(cuid())
+  subject     String
+  gradeLevel  String
+  strand      String?
+  code        String?
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  lessons     LessonStandard[]
+}
+
+// Resource model for lesson materials
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  type        String   // document, image, video, link
+  url         String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+}
+
+// Assessment model
+model Assessment {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        String   // quiz, test, assignment
+  questions   Json?
+  totalPoints Int?
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  lessonId    String?
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id])
+  classId     String
+  class       Class    @relation(fields: [classId], references: [id])
+  results     AssessmentResult[]
+}
+
+// Assessment results
+model AssessmentResult {
+  id          String   @id @default(cuid())
+  score       Float
+  feedback    String?
+  submittedAt DateTime @default(now())
+  gradedAt    DateTime?
+
+  // Relations
+  studentId    String
+  student      User       @relation(fields: [studentId], references: [id])
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id])
+}
+
+// PDF Document model
+model PDFDocument {
+  id          String   @id @default(cuid())
+  title       String
+  filename    String
+  url         String
+  size        Int      // in bytes
+  status      String   @default("uploaded") // uploaded, processing, processed, error
+  metadata    Json?
+  uploadedAt  DateTime @default(now())
+  processedAt DateTime?
+}
+
+// Messaging system
+model Message {
+  id        String   @id @default(cuid())
+  subject   String
+  content   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  senderId   String
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id])
+}

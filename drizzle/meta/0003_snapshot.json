@@ -1,0 +1,928 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "tables": {
+    "__drizzle_migrations": {
+      "name": "__drizzle_migrations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "hash": {
+          "name": "hash",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "assessment_strategies": {
+      "name": "assessment_strategies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "elo_id": {
+          "name": "elo_id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "examples": {
+          "name": "examples",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "cross_curricular_plans": {
+      "name": "cross_curricular_plans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "theme": {
+          "name": "theme",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade_range": {
+          "name": "grade_range",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "subjects": {
+          "name": "subjects",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "essential_learning_outcomes": {
+      "name": "essential_learning_outcomes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "strand_id": {
+          "name": "strand_id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade_expectations": {
+          "name": "grade_expectations",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "learning_strategies": {
+      "name": "learning_strategies",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "sco_id": {
+          "name": "sco_id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "resources": {
+          "name": "resources",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "integrations": {
+          "name": "integrations",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "lesson_plans": {
+      "name": "lesson_plans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade": {
+          "name": "grade",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "topic": {
+          "name": "topic",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "objectives": {
+          "name": "objectives",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "materials": {
+          "name": "materials",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "overview": {
+          "name": "overview",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "standards": {
+          "name": "standards",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "vocabulary": {
+          "name": "vocabulary",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "homework": {
+          "name": "homework",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "extensions": {
+          "name": "extensions",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "pedagogical_strategy": {
+          "name": "pedagogical_strategy",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "differentiation_strategies": {
+          "name": "differentiation_strategies",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grouping_strategy": {
+          "name": "grouping_strategy",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "assessment_approach": {
+          "name": "assessment_approach",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "curriculum_standards": {
+          "name": "curriculum_standards",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "multigrade_plans": {
+      "name": "multigrade_plans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade_range": {
+          "name": "grade_range",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "topic": {
+          "name": "topic",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "materials": {
+          "name": "materials",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "pedagogical_strategy": {
+          "name": "pedagogical_strategy",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "differentiation_strategies": {
+          "name": "differentiation_strategies",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grouping_strategy": {
+          "name": "grouping_strategy",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "assessment_approach": {
+          "name": "assessment_approach",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "curriculum_standards": {
+          "name": "curriculum_standards",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "quizzes": {
+      "name": "quizzes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade": {
+          "name": "grade",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "topic": {
+          "name": "topic",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "question_count": {
+          "name": "question_count",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "question_types": {
+          "name": "question_types",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "difficulty": {
+          "name": "difficulty",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "time_limit": {
+          "name": "time_limit",
+          "type": "integer",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "tags": {
+          "name": "tags",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "instructions": {
+          "name": "instructions",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "schedules": {
+      "name": "schedules",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "day": {
+          "name": "day",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "time": {
+          "name": "time",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "subject": {
+          "name": "subject",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "grade": {
+          "name": "grade",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "room": {
+          "name": "room",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "settings": {
+      "name": "settings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "strands": {
+      "name": "strands",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "teacher_content": {
+      "name": "teacher_content",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "elo_id": {
+          "name": "elo_id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "resources": {
+          "name": "resources",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "notNull": true,
+          "primaryKey": true,
+          "hasDefault": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "avatar_url": {
+          "name": "avatar_url",
+          "type": "text",
+          "notNull": false,
+          "primaryKey": false,
+          "hasDefault": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "notNull": true,
+          "primaryKey": false,
+          "hasDefault": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    }
+  }
+} 

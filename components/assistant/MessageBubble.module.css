@@ -1,0 +1,110 @@
+.messageContainer {
+  display: flex;
+  margin-bottom: 1rem;
+  max-width: 85%;
+}
+
+.userMessage {
+  margin-left: auto;
+}
+
+.assistantMessage {
+  margin-right: auto;
+}
+
+.messageBubble {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  word-wrap: break-word;
+}
+
+.userMessage .messageBubble {
+  border-bottom-right-radius: 0.25rem;
+}
+
+.assistantMessage .messageBubble {
+  border-bottom-left-radius: 0.25rem;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+  display: block;
+  text-align: right;
+}
+
+.inlineCode {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.codeBlock {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.codeBlock code {
+  background: none;
+  padding: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: inherit;
+}
+
+/* Markdown Styles */
+.messageBubble p {
+  margin: 0 0 0.5rem 0;
+}
+
+.messageBubble p:last-child {
+  margin-bottom: 0;
+}
+
+.messageBubble ul,
+.messageBubble ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.messageBubble h1,
+.messageBubble h2,
+.messageBubble h3,
+.messageBubble h4,
+.messageBubble h5,
+.messageBubble h6 {
+  margin: 1rem 0 0.5rem 0;
+}
+
+.messageBubble blockquote {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.messageBubble pre {
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.messageBubble code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .messageContainer {
+    max-width: 95%;
+  }
+} 

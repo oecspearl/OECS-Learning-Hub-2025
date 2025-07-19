@@ -1,0 +1,58 @@
+import { sql } from "drizzle-orm"
+import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core"
+
+export const lessonPlans = sqliteTable("lesson_plans", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  subject: text("subject").notNull(),
+  grade: text("grade").notNull(),
+  topic: text("topic"),
+  content: text("content").notNull(),
+  duration: text("duration").notNull(),
+  objectives: text("objectives"),
+  materials: text("materials"),
+  overview: text("overview"),
+  standards: text("standards"),
+  vocabulary: text("vocabulary"),
+  homework: text("homework"),
+  extensions: text("extensions"),
+  pedagogical_strategy: text("pedagogical_strategy"),
+  differentiation_strategies: text("differentiation_strategies"),
+  grouping_strategy: text("grouping_strategy"),
+  assessment_approach: text("assessment_approach"),
+  curriculum_standards: text("curriculum_standards"),
+  user_id: text("user_id").notNull(),
+  created_at: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updated_at: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+})
+
+export const crossCurricularPlans = sqliteTable("cross_curricular_plans", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  theme: text("theme").notNull(),
+  grade_range: text("grade_range").notNull(),
+  subjects: text("subjects").notNull(),
+  duration: text("duration").notNull(),
+  sessions: text("sessions").notNull(),
+  content: text("content").notNull(),
+  learning_styles: text("learning_styles"),
+  multiple_intelligences: text("multiple_intelligences"),
+  special_needs: integer("special_needs", { mode: "boolean" }),
+  special_needs_details: text("special_needs_details"),
+  ell_support: integer("ell_support", { mode: "boolean" }),
+  gifted_extension: integer("gifted_extension", { mode: "boolean" }),
+  pedagogical_strategy: text("pedagogical_strategy"),
+  assessment_strategy: text("assessment_strategy"),
+  technology_integration: integer("technology_integration", { mode: "boolean" }),
+  additional_instructions: text("additional_instructions"),
+  user_id: text("user_id").notNull(),
+  created_at: text("created_at").notNull(),
+  updated_at: text("updated_at").notNull(),
+})
+
+export const strands = sqliteTable("strands", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  description: text("description"),
+  sort_order: integer("sort_order").notNull(),
+}) 

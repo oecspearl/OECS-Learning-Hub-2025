@@ -1,0 +1,417 @@
+"use server"
+
+import { z } from "zod"
+import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
+import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
+import { db } from "@/lib/db"
+import { crossCurricularPlans } from "../../db/schema"
+import { eq, desc } from "drizzle-orm"
+import { revalidatePath } from "next/cache"
+
+const crossCurricularPlanSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  theme: z.string().min(1, "Theme is required"),
+  grade_range: z.string().min(1, "Grade range is required"),
+  subjects: z.array(z.string()).min(2, "At least 2 subjects are required"),
+  content: z.string().min(1, "Content is required"),
+  learning_objectives: z.array(z.string()),
+  materials: z.array(z.string()),
+  duration: z.string(),
+  pedagogical_strategy: z.string().optional(),
+  differentiation_strategies: z.string().optional(),
+  assessment_approach: z.string().optional(),
+  curriculum_standards: z.string().optional(),
+  overview: z.string().optional(),
+  vocabulary: z.array(z.object({ term: z.string(), definition: z.string(), example: z.string() })).optional(),
+  homework: z.string().optional(),
+  extensions: z.string().optional(),
+  userId: z.string(),
+})
+
+export interface CrossCurricularPlan {
+  id: string
+  title: string
+  theme: string
+  grade_range: string
+  content: string
+  subjects: string
+  learning_objectives: string | null
+  materials: string | null
+  duration: string | null
+  pedagogical_strategy: string | null
+  differentiation_strategies: string | null
+  assessment_approach: string | null
+  curriculum_standards: string | null
+  overview: string | null
+  vocabulary: string | null
+  homework: string | null
+  extensions: string | null
+  user_id: string
+  created_at: string
+  updated_at: string
+}
+
+export async function generateCrossCurricularPlan(formData: any) {
+  try {
+    console.log("Generating cross-curricular plan with data:", formData)
+
+    // Format learning styles and multiple intelligences
+    const learningStylesText = formData.learning_styles?.length
+      ? `\nLearning Styles to Address: ${formData.learning_styles.join(", ")}`
+      : ""
+    const intelligencesText = formData.multiple_intelligences?.length
+      ? `\nMultiple Intelligences to Address: ${formData.multiple_intelligences.join(", ")}`
+      : ""
+
+    // Format special needs and support
+    const specialNeedsText = formData.special_needs
+      ? `\nSpecial Needs Accommodations: ${formData.special_needs_details || "General accommodations required"}`
+      : ""
+    const ellSupportText = formData.ell_support ? "\nELL Support Strategies Required" : ""
+    const giftedExtensionText = formData.gifted_extension ? "\nGifted & Talented Extensions Required" : ""
+
+    // Format pedagogical and assessment strategies
+    const pedagogicalText = formData.pedagogical_strategy
+      ? `\nPedagogical Strategy: ${formData.pedagogical_strategy}`
+      : ""
+    const assessmentText = formData.assessment_strategy
+      ? `\nAssessment Strategy: ${formData.assessment_strategy}`
+      : ""
+    const technologyText = formData.technology_integration ? "\nTechnology Integration Required" : ""
+
+    const prompt = `
+Create a comprehensive, detailed cross-curricular lesson plan for OECS (Organization of Eastern Caribbean States) teachers with the following information:
+
+Title: ${formData.title}
+Theme: ${formData.theme}
+Grade Range: ${formData.grade_range}
+Subjects: ${formData.subjects.join(", ")}
+Duration: ${formData.duration} minutes
+Number of Sessions: ${formData.sessions}${learningStylesText}${intelligencesText}${specialNeedsText}${ellSupportText}${giftedExtensionText}${pedagogicalText}${assessmentText}${technologyText}
+Additional Instructions: ${formData.additional_instructions || "None"}
+
+Format the lesson plan with the following detailed sections using Markdown formatting:
+
+# ${formData.title.toUpperCase()}
+
+## OVERVIEW
+Provide a thorough description of the lesson and its importance in the curriculum. Explain how this lesson connects to previous and future learning. Include the pedagogical approach being used and why it's appropriate for this content.
+
+## LEARNING OBJECTIVES
+List 3-5 specific, measurable learning objectives that clearly state what students will know or be able to do by the end of the lesson. Format as:
+- Students will be able to [action verb] [specific knowledge/skill] by [measurement criteria].
+- Students will understand [concept] as demonstrated by [observable behavior].
+- Students will develop [skill] through [specific activity].
+
+## CURRICULUM STANDARDS
+List relevant standards for each integrated subject area, showing explicit connections between standards across subjects.
+
+## CROSS-CURRICULAR CONNECTIONS
+Explain how the subjects naturally connect through the theme, identifying shared concepts, skills, and processes.
+
+## MULTIPLE INTELLIGENCE & LEARNING STYLE INTEGRATION
+Detail specific activities and approaches for each selected learning style and intelligence type, ensuring authentic integration.
+
+## DETAILED LESSON STRUCTURE
+
+### Session 1: [Title]
+**Opening/Hook (X minutes):**
+- Engaging activity that introduces the theme
+- Connects to students' prior knowledge
+- Activates multiple subject areas
+
+**Main Activities (X minutes each):**
+1. [Activity Name] - [Primary Subject Focus]
+   - Clear connection to theme
+   - Integration points with other subjects
+   - Specific instructions
+   - Materials needed
+   - Differentiation strategies
+
+2. [Activity Name] - [Cross-Curricular Integration]
+   - Seamless transition between subjects
+   - Authentic application of skills
+   - Collaborative/individual options
+   - Assessment checkpoints
+
+3. [Activity Name] - [Synthesis & Application]
+   - Bringing subjects together
+   - Real-world application
+   - Student choice opportunities
+   - Technology integration (if specified)
+
+**Closure/Reflection (X minutes):**
+- Synthesis of learning
+- Connection to theme
+- Preview of next session
+- Metacognitive reflection
+
+## DIFFERENTIATION & ACCOMMODATION STRATEGIES
+${specialNeedsText ? `
+### Special Needs Accommodations
+- Specific modifications for identified needs
+- Alternative assessment options
+- Modified materials and instructions
+- Additional support strategies
+- Assistive technology recommendations
+` : ""}
+
+${ellSupportText ? `
+### English Language Learner Support
+- Visual supports and graphic organizers
+- Simplified language without reducing complexity
+- Peer support structures
+- Multiple ways to demonstrate understanding
+- Cultural bridge-building activities
+` : ""}
+
+${giftedExtensionText ? `
+### Gifted & Talented Extensions
+- Advanced research opportunities
+- Leadership roles in group activities
+- Independent study options
+- Mentorship opportunities
+- Creative expression challenges
+- Cross-curricular project extensions
+` : ""}
+
+## ASSESSMENT INTEGRATION
+${assessmentText ? `
+### Formative Assessment Strategies
+- Observation checklists
+- Exit tickets
+- Peer feedback protocols
+- Self-assessment rubrics
+
+### Summative Assessment Options
+- Performance-based tasks
+- Portfolio compilation
+- Authentic assessment
+- Student choice in demonstration
+` : ""}
+
+## MATERIALS & RESOURCES
+- Physical materials needed
+- Digital resources (if technology integration specified)
+- Human resources (guest speakers, community connections)
+- Family engagement possibilities
+
+## EXTENSION & HOMEWORK
+- Activities reinforcing cross-curricular connections
+- Family engagement opportunities
+- Community exploration projects
+- Reflection journals
+
+## REFLECTION & NEXT STEPS
+### Teacher Reflection Prompts
+- What cross-curricular connections were most successful?
+- How effectively were different learning styles addressed?
+- What accommodations worked best?
+- How can integration be strengthened?
+
+### Student Reflection Questions
+- How did learning in multiple subjects help understanding?
+- Which activities best matched learning style?
+- What connections were discovered between subjects?
+- How can this learning be applied elsewhere?
+
+Ensure the lesson plan follows OECS curriculum standards and best teaching practices. Make the plan practical, detailed, and immediately usable by teachers with minimal additional preparation.
+`
+
+    const { text } = await generateText({
+      model: openai("gpt-4o"),
+      prompt,
+      temperature: 0.7,
+      maxTokens: 4000,
+    })
+
+    return text
+  } catch (error) {
+    console.error("Error generating cross-curricular plan:", error)
+    throw new Error("Failed to generate cross-curricular plan")
+  }
+}
+
+export async function saveCrossCurricularPlan(formData: any) {
+  try {
+    console.log("Starting saveCrossCurricularPlan function")
+
+    // Check if we're dealing with FormData or a regular object
+    const id = formData.get ? formData.get("id") : formData.id
+    const title = formData.get ? formData.get("title") : formData.title
+    const theme = formData.get ? formData.get("theme") : formData.theme
+    const grade_range = formData.get ? formData.get("grade_range") : formData.grade_range
+    const subjects = formData.get ? formData.get("subjects") : formData.subjects
+    const content = formData.get ? formData.get("content") : formData.content
+    const duration = formData.get ? formData.get("duration") || "Multiple class periods" : formData.duration || "Multiple class periods"
+    const sessions = formData.get ? formData.get("sessions") || "1" : formData.sessions || "1"
+    const userId = formData.get ? formData.get("userId") : formData.userId || "1"
+
+    console.log("Extracted form data:", {
+      title,
+      theme,
+      grade_range,
+      subjects,
+      duration,
+      sessions,
+      contentLength: content ? content.length : 0,
+      userId,
+    })
+
+    // Validate required fields
+    const missingFields = []
+    if (!title) missingFields.push("title")
+    if (!theme) missingFields.push("theme")
+    if (!grade_range) missingFields.push("grade range")
+    if (!subjects) missingFields.push("subjects")
+    if (!content) missingFields.push("content")
+
+    if (missingFields.length > 0) {
+      console.error("Missing required fields:", missingFields)
+      return {
+        success: false,
+        error: `Missing required fields: ${missingFields.join(", ")} ${missingFields.length > 1 ? "are" : "is"} required`,
+      }
+    }
+
+    // Create a fallback object to return if database operations fail
+    const fallbackId = `cross_curricular_plan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
+    const fallbackData = {
+      id: fallbackId,
+      title,
+      theme,
+      grade_range,
+      subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
+      content,
+      duration,
+      sessions,
+      user_id: userId,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
+
+    // Store the plan in the database
+    try {
+      const now = new Date().toISOString()
+      
+      if (id) {
+        // Update existing plan
+        console.log("Updating existing cross-curricular plan with ID:", id)
+        const updatedPlan = await db.crossCurricularPlans.update(id, {
+          title,
+          theme,
+          grade_range,
+          subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
+          content,
+          sessions,
+          user_id: userId,
+          updated_at: now,
+        })
+
+        console.log("Update successful")
+        return { success: true, data: updatedPlan }
+      } else {
+        // Create new plan
+        console.log("Creating new cross-curricular plan")
+        const newPlan = await db.crossCurricularPlans.create({
+          id: fallbackId,
+          title,
+          theme,
+          grade_range,
+          subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
+          content,
+          sessions,
+          user_id: userId,
+          created_at: now,
+          updated_at: now,
+        })
+
+        console.log("Insert successful, returned ID:", newPlan.id)
+        return { success: true, data: newPlan }
+      }
+    } catch (dbError) {
+      console.error("Database operation failed:", dbError)
+      return {
+        success: false,
+        error: `Database error: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
+        fallbackData,
+      }
+    }
+  } catch (error) {
+    console.error("Error saving cross-curricular plan:", error)
+    return {
+      success: false,
+      error: "Failed to save cross-curricular plan",
+    }
+  }
+}
+
+export async function getCrossCurricularPlanById(id: string) {
+  try {
+    const plan = await db.crossCurricularPlans.findFirst({ id })
+
+    if (!plan) {
+      return null
+    }
+
+    return {
+      id: plan.id,
+      title: plan.title,
+      theme: plan.theme,
+      grade_range: plan.grade_range,
+      content: plan.content,
+      subjects: plan.subjects,
+      sessions: plan.sessions,
+      learning_styles: plan.learning_styles,
+      multiple_intelligences: plan.multiple_intelligences,
+      special_needs: plan.special_needs,
+      special_needs_details: plan.special_needs_details,
+      ell_support: plan.ell_support,
+      gifted_extension: plan.gifted_extension,
+      pedagogical_strategy: plan.pedagogical_strategy,
+      assessment_strategy: plan.assessment_strategy,
+      technology_integration: plan.technology_integration,
+      additional_instructions: plan.additional_instructions,
+      user_id: plan.user_id,
+      created_at: plan.created_at,
+      updated_at: plan.updated_at,
+    }
+  } catch (error) {
+    console.error("Error fetching cross-curricular plan:", error)
+    return null
+  }
+}
+
+export async function getCrossCurricularPlans() {
+  try {
+    const plans = await db.crossCurricularPlans.findMany()
+
+    return {
+      success: true,
+      data: plans || [],
+    }
+  } catch (error) {
+    console.error("Error fetching cross-curricular plans:", error)
+    return {
+      success: false,
+      error: "Failed to fetch cross-curricular plans",
+    }
+  }
+}
+
+export async function deleteCrossCurricularPlan(id: string) {
+  try {
+    await db.crossCurricularPlans.delete(id)
+
+    return {
+      success: true,
+    }
+  } catch (error) {
+    console.error("Error deleting cross-curricular plan:", error)
+    return {
+      success: false,
+      error: "Failed to delete cross-curricular plan",
+    }
+  }
+} 

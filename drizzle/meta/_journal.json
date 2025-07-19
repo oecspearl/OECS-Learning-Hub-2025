@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1748648705831,
+      "tag": "0000_recreate_cross_curricular_plans",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751622000000,
+      "tag": "0002_add_schedules_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751699000000,
+      "tag": "0003_add_avatar_url_to_users",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751700000000,
+      "tag": "0004_add_lesson_reflections",
+      "breakpoints": true
+    }
+  ]
+} 

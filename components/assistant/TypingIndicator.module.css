@@ -1,0 +1,21 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dots {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.6;
+} 

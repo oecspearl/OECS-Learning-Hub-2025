@@ -1,0 +1,80 @@
+.inputContainer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.input {
+  flex: 1;
+  min-height: 40px;
+  max-height: 150px;
+  padding: 0.75rem;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  resize: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.sendButton {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sendButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sendIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .inputContainer {
+    padding: 0.75rem;
+  }
+
+  .input {
+    font-size: 1rem; /* Larger font size for mobile */
+  }
+} 
