@@ -64,6 +64,5 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/crypto": "^1.4.2"
   }
 }
