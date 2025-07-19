@@ -29,7 +29,7 @@ export async function POST() {
 
     // Start processing each document
     // In a production app, this would be handled by a queue system
-    const processingPromises = pendingDocuments.map((doc) => {
+    const processingPromises = pendingDocuments.map((doc: any) => {
       return processPDFDocument(doc.id).catch((error) => {
         console.error(`Error processing document ${doc.id}:`, error)
         return false
