@@ -22,8 +22,8 @@ export default function CurriculumPage() {
         <div className="mt-4">
           <h3 className="font-medium">To initialize the database:</h3>
           <ol className="list-decimal pl-5 mt-2">
-            <li>Set up your Neon PostgreSQL database</li>
-            <li>Add the DATABASE_URL to your environment variables</li>
+            <li>Set up your Supabase PostgreSQL database</li>
+            <li>Add the SUPABASE_URL and SUPABASE_ANON_KEY to your environment variables</li>
             <li>Run the database initialization script</li>
             <li>Run the curriculum seeding script</li>
           </ol>

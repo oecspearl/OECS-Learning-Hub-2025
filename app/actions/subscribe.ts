@@ -1,6 +1,6 @@
 "use server"
 
-import { neon } from "@neondatabase/serverless"
+import { createClient } from "@supabase/supabase-js"
 import { z } from "zod"
 
 // Create a schema for email validation
@@ -22,24 +22,28 @@ export async function subscribeToNewsletter(formData: FormData) {
       }
     }
 
-    // Initialize Neon SQL client
-    const sql = neon(process.env.DATABASE_URL || "")
-
-    // Check if table exists and create it if it doesn't
-    await sql`
-      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      )
-    `
+    // Initialize Supabase client
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_ANON_KEY!
+    )
 
     // Check if email already exists
-    const existingSubscriber = await sql`
-      SELECT * FROM newsletter_subscribers WHERE email = ${email}
-    `
+    const { data: existingSubscriber, error: checkError } = await supabase
+      .from('newsletter_subscribers')
+      .select('*')
+      .eq('email', email)
+      .single()
 
-    if (existingSubscriber.length > 0) {
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing subscriber:', checkError)
+      return {
+        success: false,
+        message: "Something went wrong. Please try again later.",
+      }
+    }
+
+    if (existingSubscriber) {
       return {
         success: false,
         message: "This email is already subscribed to our newsletter",
@@ -47,9 +51,17 @@ export async function subscribeToNewsletter(formData: FormData) {
     }
 
     // Add new subscriber
-    await sql`
-      INSERT INTO newsletter_subscribers (email) VALUES (${email})
-    `
+    const { error: insertError } = await supabase
+      .from('newsletter_subscribers')
+      .insert([{ email }])
+
+    if (insertError) {
+      console.error('Error inserting subscriber:', insertError)
+      return {
+        success: false,
+        message: "Something went wrong. Please try again later.",
+      }
+    }
 
     return {
       success: true,
