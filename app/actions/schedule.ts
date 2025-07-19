@@ -1,6 +1,5 @@
 "use server"
 
-import { sql, ensureSchedulesTableExists } from "@/lib/db-safe"
 import { z } from "zod"
 
 const scheduleSchema = z.object({
@@ -27,71 +26,27 @@ type ScheduleResult = {
 
 export async function scheduleClass(data: z.infer<typeof scheduleSchema>) {
   try {
-    // Ensure schedules table exists
-    await ensureSchedulesTableExists()
-
     // Validate input data
     const validatedData = scheduleSchema.parse(data)
 
-    // Check for schedule conflicts
-    const conflicts = (await sql`
-      SELECT id FROM schedules 
-      WHERE user_id = ${validatedData.userId}
-      AND day_of_week = ${validatedData.dayOfWeek}
-      AND (
-        (start_time <= ${validatedData.startTime} AND end_time > ${validatedData.startTime})
-        OR (start_time < ${validatedData.endTime} AND end_time >= ${validatedData.endTime})
-        OR (start_time >= ${validatedData.startTime} AND end_time <= ${validatedData.endTime})
-      )
-    `) as { id: number }[]
+    console.log("Scheduling class:", validatedData)
 
-    if (conflicts.length > 0) {
-      return {
-        success: false,
-        error: "This time slot conflicts with an existing schedule",
-      }
-    }
-
-    // Insert schedule into database
-    const result = (await sql`
-      INSERT INTO schedules (
-        user_id,
-        class_name,
-        subject,
-        day_of_week,
-        start_time,
-        end_time,
-        room_number,
-        notes,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${validatedData.userId},
-        ${validatedData.className},
-        ${validatedData.subject},
-        ${validatedData.dayOfWeek},
-        ${validatedData.startTime},
-        ${validatedData.endTime},
-        ${validatedData.roomNumber || null},
-        ${validatedData.notes || null},
-        NOW(),
-        NOW()
-      )
-      RETURNING id, class_name, subject, day_of_week, start_time, end_time, room_number, notes
-    `) as ScheduleResult[]
-
-    if (result.length === 0) {
-      return {
-        success: false,
-        error: "Failed to create schedule",
-      }
+    // Temporary mock response until schedule functionality is properly implemented with Supabase
+    const mockSchedule: ScheduleResult = {
+      id: Date.now(),
+      class_name: validatedData.className,
+      subject: validatedData.subject,
+      day_of_week: validatedData.dayOfWeek,
+      start_time: validatedData.startTime,
+      end_time: validatedData.endTime,
+      room_number: validatedData.roomNumber || null,
+      notes: validatedData.notes || null,
     }
 
     return {
       success: true,
-      message: "Class scheduled successfully",
-      schedule: result[0],
+      message: "Class scheduled successfully (mock response)",
+      schedule: mockSchedule,
     }
   } catch (error) {
     console.error("Schedule error:", error)
@@ -124,28 +79,37 @@ type Schedule = {
 
 export async function getTeacherSchedule(userId: string) {
   try {
-    // Ensure schedules table exists
-    await ensureSchedulesTableExists()
+    console.log("Getting teacher schedule for user:", userId)
 
-    const schedules = (await sql`
-      SELECT 
-        id,
-        class_name,
-        subject,
-        day_of_week,
-        start_time,
-        end_time,
-        room_number,
-        notes,
-        created_at
-      FROM schedules
-      WHERE user_id = ${userId}
-      ORDER BY day_of_week ASC, start_time ASC
-    `) as Schedule[]
+    // Temporary mock response
+    const mockSchedules: Schedule[] = [
+      {
+        id: 1,
+        class_name: "Mathematics",
+        subject: "Math",
+        day_of_week: 1,
+        start_time: "08:00",
+        end_time: "09:00",
+        room_number: "101",
+        notes: "Grade 5 Mathematics",
+        created_at: new Date(),
+      },
+      {
+        id: 2,
+        class_name: "English Language Arts",
+        subject: "Language Arts",
+        day_of_week: 1,
+        start_time: "09:15",
+        end_time: "10:15",
+        room_number: "102",
+        notes: "Grade 5 ELA",
+        created_at: new Date(),
+      }
+    ]
 
     return {
       success: true,
-      schedules: schedules,
+      schedules: mockSchedules,
     }
   } catch (error) {
     console.error("Get schedule error:", error)
@@ -158,25 +122,12 @@ export async function getTeacherSchedule(userId: string) {
 
 export async function deleteSchedule(scheduleId: number, userId: string) {
   try {
-    // Ensure schedules table exists
-    await ensureSchedulesTableExists()
+    console.log("Deleting schedule:", scheduleId, "for user:", userId)
 
-    const result = (await sql`
-      DELETE FROM schedules
-      WHERE id = ${scheduleId} AND user_id = ${userId}
-      RETURNING id
-    `) as { id: number }[]
-
-    if (result.length === 0) {
-      return {
-        success: false,
-        error: "Schedule not found or unauthorized",
-      }
-    }
-
+    // Temporary mock response
     return {
       success: true,
-      message: "Schedule deleted successfully",
+      message: "Schedule deleted successfully (mock response)",
     }
   } catch (error) {
     console.error("Delete schedule error:", error)

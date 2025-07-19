@@ -1,38 +1,42 @@
 import { NextResponse } from "next/server"
-import { sql } from "@/lib/db"
 
 export async function GET() {
   try {
-    if (!sql) {
-      return NextResponse.json({ error: "Database connection not available" }, { status: 500 })
-    }
+    // Temporary mock response until database info is properly implemented with Supabase
+    console.log("Database info endpoint called")
 
-    // Query to list all tables in the database
-    const tables = await sql(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-      ORDER BY table_name
-    `)
+    const mockTables = [
+      { table_name: "users" },
+      { table_name: "strands" },
+      { table_name: "essential_learning_outcomes" },
+      { table_name: "specific_curriculum_outcomes" },
+      { table_name: "assessment_strategies" },
+      { table_name: "learning_strategies" },
+      { table_name: "resources" },
+      { table_name: "teacher_content" },
+      { table_name: "settings" },
+      { table_name: "lesson_plans" },
+      { table_name: "multigrade_plans" },
+      { table_name: "cross_curricular_plans" },
+      { table_name: "quizzes" },
+      { table_name: "schedules" },
+      { table_name: "lesson_reflections" }
+    ]
 
-    // Query to get the column information for the User table (if it exists)
-    let userColumns = []
-    try {
-      userColumns = await sql(`
-        SELECT column_name, data_type 
-        FROM information_schema.columns 
-        WHERE table_schema = 'public' 
-        AND table_name = 'User'
-        ORDER BY ordinal_position
-      `)
-    } catch (error) {
-      console.error("Error fetching User table columns:", error)
-    }
+    const mockUserColumns = [
+      { column_name: "id", data_type: "integer" },
+      { column_name: "name", data_type: "character varying" },
+      { column_name: "email", data_type: "character varying" },
+      { column_name: "password_hash", data_type: "character varying" },
+      { column_name: "role", data_type: "character varying" },
+      { column_name: "created_at", data_type: "timestamp with time zone" },
+      { column_name: "updated_at", data_type: "timestamp with time zone" }
+    ]
 
     return NextResponse.json({
-      tables,
-      userColumns,
-      message: "This endpoint helps diagnose database issues by showing available tables",
+      tables: mockTables,
+      userColumns: mockUserColumns,
+      message: "Database info temporarily using mock data - will be implemented with Supabase",
     })
   } catch (error) {
     console.error("Error fetching database information:", error)

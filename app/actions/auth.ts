@@ -312,7 +312,7 @@ export async function updateUserProfile(userId: string, data: Partial<RegisterDa
       }
     }
 
-    updates.updated_at = sql`CURRENT_TIMESTAMP`
+    updates.updated_at = new Date().toISOString()
 
     const updatedUser = await db.users.update(parseInt(userId), updates)
 
