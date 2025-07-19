@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { Clock, Users, Target, Telescope, Rocket } from "lucide-react"
+import { Clock, Users, Target, Search, Rocket } from "lucide-react"
 
 export default function SpaceSystemsActivitiesPage() {
   return (
@@ -110,7 +110,7 @@ export default function SpaceSystemsActivitiesPage() {
 
                 <div className="mt-6 p-4 bg-purple-50 border-l-4 border-purple-400">
                   <div className="flex items-start gap-2">
-                    <Telescope className="h-5 w-5 text-purple-600 mt-0.5" />
+                    <Search className="h-5 w-5 text-purple-600 mt-0.5" />
                     <div>
                       <h4 className="font-semibold text-purple-800">Scale Challenges</h4>
                       <ul className="text-purple-700 text-sm mt-1">

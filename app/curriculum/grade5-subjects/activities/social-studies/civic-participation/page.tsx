@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { ArrowLeft, Users, Target, BookOpen, Lightbulb, Play, Vote, Handshake } from "lucide-react"
+import { ArrowLeft, Users, Target, BookOpen, Lightbulb, Play, Vote } from "lucide-react"
 import Link from "next/link"
 
 export default function CivicParticipationActivitiesPage() {
@@ -61,7 +61,7 @@ export default function CivicParticipationActivitiesPage() {
     {
       id: "regional-integration",
       title: "Regional Integration and Caribbean Unity",
-      icon: Handshake,
+              icon: Users,
       activities: [
         {
           title: "Regional Integration and Caribbean Unity",

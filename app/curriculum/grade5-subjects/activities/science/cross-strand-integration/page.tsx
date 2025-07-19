@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { Clock, Users, Target, Lightbulb, Rocket, Leaf, Globe, Zap, Beaker, Telescope } from "lucide-react"
+import { Clock, Users, Target, Lightbulb, Rocket, Leaf, Globe, Zap, Beaker, Search } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -279,7 +279,7 @@ export default function CrossStrandIntegrationPage() {
               <span className="text-sm font-medium">Sustainability Solutions</span>
             </div>
             <div className="flex items-center gap-2">
-              <Telescope className="h-5 w-5 text-blue-600" />
+                              <Search className="h-5 w-5 text-blue-600" />
               <span className="text-sm font-medium">Space & Earth Connections</span>
             </div>
             <div className="flex items-center gap-2">

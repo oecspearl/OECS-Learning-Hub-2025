@@ -1,7 +1,7 @@
 import { Breadcrumb } from "@/components/breadcrumb"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Download, FileText, Video, ChevronLeft, Images, Music, Palette } from "lucide-react"
+import { BookOpen, Download, FileText, Video, ChevronLeft, FileImage, Music, Palette } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -279,7 +279,7 @@ export default function CelebrationsResourcesPage() {
 
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
-          <Images className="mr-2 h-6 w-6" /> Visual Resources
+                          <FileImage className="mr-2 h-6 w-6" /> Visual Resources
         </h2>
         <Card className="border-amber-200">
           <CardHeader className="bg-amber-50 border-b border-amber-100">

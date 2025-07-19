@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Globe, AlertTriangle, Handshake, ChevronLeft, BookOpen, Flag, Building2 } from "lucide-react"
+import { Users, Globe, AlertTriangle, ChevronLeft, BookOpen, Flag, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Breadcrumb } from "@/components/breadcrumb"
 
@@ -212,7 +212,7 @@ export default function Grade6CivicParticipationActivitiesPage() {
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-green-700 text-xl">
                 <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
-                  <Handshake className="h-6 w-6" />
+                  <Users className="h-6 w-6" />
                 </div>
                 International Cooperation
               </CardTitle>
@@ -291,7 +291,7 @@ export default function Grade6CivicParticipationActivitiesPage() {
 
             <div className="text-center">
               <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Handshake className="h-8 w-8 text-green-600" />
+                <Users className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Collaborative Problem-Solving</h3>
               <p className="text-gray-600 text-sm">

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Users, Heart, Shield, MessageSquare, Handshake } from "lucide-react"
+import { BookOpen, Users, Heart, Shield, MessageSquare } from "lucide-react"
 import Link from "next/link"
 
 const breadcrumbItems = [
@@ -97,7 +97,7 @@ export default function PeaceBuildingSimulationPage() {
                   <span>Media Representatives</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Handshake className="h-4 w-4 text-orange-500" />
+                  <Users className="h-4 w-4 text-orange-500" />
                   <span>International Mediators</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export default function PeaceBuildingSimulationPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Handshake className="h-5 w-5" />
+                <Users className="h-5 w-5" />
                 Phase 3: Peace Building
               </CardTitle>
             </CardHeader>
