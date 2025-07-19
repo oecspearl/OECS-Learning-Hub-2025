@@ -19,7 +19,9 @@ const nextConfig = {
     domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],
   },
   // Enable experimental features
-  serverExternalPackages: ['@supabase/supabase-js'],
+  experimental: {
+    serverExternalPackages: ['@supabase/supabase-js'],
+  },
 }
 
 module.exports = nextConfig 
