@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { settings } from "@/lib/schema"
-import { eq } from "drizzle-orm"
 
 export async function GET() {
   try {
@@ -12,10 +10,10 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    const allSettings = await db.query.settings.findMany()
+    const allSettings = await db.settings.findMany()
     
     // Transform settings into a more usable format
-    const formattedSettings = allSettings.reduce((acc, setting) => {
+    const formattedSettings = allSettings.reduce((acc: Record<string, string | number | boolean | null>, setting: any) => {
       let value: string | number | boolean | null = setting.value
       
       // Parse value based on type
@@ -24,7 +22,7 @@ export async function GET() {
           value = Number(value)
           break
         case "boolean":
-          value = value === "true"
+          value = String(value) === "true"
           break
         case "json":
           try {
@@ -35,7 +33,7 @@ export async function GET() {
           break
       }
       
-      acc[setting.key] = value
+      acc[setting.key] = value as string | number | boolean | null
       return acc
     }, {} as Record<string, string | number | boolean | null>)
 
@@ -73,9 +71,7 @@ export async function PATCH(req: Request) {
     // Update each setting
     for (const [key, value] of Object.entries(updates)) {
       try {
-        const setting = await db.query.settings.findFirst({
-          where: eq(settings.key, key)
-        })
+        const setting = await db.settings.findFirst({ key })
 
         if (!setting) {
           console.warn(`Setting not found: ${key}`)
@@ -97,12 +93,13 @@ export async function PATCH(req: Request) {
         console.log(`Updating setting ${key}:`, { type: setting.type, value: stringValue })
 
         updatePromises.push(
-          db.update(settings)
-            .set({
-              value: stringValue,
-              updatedAt: new Date().toISOString()
-            })
-            .where(eq(settings.key, key))
+          db.settings.upsert({
+            key,
+            value: stringValue,
+            type: setting.type,
+            category: setting.category || 'general',
+            updated_at: new Date().toISOString()
+          })
         )
       } catch (error) {
         console.error(`Error updating setting ${key}:`, error)
