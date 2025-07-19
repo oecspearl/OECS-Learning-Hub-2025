@@ -238,9 +238,9 @@ export default function HistoricalCulturalThinkingPage() {
                 <Badge
                   variant={
                     activity.difficulty === "Easy"
-                      ? "success"
+                      ? "default"
                       : activity.difficulty === "Medium"
-                        ? "warning"
+                        ? "secondary"
                         : "destructive"
                   }
                 >
