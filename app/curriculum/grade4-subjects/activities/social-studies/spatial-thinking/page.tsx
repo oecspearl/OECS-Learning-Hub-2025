@@ -254,9 +254,9 @@ export default function SpatialThinkingPage() {
                 <Badge
                   variant={
                     activity.difficulty === "Easy"
-                      ? "success"
+                      ? "default"
                       : activity.difficulty === "Medium"
-                        ? "warning"
+                        ? "secondary"
                         : "destructive"
                   }
                 >

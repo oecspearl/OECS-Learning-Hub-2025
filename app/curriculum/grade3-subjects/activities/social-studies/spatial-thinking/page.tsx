@@ -235,17 +235,17 @@ export default function SpatialThinkingPage() {
               </CardContent>
               <CardFooter className="flex justify-between">
                 <div className="text-sm text-gray-600">{activity.duration}</div>
-                <Badge
-                  variant={
-                    activity.difficulty === "Easy"
-                      ? "success"
-                      : activity.difficulty === "Medium"
-                        ? "warning"
-                        : "destructive"
-                  }
-                >
-                  {activity.difficulty}
-                </Badge>
+                                  <Badge
+                    variant={
+                      activity.difficulty === "Easy"
+                        ? "default"
+                        : activity.difficulty === "Medium"
+                          ? "secondary"
+                          : "destructive"
+                    }
+                  >
+                    {activity.difficulty}
+                  </Badge>
               </CardFooter>
             </Card>
           </motion.div>

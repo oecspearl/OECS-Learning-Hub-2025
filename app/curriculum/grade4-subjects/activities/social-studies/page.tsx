@@ -179,9 +179,9 @@ export default function Grade4SocialStudiesActivitiesPage() {
                   <Badge
                     variant={
                       strand.difficulty === "Easy"
-                        ? "success"
+                        ? "default"
                         : strand.difficulty === "Medium"
-                          ? "warning"
+                          ? "secondary"
                           : "destructive"
                     }
                   >

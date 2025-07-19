@@ -178,9 +178,9 @@ export default function Grade4ScienceActivitiesPage() {
                   <Badge
                     variant={
                       strand.difficulty === "Easy"
-                        ? "success"
+                        ? "default"
                         : strand.difficulty === "Medium"
-                          ? "warning"
+                          ? "secondary"
                           : "destructive"
                     }
                   >
