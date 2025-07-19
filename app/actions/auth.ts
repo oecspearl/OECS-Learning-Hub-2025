@@ -3,7 +3,7 @@
 import { db } from "@/lib/db"
 import { users } from "@/lib/schema"
 import { z } from "zod"
-import { hash, compare } from "bcrypt"
+import { hash, compare } from "bcryptjs"
 import { eq, and, sql } from "drizzle-orm"
 import crypto from "crypto"
 
