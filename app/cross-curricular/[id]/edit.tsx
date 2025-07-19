@@ -117,14 +117,15 @@ export default function EditCrossCurricularPlan({ params }: { params: Promise<{ 
 
   useEffect(() => {
     const fetchPlan = async () => {
-      const plan = await getCrossCurricularPlanById(params.id)
+      const resolvedParams = await params
+      const plan = await getCrossCurricularPlanById(resolvedParams.id)
       if (plan) {
         form.reset({
           title: plan.title,
           theme: plan.theme,
           grade_range: plan.grade_range,
           subjects: plan.subjects.split(","),
-          duration: plan.duration || "",
+          duration: (plan as any).duration || "",
           sessions: plan.sessions || "1",
           learning_styles: plan.learning_styles ? plan.learning_styles.split(",") : [],
           multiple_intelligences: plan.multiple_intelligences ? plan.multiple_intelligences.split(",") : [],
@@ -141,13 +142,14 @@ export default function EditCrossCurricularPlan({ params }: { params: Promise<{ 
       setIsLoading(false)
     }
     fetchPlan()
-  }, [params.id, form])
+  }, [params, form])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      const resolvedParams = await params
       const savedPlan = await saveCrossCurricularPlan({
         ...values,
-        id: params.id,
+        id: resolvedParams.id,
       })
 
       if (savedPlan.success) {
@@ -262,7 +264,7 @@ export default function EditCrossCurricularPlan({ params }: { params: Promise<{ 
                 <Label>Learning Styles</Label>
                 <MultiSelect
                   options={learningStyles}
-                  value={form.watch("learning_styles")}
+                  value={form.watch("learning_styles") || []}
                   onChange={(value) => form.setValue("learning_styles", value)}
                   placeholder="Select learning styles to address"
                 />
@@ -272,7 +274,7 @@ export default function EditCrossCurricularPlan({ params }: { params: Promise<{ 
                 <Label>Multiple Intelligences</Label>
                 <MultiSelect
                   options={multipleIntelligences}
-                  value={form.watch("multiple_intelligences")}
+                  value={form.watch("multiple_intelligences") || []}
                   onChange={(value) => form.setValue("multiple_intelligences", value)}
                   placeholder="Select intelligences to address"
                 />
