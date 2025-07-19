@@ -59,6 +59,7 @@
     "next-themes": "^0.2.1",
     "openai": "^4.28.0",
     "pdfjs-dist": "^4.0.379",
+    "jspdf": "^2.5.1",
     "react": "^18",
     "react-day-picker": "^8.10.0",
     "react-dom": "^18",
@@ -73,6 +74,9 @@
     "tesseract.js": "^5.0.4",
     "typescript": "^5",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2"
   },
   "engines": {
     "npm": ">=8.0.0",
