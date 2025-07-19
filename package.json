@@ -64,5 +64,9 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+  },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=18.0.0"
   }
 }
