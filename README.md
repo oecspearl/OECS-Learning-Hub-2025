@@ -42,6 +42,8 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 This application is configured for deployment on Vercel with automatic builds from GitHub.
 
+**Latest Update**: Fixed package.json dependencies for successful Vercel deployment.
+
 ## License
 
 Educational use for OECS member states. 
