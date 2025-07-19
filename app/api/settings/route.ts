@@ -26,7 +26,7 @@ export async function GET() {
           break
         case "json":
           try {
-            value = JSON.parse(value || "null")
+            value = JSON.parse(String(value) || "null")
           } catch {
             value = null
           }
