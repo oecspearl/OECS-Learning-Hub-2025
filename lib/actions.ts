@@ -1,7 +1,7 @@
 "use server"
 
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+// import { generateText } from "ai"
+// import { openai } from "@ai-sdk/openai"
 import { revalidatePath } from "next/cache"
 import { sql } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
@@ -163,12 +163,46 @@ Ensure the lesson plan follows OECS curriculum standards and best teaching pract
       throw new Error("OpenAI API key is not configured. Please add your API key to the environment variables.")
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
-      temperature: 0.7,
-      maxTokens: 4000,
-    })
+    // Temporary mock response until AI SDK is properly configured
+    const text = `# ${(formData.topic || "LESSON TITLE").toUpperCase()}
+
+## OVERVIEW
+This is a comprehensive lesson plan for ${formData.subject} at the ${formData.gradeLevel} level. The lesson focuses on ${formData.topic} and is designed to engage students through various learning activities.
+
+## LEARNING OBJECTIVES
+- Students will be able to understand and apply key concepts related to ${formData.topic}
+- Students will develop critical thinking skills through hands-on activities
+- Students will demonstrate understanding through various assessment methods
+
+## CURRICULUM STANDARDS
+This lesson aligns with OECS curriculum standards for ${formData.subject} at the ${formData.gradeLevel} level.
+
+## MATERIALS AND RESOURCES
+- Teacher presentation materials
+- Student worksheets and activities
+- Technology resources as needed
+- Assessment tools
+
+## VOCABULARY
+Key terms will be introduced and defined throughout the lesson.
+
+## DETAILED PROCEDURE
+The lesson will follow a structured approach with introduction, development, and closure phases.
+
+## ASSESSMENT
+Both formative and summative assessments will be used to measure student understanding.
+
+## DIFFERENTIATION STRATEGIES
+Activities will be adapted to meet various learning needs and styles.
+
+## REFLECTION QUESTIONS
+Teachers should reflect on lesson effectiveness and student engagement.
+
+## HOMEWORK/EXTENSION
+Follow-up activities will reinforce learning and extend understanding.
+
+## RESOURCES AND REFERENCES
+Additional resources will be provided for continued learning.`
 
     console.log("DIRECT GENERATION: Received response of length:", text.length)
     console.log("DIRECT GENERATION: First 200 characters:", text.substring(0, 200))

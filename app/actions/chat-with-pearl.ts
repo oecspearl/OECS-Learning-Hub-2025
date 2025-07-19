@@ -1,8 +1,5 @@
 "use server"
 
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
-
 export type ChatMessage = {
   id: string
   role: "user" | "assistant"
@@ -44,18 +41,21 @@ Focus on OECS curriculum standards and best teaching practices.
 If asked to create a lesson plan, provide a structured outline that the teacher can use.
 `
 
-    // Generate the response
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
-      temperature: 0.7,
-      maxTokens: 1000,
-    })
+    // Temporary mock response until AI SDK is properly configured
+    const mockResponse = `Hello! I'm Pearl, your AI teaching assistant. I'm here to help you with lesson planning, finding resources, and answering questions about teaching methodologies. 
+
+Based on our conversation, I can see you're working on creating engaging lessons. Would you like me to help you with:
+- Lesson plan structure and objectives
+- Finding relevant resources and activities
+- Assessment strategies
+- Cross-curricular connections
+
+Please let me know what specific assistance you need!`
 
     const assistantMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "assistant",
-      content: text,
+      content: mockResponse,
       timestamp: new Date(),
     }
 
