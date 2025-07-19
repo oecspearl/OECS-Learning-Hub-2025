@@ -7,13 +7,13 @@ export async function GET() {
     const strands = await db.strands.findMany()
     
     const curriculum = await Promise.all(
-      strands.map(async (strand) => {
+      strands.map(async (strand: any) => {
         const elos = await db.essentialLearningOutcomes.findMany({ strand_id: strand.id })
         
         const strandWithElos = {
           ...strand,
           essential_learning_outcomes: await Promise.all(
-            elos.map(async (elo) => {
+            elos.map(async (elo: any) => {
               const assessmentStrategies = await db.assessmentStrategies.findMany({ elo_id: elo.id })
               const teacherContent = await db.teacherContent.findMany({ elo_id: elo.id })
               
