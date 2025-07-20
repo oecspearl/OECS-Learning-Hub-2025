@@ -5,6 +5,7 @@ import type React from "react"
 import { createContext, useContext, useReducer, type ReactNode } from "react"
 
 interface GeneratedQuiz {
+  id?: string
   title: string
   description?: string
   subject: string

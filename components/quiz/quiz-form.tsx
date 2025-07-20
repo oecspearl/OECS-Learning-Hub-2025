@@ -13,9 +13,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, Sparkles, X, AlertCircle } from "lucide-react"
+import { Loader2, Sparkles, X, AlertCircle, Save } from "lucide-react"
 import { useQuizStore } from "@/lib/stores/quiz-store"
 import { generateQuiz } from "@/app/actions/quiz-generation"
+import { saveQuiz } from "@/app/actions/quizzes"
+import { useAuth } from "@/contexts/AuthContext"
+import { toast } from "@/components/ui/use-toast"
+import Link from "next/link"
 
 const subjects = [
   "Language Arts",
@@ -35,7 +39,9 @@ const questionTypes = ["Multiple Choice", "True/False", "Short Answer", "Fill in
 const difficulties = ["Easy", "Medium", "Hard", "Mixed"]
 
 export function QuizForm() {
-  const { setGeneratedQuiz, setIsGenerating, isGenerating } = useQuizStore()
+  const { setGeneratedQuiz, setIsGenerating, isGenerating, generatedQuiz } = useQuizStore()
+  const { user } = useAuth()
+  const [saving, setSaving] = useState(false)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -105,8 +111,38 @@ export function QuizForm() {
       const result = await generateQuiz(quizParams)
 
       if (result.success && result.data) {
-        setGeneratedQuiz(result.data)
-        setError(null)
+        // Save the generated quiz to the database
+        if (user?.id) {
+          const saveResult = await saveQuiz({
+            title: result.data.title,
+            description: result.data.description,
+            subject: result.data.subject,
+            grade: result.data.grade,
+            topic: result.data.topic,
+            content: result.data.content,
+            question_count: result.data.questionCount,
+            question_types: JSON.stringify(result.data.questionTypes),
+            difficulty: result.data.difficulty,
+            time_limit: result.data.timeLimit,
+            tags: JSON.stringify(result.data.tags),
+            instructions: result.data.instructions,
+            user_id: user.id
+          })
+
+          if (saveResult.success) {
+            // Update the generated quiz with the saved ID
+            setGeneratedQuiz({
+              ...result.data,
+              id: saveResult.data.id
+            })
+            setError(null)
+          } else {
+            setError("Quiz generated but failed to save. Please try again.")
+          }
+        } else {
+          setGeneratedQuiz(result.data)
+          setError(null)
+        }
       } else {
         setError(result.error || "Failed to generate quiz. Please try again.")
       }
@@ -115,6 +151,64 @@ export function QuizForm() {
       setError("An unexpected error occurred. Please try again.")
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleSaveQuiz = async () => {
+    if (!generatedQuiz || !user?.id) {
+      toast({
+        title: "Error",
+        description: "Please generate a quiz first and ensure you're logged in.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setSaving(true)
+    try {
+      const saveResult = await saveQuiz({
+        title: generatedQuiz.title,
+        description: generatedQuiz.description,
+        subject: generatedQuiz.subject,
+        grade: generatedQuiz.grade,
+        topic: generatedQuiz.topic,
+        content: generatedQuiz.content,
+        question_count: generatedQuiz.questionCount,
+        question_types: JSON.stringify(generatedQuiz.questionTypes),
+        difficulty: generatedQuiz.difficulty,
+        time_limit: generatedQuiz.timeLimit,
+        tags: JSON.stringify(generatedQuiz.tags),
+        instructions: generatedQuiz.instructions,
+        user_id: user.id
+      })
+
+      if (saveResult.success) {
+        toast({
+          title: "Quiz saved successfully",
+          description: "Your quiz has been saved to your dashboard.",
+        })
+        
+        // Update the generated quiz with the saved ID
+        setGeneratedQuiz({
+          ...generatedQuiz,
+          id: saveResult.data.id
+        })
+      } else {
+        toast({
+          title: "Save failed",
+          description: "Failed to save quiz. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Error saving quiz:", error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while saving.",
+        variant: "destructive",
+      })
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -377,6 +471,39 @@ export function QuizForm() {
             )}
           </Button>
         </form>
+
+        {generatedQuiz && (
+          <div className="mt-6 pt-6 border-t">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Quiz Generated Successfully!</h3>
+              <Badge variant="secondary">Ready to Save</Badge>
+            </div>
+            <div className="space-y-3">
+              <Button 
+                onClick={handleSaveQuiz}
+                disabled={saving}
+                className="w-full"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving Quiz...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save to Dashboard
+                  </>
+                )}
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/dashboard/teacher">
+                  View All Quizzes
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
