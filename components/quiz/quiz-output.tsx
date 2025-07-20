@@ -6,36 +6,107 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/contexts/AuthContext"
-import { CheckCircle, XCircle, Clock, Users, FileText } from "lucide-react"
+import { useQuizStore } from "@/lib/stores/quiz-store"
+import { CheckCircle, XCircle, Clock, Users, FileText, BookOpen } from "lucide-react"
 
-interface QuizOutputProps {
-  quiz: {
-    id: string
-    title: string
-    description: string
-    subject: string
-    grade: string
-    questions: Array<{
+export function QuizOutput() {
+  const { user } = useAuth()
+  const { generatedQuiz } = useQuizStore()
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
+  const [showResults, setShowResults] = useState(false)
+  const [timeRemaining, setTimeRemaining] = useState(30 * 60) // Default 30 minutes
+
+  // If no quiz is generated, show empty state
+  if (!generatedQuiz) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Quiz Output
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground mb-2">Generate a quiz to see the output here.</p>
+            <p className="text-sm text-muted-foreground">Your quiz will appear here once generated.</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Parse questions from the generated content
+  const parseQuestions = (content: string) => {
+    const questions: Array<{
       id: string
       question: string
       options: string[]
       correctAnswer: string
-    }>
-    timeLimit: number
-    passingScore: number
-    created_at: string
+    }> = []
+    
+    // Simple parsing logic - this can be enhanced based on your AI output format
+    const lines = content.split('\n')
+    let currentQuestion: any = null
+    
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim()
+      
+      // Look for question patterns (e.g., "1.", "Q1:", etc.)
+      if (/^\d+\./.test(trimmedLine) || /^Q\d+:/.test(trimmedLine)) {
+        if (currentQuestion) {
+          questions.push(currentQuestion)
+        }
+        currentQuestion = {
+          id: `q${questions.length + 1}`,
+          question: trimmedLine.replace(/^\d+\.\s*/, '').replace(/^Q\d+:\s*/, ''),
+          options: [],
+          correctAnswer: ''
+        }
+      } else if (currentQuestion && trimmedLine.startsWith('a)') || trimmedLine.startsWith('A)')) {
+        currentQuestion.options.push(trimmedLine.replace(/^[aA]\)\s*/, ''))
+      } else if (currentQuestion && trimmedLine.startsWith('b)') || trimmedLine.startsWith('B)')) {
+        currentQuestion.options.push(trimmedLine.replace(/^[bB]\)\s*/, ''))
+      } else if (currentQuestion && trimmedLine.startsWith('c)') || trimmedLine.startsWith('C)')) {
+        currentQuestion.options.push(trimmedLine.replace(/^[cC]\)\s*/, ''))
+      } else if (currentQuestion && trimmedLine.startsWith('d)') || trimmedLine.startsWith('D)')) {
+        currentQuestion.options.push(trimmedLine.replace(/^[dD]\)\s*/, ''))
+      }
+    })
+    
+    if (currentQuestion) {
+      questions.push(currentQuestion)
+    }
+    
+    return questions
   }
-}
 
-export function QuizOutput({ quiz }: QuizOutputProps) {
-  const { user } = useAuth()
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
-  const [showResults, setShowResults] = useState(false)
-  const [timeRemaining, setTimeRemaining] = useState(quiz.timeLimit * 60)
+  const questions = parseQuestions(generatedQuiz.content)
+  const totalQuestions = questions.length
+  
+  if (totalQuestions === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Quiz Output
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground mb-2">Quiz generated successfully!</p>
+            <p className="text-sm text-muted-foreground">Check the preview tab to see the full quiz content.</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
-  const currentQuestion = quiz.questions[currentQuestionIndex]
-  const totalQuestions = quiz.questions.length
+  const currentQuestion = questions[currentQuestionIndex]
   const answeredQuestions = Object.keys(selectedAnswers).length
 
   const handleAnswerSelect = (questionId: string, answer: string) => {
@@ -63,7 +134,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
 
   const calculateScore = () => {
     let correct = 0
-    quiz.questions.forEach(question => {
+    questions.forEach(question => {
       if (selectedAnswers[question.id] === question.correctAnswer) {
         correct++
       }
@@ -72,7 +143,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
   }
 
   const score = calculateScore()
-  const passed = score >= quiz.passingScore
+  const passed = score >= 70 // Default passing score
 
   if (showResults) {
     return (
@@ -101,7 +172,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Question Review</h3>
-            {quiz.questions.map((question, index) => {
+            {questions.map((question, index) => {
               const userAnswer = selectedAnswers[question.id]
               const isCorrect = userAnswer === question.correctAnswer
               
@@ -156,12 +227,12 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-2xl">{quiz.title}</CardTitle>
-            <CardDescription>{quiz.description}</CardDescription>
+            <CardTitle className="text-2xl">{generatedQuiz.title}</CardTitle>
+            <CardDescription>{generatedQuiz.description}</CardDescription>
           </div>
           <div className="text-right">
             <Badge variant="outline" className="mb-2">
-              {quiz.subject} - Grade {quiz.grade}
+              {generatedQuiz.subject} - {generatedQuiz.grade}
             </Badge>
             <div className="text-sm text-gray-600">
               Question {currentQuestionIndex + 1} of {totalQuestions}
@@ -183,7 +254,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
           </div>
           <div className="flex items-center space-x-1">
             <FileText className="h-4 w-4" />
-            <span>{quiz.passingScore}% to pass</span>
+            <span>70% to pass</span>
           </div>
         </div>
 
@@ -200,7 +271,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
               <Button
                 key={index}
                 variant={selectedAnswers[currentQuestion.id] === option ? "default" : "outline"}
-                className="w-full justify-start h-auto p-4 text-left"
+                className="w-full justify-start h-auto p-4"
                 onClick={() => handleAnswerSelect(currentQuestion.id, option)}
               >
                 {option}
@@ -217,7 +288,7 @@ export function QuizOutput({ quiz }: QuizOutputProps) {
           >
             Previous
           </Button>
-
+          
           {currentQuestionIndex === totalQuestions - 1 ? (
             <Button onClick={handleSubmit} disabled={answeredQuestions < totalQuestions}>
               Submit Quiz

@@ -207,12 +207,17 @@ export function MultigradeForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="K-2">Kindergarten - Grade 2</SelectItem>
+                            <SelectItem value="K-1">Kindergarten - Grade 1</SelectItem>
+                            <SelectItem value="1-2">Grade 1 - Grade 2</SelectItem>
+                            <SelectItem value="2-3">Grade 2 - Grade 3</SelectItem>
+                            <SelectItem value="3-4">Grade 3 - Grade 4</SelectItem>
+                            <SelectItem value="4-5">Grade 4 - Grade 5</SelectItem>
+                            <SelectItem value="5-6">Grade 5 - Grade 6</SelectItem>
                             <SelectItem value="1-3">Grade 1 - Grade 3</SelectItem>
                             <SelectItem value="2-4">Grade 2 - Grade 4</SelectItem>
                             <SelectItem value="3-5">Grade 3 - Grade 5</SelectItem>
                             <SelectItem value="4-6">Grade 4 - Grade 6</SelectItem>
-                            <SelectItem value="K-6">Kindergarten - Grade 6 (All Primary)</SelectItem>
+                            <SelectItem value="1-6">Grade 1 - Grade 6</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

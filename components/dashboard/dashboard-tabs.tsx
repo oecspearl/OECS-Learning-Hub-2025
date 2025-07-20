@@ -42,14 +42,8 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
         setResources(data.resources || [])
       } catch (error) {
         console.error("Error fetching resources:", error)
-        // Fallback to sample data if API fails
-        const mockResources: Resource[] = [
-          { id: "1", title: "Introduction to Fractions", subject: "Mathematics", grade: "Grade 3", createdAt: "2024-01-15", status: "active" },
-          { id: "2", title: "Reading Comprehension", subject: "Language Arts", grade: "Grade 4", createdAt: "2024-01-14", status: "active" },
-          { id: "3", title: "Solar System", subject: "Science", grade: "Grade 5", createdAt: "2024-01-13", status: "draft" },
-          { id: "4", title: "World History", subject: "Social Studies", grade: "Grade 6", createdAt: "2024-01-12", status: "active" }
-        ]
-        setResources(mockResources)
+        // Only show empty state, no fallback sample data
+        setResources([])
       } finally {
         setLoading(false)
       }

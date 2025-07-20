@@ -201,43 +201,43 @@ export default function TeacherDashboard() {
               <TabsTrigger value="multigrade">Multigrade</TabsTrigger>
               <TabsTrigger value="cross-curricular">Cross-Curricular</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="lesson-plans" className="mt-6">
-              <DashboardTabs 
+              <DashboardTabs
                 type="lesson-plans"
                 title="Lesson Plans"
-                description="Your created lesson plans organized by subject"
-                emptyMessage="No lesson plans created yet. Start by creating your first lesson plan."
+                description="Your created lesson plans"
+                emptyMessage="Create your first lesson plan to get started"
                 createLink="/planner"
               />
             </TabsContent>
-            
+
             <TabsContent value="quizzes" className="mt-6">
-              <DashboardTabs 
+              <DashboardTabs
                 type="quizzes"
-                title="Quizzes & Assessments"
-                description="Your created quizzes and assessments"
-                emptyMessage="No quizzes created yet. Start by creating your first quiz."
+                title="Quizzes"
+                description="Your created assessments"
+                emptyMessage="Create your first quiz to assess student learning"
                 createLink="/quiz"
               />
             </TabsContent>
-            
+
             <TabsContent value="multigrade" className="mt-6">
-              <DashboardTabs 
+              <DashboardTabs
                 type="multigrade"
                 title="Multigrade Plans"
-                description="Lesson plans for multiple grade levels"
-                emptyMessage="No multigrade plans created yet. Start by creating your first multigrade plan."
+                description="Your multigrade lesson plans"
+                emptyMessage="Create your first multigrade lesson plan"
                 createLink="/multigrade"
               />
             </TabsContent>
-            
+
             <TabsContent value="cross-curricular" className="mt-6">
-              <DashboardTabs 
+              <DashboardTabs
                 type="cross-curricular"
                 title="Cross-Curricular Plans"
-                description="Integrated lesson plans across subjects"
-                emptyMessage="No cross-curricular plans created yet. Start by creating your first cross-curricular plan."
+                description="Your integrated lesson plans"
+                emptyMessage="Create your first cross-curricular lesson plan"
                 createLink="/cross-curricular"
               />
             </TabsContent>
