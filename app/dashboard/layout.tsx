@@ -1,17 +1,19 @@
-import type React from "react"
+import { ReactNode } from "react"
+import { Header } from "@/components/header"
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+interface DashboardLayoutProps {
+  children: ReactNode
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex min-h-screen pt-6">
-        <div className="w-full">
-          <main className="w-full px-4 md:px-6 lg:px-8 py-6">{children}</main>
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto">
+          {children}
         </div>
-      </div>
+      </main>
     </div>
   )
 }

@@ -1,114 +1,289 @@
 "use client"
 
-import { useAuth } from "@/contexts/AuthContext"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, BookOpen, FileText, MessageSquare, TrendingUp, Calendar } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Users, BookOpen, TrendingUp, MessageSquare, Calendar, Award } from "lucide-react"
 import Link from "next/link"
+import { ProfileCard } from "@/components/dashboard/profile-card"
+import { ParentDashboardTabs } from "@/components/dashboard/parent-dashboard-tabs"
+
+interface StudentProgress {
+  subject: string
+  progress: number
+  grade: string
+  lastUpdated: string
+  recentActivities: number
+  upcomingAssignments: number
+}
+
+interface StudentActivity {
+  id: string
+  type: string
+  title: string
+  subject: string
+  date: string
+  achievement?: string
+}
+
+interface ParentStats {
+  totalChildren: number
+  activeSubjects: number
+  recentActivities: number
+  upcomingEvents: number
+}
 
 export default function ParentDashboard() {
-  const { user, loading } = useAuth()
+  const [stats, setStats] = useState<ParentStats>({
+    totalChildren: 0,
+    activeSubjects: 0,
+    recentActivities: 0,
+    upcomingEvents: 0
+  })
+  const [studentProgress, setStudentProgress] = useState<StudentProgress[]>([])
+  const [recentActivities, setRecentActivities] = useState<StudentActivity[]>([])
+  const [loading, setLoading] = useState(true)
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Loading...</div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // This would be replaced with actual API calls
+        setStats({
+          totalChildren: 2,
+          activeSubjects: 8,
+          recentActivities: 12,
+          upcomingEvents: 3
+        })
 
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-          <p className="text-gray-600 mb-4">Please log in to access the parent dashboard.</p>
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-        </div>
-      </div>
-    )
-  }
+        setStudentProgress([
+          { subject: "Mathematics", progress: 85, grade: "A", lastUpdated: "2024-01-15", recentActivities: 5, upcomingAssignments: 2 },
+          { subject: "Language Arts", progress: 92, grade: "A+", lastUpdated: "2024-01-14", recentActivities: 3, upcomingAssignments: 1 },
+          { subject: "Science", progress: 78, grade: "B+", lastUpdated: "2024-01-13", recentActivities: 4, upcomingAssignments: 3 },
+          { subject: "Social Studies", progress: 88, grade: "A", lastUpdated: "2024-01-12", recentActivities: 2, upcomingAssignments: 0 }
+        ])
 
-  const dashboardItems = [
+        setRecentActivities([
+          { id: "1", type: "quiz", title: "Math Quiz - Fractions", subject: "Mathematics", date: "2024-01-15", achievement: "95%" },
+          { id: "2", type: "assignment", title: "Science Project", subject: "Science", date: "2024-01-14" },
+          { id: "3", type: "lesson", title: "Reading Comprehension", subject: "Language Arts", date: "2024-01-13" },
+          { id: "4", type: "quiz", title: "History Test", subject: "Social Studies", date: "2024-01-12", achievement: "88%" }
+        ])
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const statCards = [
     {
-      title: "My Children",
-      description: "View and manage your children's profiles",
-      icon: <Users className="h-6 w-6" />,
-      href: "/dashboard/parent/children",
-      color: "bg-blue-500"
+      title: "Children",
+      value: stats.totalChildren,
+      icon: Users,
+      color: "bg-blue-500",
+      description: "Enrolled children"
     },
     {
-      title: "Academic Progress",
-      description: "Track your children's academic performance",
-      icon: <TrendingUp className="h-6 w-6" />,
-      href: "/dashboard/parent/progress",
-      color: "bg-green-500"
+      title: "Active Subjects",
+      value: stats.activeSubjects,
+      icon: BookOpen,
+      color: "bg-green-500",
+      description: "Current subjects"
     },
     {
-      title: "Curriculum",
-      description: "Access curriculum information and resources",
-      icon: <BookOpen className="h-6 w-6" />,
-      href: "/curriculum",
-      color: "bg-purple-500"
+      title: "Recent Activities",
+      value: stats.recentActivities,
+      icon: TrendingUp,
+      color: "bg-purple-500",
+      description: "This week"
     },
     {
-      title: "Reports",
-      description: "View academic reports and assessments",
-      icon: <FileText className="h-6 w-6" />,
-      href: "/dashboard/parent/reports",
-      color: "bg-orange-500"
-    },
-    {
-      title: "Communication",
-      description: "Communicate with teachers and school",
-      icon: <MessageSquare className="h-6 w-6" />,
-      href: "/dashboard/parent/communication",
-      color: "bg-teal-500"
-    },
-    {
-      title: "School Calendar",
-      description: "View important dates and events",
-      icon: <Calendar className="h-6 w-6" />,
-      href: "/dashboard/parent/calendar",
-      color: "bg-indigo-500"
+      title: "Upcoming Events",
+      value: stats.upcomingEvents,
+      icon: Calendar,
+      color: "bg-orange-500",
+      description: "Next 7 days"
     }
   ]
 
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case "quiz":
+        return "📝"
+      case "assignment":
+        return "📚"
+      case "lesson":
+        return "📖"
+      case "achievement":
+        return "🏆"
+      default:
+        return "📋"
+    }
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Welcome back, {user.user_metadata?.name || "Parent"}!
-        </h1>
-        <p className="text-gray-600">
-          Stay connected with your children's education and track their progress.
-        </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Parent Dashboard</h1>
+          <p className="text-gray-600 mt-2">Monitor your children's progress and activities</p>
+        </div>
+        <Badge variant="secondary" className="flex items-center gap-2">
+          <Users className="h-4 w-4" />
+          Parent
+        </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardItems.map((item, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
+      {/* Profile and Quick Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <ProfileCard />
+        </div>
+        <div className="lg:col-span-2">
+          <Card>
             <CardHeader>
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${item.color} text-white`}>
-                  {item.icon}
-                </div>
-                <CardTitle className="text-lg">{item.title}</CardTitle>
-              </div>
-              <CardDescription>{item.description}</CardDescription>
+              <CardTitle>Family Overview</CardTitle>
+              <CardDescription>Quick statistics about your children's education</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full">
-                <Link href={item.href}>
-                  Access {item.title}
-                </Link>
-              </Button>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {statCards.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className={`inline-flex p-3 rounded-lg ${stat.color} text-white mb-2`}>
+                      <stat.icon className="h-6 w-6" />
+                    </div>
+                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <div className="text-sm text-gray-600">{stat.title}</div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
-        ))}
+        </div>
       </div>
+
+      {/* Student Progress */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Student Progress
+          </CardTitle>
+          <CardDescription>Academic performance across subjects</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {studentProgress.map((subject, index) => (
+              <Card key={index} className="border-l-4 border-l-blue-500">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{subject.subject}</CardTitle>
+                    <Badge variant="outline">{subject.grade}</Badge>
+                  </div>
+                  <CardDescription>Last updated: {subject.lastUpdated}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Progress</span>
+                      <span>{subject.progress}%</span>
+                    </div>
+                    <Progress value={subject.progress} className="h-2" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activities */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5" />
+            Recent Activities
+          </CardTitle>
+          <CardDescription>Latest academic activities and achievements</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentActivities.map((activity, index) => (
+              <div key={activity.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div className="text-2xl">{getActivityIcon(activity.type)}</div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">{activity.title}</h4>
+                    {activity.achievement && (
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        {activity.achievement}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span>{activity.subject}</span>
+                    <span>•</span>
+                    <span>{activity.date}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Communication Tools */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Communication
+          </CardTitle>
+          <CardDescription>Stay connected with teachers and school</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
+              <Link href="/messages">
+                <MessageSquare className="h-6 w-6" />
+                <span>Messages</span>
+              </Link>
+            </Button>
+            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
+              <Link href="/calendar">
+                <Calendar className="h-6 w-6" />
+                <span>School Calendar</span>
+              </Link>
+            </Button>
+            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
+              <Link href="/reports">
+                <TrendingUp className="h-6 w-6" />
+                <span>Progress Reports</span>
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Progress by Subject */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Progress by Subject</CardTitle>
+          <CardDescription>Detailed view of academic performance</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ParentDashboardTabs 
+            studentProgress={studentProgress}
+            progressBySubject={{}}
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 }

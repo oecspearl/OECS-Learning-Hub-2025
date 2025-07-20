@@ -24,18 +24,14 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-green-600 shadow-lg">
+    <header className="sticky top-0 z-50 w-full bg-green-600 shadow-lg p-4">
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo Section */}
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-3">
             {/* OECS Logo */}
             <div className="flex items-center space-x-2">
-              <img src="/oecsnavlogo.png" alt="OECS Logo" className="h-10 w-auto" />
-              <div className="flex flex-col">
-                <span className="text-white text-2xl font-bold">OECS</span>
-                <span className="text-white text-xs">LEARNING HUB</span>
-              </div>
+              <img src="/oecsnavlogo.png" alt="OECS Logo" className="h-14 w-auto" />
             </div>
             <span className="text-white text-sm font-medium hidden sm:block">Powered by AI</span>
           </Link>

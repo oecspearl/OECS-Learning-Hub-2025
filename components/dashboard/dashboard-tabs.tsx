@@ -1,284 +1,209 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, HelpCircle, Calendar, Users, BookOpen } from "lucide-react"
-import { LessonPlanCard } from "@/components/lesson-plans/lesson-plan-card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { MultigradeViewComponent } from "@/components/multigrade/multigrade-view"
-import { getMultigradePlans } from "@/app/actions/multigrade-plans"
-import { MultigradePlanCard } from "@/components/multigrade/multigrade-plan-card"
-import { CrossCurricularPlanCard } from "@/components/cross-curricular/cross-curricular-plan-card"
-import { QuizCard } from "@/components/quiz/quiz-card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Plus, FileText, ClipboardCheck, Users, BookOpen } from "lucide-react"
 import Link from "next/link"
-import { Plus } from "lucide-react"
 
-interface LessonPlan {
+interface Resource {
   id: string
   title: string
   subject: string
   grade: string
-  topic: string | null
-  content: string
-  duration: string | null
-  materials: string | null
-  pedagogical_strategy: string | null
-  differentiation_strategies: string | null
-  grouping_strategy: string | null
-  assessment_approach: string | null
-  curriculum_standards: string | null
-  overview: string | null
-  objectives: string | null
-  vocabulary: string | null
-  homework: string | null
-  extensions: string | null
-  standards: string | null
-  user_id: string
-  created_at: string
-  updated_at: string
-}
-
-interface MultigradePlan {
-  id: string
-  title: string
-  subject: string
-  grade_range: string
-  created_at: string
-}
-
-interface CrossCurricularPlan {
-  id: string
-  title: string
-  theme: string
-  grade_range: string
-  subjects: string
-  created_at: string
-}
-
-interface Quiz {
-  id: string
-  title: string
-  description?: string | null
-  subject: string
-  grade: string
-  topic: string
-  content: string
-  question_count?: number
-  question_types?: string | null
-  difficulty?: string | null
-  time_limit?: number | null
-  tags?: string | null
-  instructions?: string | null
-  user_id: string
-  created_at?: string
-  updated_at?: string
+  createdAt: string
+  status: string
 }
 
 interface DashboardTabsProps {
-  lessonPlans: LessonPlan[]
-  plansBySubject: Record<string, LessonPlan[]>
-  multigradePlans: MultigradePlan[]
-  crossCurricularPlans: any[]
-  quizzes: Quiz[]
+  type: string
+  title: string
+  description: string
+  emptyMessage: string
+  createLink: string
 }
 
-export function DashboardTabs({
-  lessonPlans,
-  plansBySubject,
-  multigradePlans,
-  crossCurricularPlans,
-  quizzes,
-}: DashboardTabsProps) {
+export function DashboardTabs({ type, title, description, emptyMessage, createLink }: DashboardTabsProps) {
+  const [resources, setResources] = useState<Resource[]>([])
+  const [loading, setLoading] = useState(true)
 
-  
-  const formatSubject = (subject: string) => {
-    return subject
-      .replace(/_/g, " ")
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        // Mock data - replace with actual API call
+        const mockResources: Resource[] = [
+          { id: "1", title: "Introduction to Fractions", subject: "Mathematics", grade: "Grade 3", createdAt: "2024-01-15", status: "active" },
+          { id: "2", title: "Reading Comprehension", subject: "Language Arts", grade: "Grade 4", createdAt: "2024-01-14", status: "active" },
+          { id: "3", title: "Solar System", subject: "Science", grade: "Grade 5", createdAt: "2024-01-13", status: "draft" },
+          { id: "4", title: "World History", subject: "Social Studies", grade: "Grade 6", createdAt: "2024-01-12", status: "active" }
+        ]
+        setResources(mockResources)
+      } catch (error) {
+        console.error("Error fetching resources:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchResources()
+  }, [type])
+
+  const subjects = ["All", "Mathematics", "Language Arts", "Science", "Social Studies"]
+  const [selectedSubject, setSelectedSubject] = useState("All")
+
+  const filteredResources = selectedSubject === "All" 
+    ? resources 
+    : resources.filter(resource => resource.subject === selectedSubject)
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case "lesson-plans":
+        return FileText
+      case "quizzes":
+        return ClipboardCheck
+      case "multigrade":
+        return Users
+      case "cross-curricular":
+        return BookOpen
+      default:
+        return FileText
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800"
+      case "draft":
+        return "bg-yellow-100 text-yellow-800"
+      case "archived":
+        return "bg-gray-100 text-gray-800"
+      default:
+        return "bg-blue-100 text-blue-800"
+    }
+  }
+
+  const IconComponent = getTypeIcon(type)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading resources...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Your Resources</CardTitle>
-        <CardDescription>Manage your lesson plans and teaching materials</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="lesson-plans" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="lesson-plans" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Lesson Plans ({lessonPlans.length})
-            </TabsTrigger>
-            <TabsTrigger value="quizzes" className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Quizzes ({quizzes.length})
-            </TabsTrigger>
-            <TabsTrigger value="multigrade-plans" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Multigrade Plans ({multigradePlans.length})
-            </TabsTrigger>
-            <TabsTrigger value="cross-curricular" className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              Cross Curricular ({crossCurricularPlans.length})
-            </TabsTrigger>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <p className="text-sm text-gray-600">{description}</p>
+        </div>
+        <Button asChild size="sm">
+          <Link href={createLink}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create New
+          </Link>
+        </Button>
+      </div>
+
+      {resources.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <IconComponent className="h-12 w-12 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No resources yet</h3>
+            <p className="text-gray-600 text-center mb-4">{emptyMessage}</p>
+            <Button asChild>
+              <Link href={createLink}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Your First {title}
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            {subjects.map((subject) => (
+              <TabsTrigger 
+                key={subject} 
+                value={subject.toLowerCase().replace(" ", "-")}
+                onClick={() => setSelectedSubject(subject)}
+              >
+                {subject}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          {/* Lesson Plans Tab */}
-          <TabsContent value="lesson-plans" className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Lesson Plans</h2>
-              <Button asChild>
-                <Link href="/planner">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Lesson Plan
-                </Link>
-              </Button>
-            </div>
-
-            {Object.keys(plansBySubject).length > 0 ? (
-              <Tabs defaultValue={Object.keys(plansBySubject)[0]} className="w-full">
-                <TabsList>
-                  {Object.keys(plansBySubject).map((subject) => (
-                    <TabsTrigger key={subject} value={subject}>
-                      {subject}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-
-                {Object.entries(plansBySubject).map(([subject, plans]) => (
-                  <TabsContent key={subject} value={subject} className="mt-6">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                      {plans.map((plan) => (
-                        <LessonPlanCard key={plan.id} plan={plan} />
-                      ))}
+          <TabsContent value="all" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredResources.map((resource) => (
+                <Card key={resource.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm font-medium line-clamp-2">{resource.title}</CardTitle>
+                      <Badge variant="secondary" className={getStatusColor(resource.status)}>
+                        {resource.status}
+                      </Badge>
                     </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
-            ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No lesson plans yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create your first lesson plan to get started.
-                </p>
-                <Button asChild>
-                  <Link href="/planner">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Lesson Plan
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Quizzes Tab */}
-          <TabsContent value="quizzes" className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Quizzes</h2>
-              <Button asChild>
-                <Link href="/quiz">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Quiz
-                </Link>
-              </Button>
+                    <CardDescription className="text-xs">
+                      {resource.subject} • {resource.grade}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>Created: {resource.createdAt}</span>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/${type}/${resource.id}`}>
+                          View
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-
-            {quizzes.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {quizzes.map((quiz) => (
-                  <QuizCard key={quiz.id} quiz={quiz} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No quizzes yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create your first quiz to get started.
-                </p>
-                <Button asChild>
-                  <Link href="/quiz">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Quiz
-                  </Link>
-                </Button>
-              </div>
-            )}
           </TabsContent>
 
-          {/* Multigrade Plans Tab */}
-          <TabsContent value="multigrade-plans" className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Multigrade Plans</h2>
-              <Button asChild>
-                <Link href="/multigrade">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Multigrade Plan
-                </Link>
-              </Button>
-            </div>
-
-            {multigradePlans.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {multigradePlans.map((plan) => (
-                  <MultigradePlanCard key={plan.id} plan={plan} />
+          {subjects.slice(1).map((subject) => (
+            <TabsContent key={subject} value={subject.toLowerCase().replace(" ", "-")} className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredResources.map((resource) => (
+                  <Card key={resource.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-sm font-medium line-clamp-2">{resource.title}</CardTitle>
+                        <Badge variant="secondary" className={getStatusColor(resource.status)}>
+                          {resource.status}
+                        </Badge>
+                      </div>
+                      <CardDescription className="text-xs">
+                        {resource.subject} • {resource.grade}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>Created: {resource.createdAt}</span>
+                        <Button variant="ghost" size="sm" asChild>
+                          <Link href={`/${type}/${resource.id}`}>
+                            View
+                          </Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No multigrade plans yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create your first multigrade plan to get started.
-                </p>
-                <Button asChild>
-                  <Link href="/multigrade">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Multigrade Plan
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Cross Curricular Tab */}
-          <TabsContent value="cross-curricular" className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Cross-Curricular Plans</h2>
-              <Button asChild>
-                <Link href="/cross-curricular/new">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Cross-Curricular Plan
-                </Link>
-              </Button>
-            </div>
-
-            {crossCurricularPlans.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {crossCurricularPlans.map((plan) => (
-                  <CrossCurricularPlanCard key={plan.id} plan={plan} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No cross-curricular plans yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create your first cross-curricular plan to get started.
-                </p>
-                <Button asChild>
-                  <Link href="/cross-/new">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Cross-Curricular Plan
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </TabsContent>
+            </TabsContent>
+          ))}
         </Tabs>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   )
 }
