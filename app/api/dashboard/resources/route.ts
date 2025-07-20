@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { quizzes as quizzesTable, lesson_plans as lessonPlansTable, multigrade_plans as multigradePlansTable, cross_curricular_plans as crossCurricularPlansTable } from "@/lib/schema"
-import { eq } from "drizzle-orm"
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,8 +15,8 @@ export async function GET(request: NextRequest) {
 
     switch (type) {
       case "quizzes":
-        const quizzes = await db.quizzes.findMany({ user_id: userId })
-        resources = quizzes.map(quiz => ({
+        const quizResults = await db.quizzes.findMany({ user_id: userId })
+        resources = quizResults.map((quiz: any) => ({
           id: quiz.id,
           title: quiz.title,
           subject: quiz.subject,
@@ -30,8 +28,8 @@ export async function GET(request: NextRequest) {
         break
 
       case "lesson-plans":
-        const lessonPlans = await db.lesson_plans.findMany({ user_id: userId })
-        resources = lessonPlans.map(plan => ({
+        const lessonPlanResults = await db.lessonPlans.findMany({ user_id: userId })
+        resources = lessonPlanResults.map((plan: any) => ({
           id: plan.id,
           title: plan.title,
           subject: plan.subject,
@@ -43,8 +41,9 @@ export async function GET(request: NextRequest) {
         break
 
       case "multigrade":
-        const multigradePlans = await db.multigrade_plans.findMany({ user_id: userId })
-        resources = multigradePlans.map(plan => ({
+        const allMultigradeResults = await db.multigradePlans.findMany()
+        const multigradeResults = allMultigradeResults.filter((plan: any) => plan.user_id === userId)
+        resources = multigradeResults.map((plan: any) => ({
           id: plan.id,
           title: plan.title,
           subject: plan.subject,
@@ -56,12 +55,12 @@ export async function GET(request: NextRequest) {
         break
 
       case "cross-curricular":
-        const crossCurricularPlans = await db.cross_curricular_plans.findMany({ user_id: userId })
-        resources = crossCurricularPlans.map(plan => ({
+        const crossCurricularResults = await db.crossCurricularPlans.findMany({ user_id: userId })
+        resources = crossCurricularResults.map((plan: any) => ({
           id: plan.id,
           title: plan.title,
           subject: plan.subjects,
-          grade: plan.grade_level,
+          grade: plan.grade_range,
           createdAt: plan.created_at,
           status: "active",
           type: "cross-curricular"
