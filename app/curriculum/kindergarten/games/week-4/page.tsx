@@ -23,9 +23,9 @@ export default function GamesUnitWeek4() {
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-4 text-emerald-700">Week 4: What do I need to play games?</h1>
-          <div className="bg-emerald-50 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2 text-emerald-700">Weekly Focus</h2>
+          <h1 className="text-3xl font-bold mb-4 text-green-700">Week 4: What do I need to play games?</h1>
+          <div className="bg-green-50 p-4 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-2 text-green-700">Weekly Focus</h2>
             <p>
               Children explore the materials, rules, and skills needed to play different games. They investigate how
               forces like pushing and pulling are used in games, and develop an understanding of good sportsmanship and
@@ -34,28 +34,28 @@ export default function GamesUnitWeek4() {
           </div>
         </div>
         <div className="md:w-1/3">
-          <Card className="border-emerald-200 shadow-md">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="flex items-center text-emerald-700">
+          <Card className="border-green-200 shadow-md">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="flex items-center text-green-700">
                 <Clock className="mr-2 h-5 w-5" /> Week at a Glance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Identify materials needed for different games</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Understand the importance of rules in games</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Explore forces (pushing and pulling) in games</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Develop good sportsmanship and fair play</span>
                 </li>
               </ul>
@@ -90,7 +90,7 @@ export default function GamesUnitWeek4() {
               "directions",
               "sportsmanship",
             ]}
-            color="emerald"
+            color="green"
           />
         </div>
       </div>
@@ -98,11 +98,11 @@ export default function GamesUnitWeek4() {
       <TeacherTip
         title="Exploring Game Materials"
         tip="Create a 'game materials exploration center' where students can investigate different items used in games (balls, dice, cards, game pieces, etc.). Encourage students to sort, classify, and discuss how these materials are used in different games. This hands-on exploration helps children understand the connection between materials and game play."
-        color="emerald"
+        color="green"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -130,7 +130,7 @@ export default function GamesUnitWeek4() {
                 "Game material picture cards",
               ]}
               assessmentNotes="Observe students' ability to identify and categorize materials needed for different types of games."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -150,7 +150,7 @@ export default function GamesUnitWeek4() {
                 "Sequence cards for game instructions",
               ]}
               assessmentNotes="Note students' understanding of the importance of rules and their ability to follow simple game instructions."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -171,7 +171,7 @@ export default function GamesUnitWeek4() {
                 "Recording sheets",
               ]}
               assessmentNotes="Observe students' understanding of how pushing and pulling forces affect the movement of objects in games."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -191,7 +191,7 @@ export default function GamesUnitWeek4() {
                 "Writing and drawing supplies",
               ]}
               assessmentNotes="Note students' ability to identify necessary materials and create simple rules for their games."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -211,14 +211,14 @@ export default function GamesUnitWeek4() {
                 "Camera to document the fair",
               ]}
               assessmentNotes="Evaluate students' understanding of game materials, rules, and their ability to explain their games to others."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -228,7 +228,7 @@ export default function GamesUnitWeek4() {
             duration="30 minutes"
             materials={["Cardboard ramps", "Blocks for elevation", "Various balls", "Toy cars", "Recording sheets"]}
             learningAreas={["Science", "Force and Motion", "Prediction Skills"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -237,7 +237,7 @@ export default function GamesUnitWeek4() {
             duration="20 minutes"
             materials={["Cloth bags", "Various game materials", "Description cards", "Game matching cards"]}
             learningAreas={["Sensory Exploration", "Descriptive Language", "Critical Thinking"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -246,7 +246,7 @@ export default function GamesUnitWeek4() {
             duration="25 minutes"
             materials={["Rule picture cards", "Simple props", "Open space"]}
             learningAreas={["Social Skills", "Rule Comprehension", "Dramatic Play"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -255,25 +255,25 @@ export default function GamesUnitWeek4() {
             duration="45 minutes"
             materials={["Game board templates", "Markers", "Game pieces", "Dice", "Small boxes for storage"]}
             learningAreas={["Creativity", "Spatial Planning", "Rule Creation"]}
-            color="emerald"
+            color="green"
           />
         </div>
       </div>
 
       <TeacherTip
-        title="Teaching Game Rules"
-        tip="When teaching new games to kindergartners, break down the rules into simple, clear steps. Demonstrate each step visually and have students practice one step at a time before putting them all together. Use visual cues and picture cards to help students remember the sequence of play. After playing, reflect on how the rules helped make the game fair and fun for everyone."
-        color="emerald"
+        title="Fostering Positive Social Interactions"
+        tip="Use games as opportunities to teach and reinforce positive social skills. Before playing games, review expectations for behavior such as taking turns, using kind words, and being a good sport. After playing, have students reflect on how well they worked together. Recognize and praise examples of good teamwork and cooperation you observe during game play."
+        color="green"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Books</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -283,15 +283,15 @@ export default function GamesUnitWeek4() {
                 <li>"The Berenstain Bears Play Fair" by Stan and Jan Berenstain</li>
                 <li>"Rules of the Game" by Lenny Hort</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="mt-4 w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Download className="mr-2 h-4 w-4" /> Book List PDF
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Printables</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Printables</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -301,15 +301,15 @@ export default function GamesUnitWeek4() {
                 <li>Game rules visual cards</li>
                 <li>Game creation planning sheets</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="mt-4 w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Printer className="mr-2 h-4 w-4" /> Print Materials
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Home Connection</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Home Connection</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <p className="mb-4">
@@ -317,7 +317,7 @@ export default function GamesUnitWeek4() {
                 common household materials. Include a reflection sheet for students to share what materials they used
                 and rules they created.
               </p>
-              <Button variant="outline" className="w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Download className="mr-2 h-4 w-4" /> Family Game Creation Kit
               </Button>
             </CardContent>

@@ -19,7 +19,9 @@ const nextConfig = {
     domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],
   },
   // Enable external packages
-  serverExternalPackages: ['@supabase/supabase-js'],
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/supabase-js'],
+  },
 }
 
 module.exports = nextConfig 

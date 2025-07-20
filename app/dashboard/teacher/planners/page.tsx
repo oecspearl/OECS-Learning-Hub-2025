@@ -68,7 +68,7 @@ export default function PlannersPage() {
         <TabsContent value="review">
           {activeTab === "review" && (
             <>
-              <ReviewForm onReviewGenerated={(review) => setReview(review)} />
+              <ReviewForm onReviewGenerated={(review: any) => setReview(review)} />
               {review && (
                 <Card className="mt-6">
                   <CardContent className="p-6">

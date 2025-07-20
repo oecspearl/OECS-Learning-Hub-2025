@@ -115,6 +115,7 @@ export default function DigitalStorytellingPage() {
               <FallbackImage
                 src="/placeholder.svg?height=200&width=300&query=children digital storytelling"
                 alt="Students creating digital stories"
+                fallbackSrc="/placeholder.svg?height=200&width=400&query=digital+storytelling"
                 fill
                 className="object-cover"
               />

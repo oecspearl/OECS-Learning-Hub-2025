@@ -23,9 +23,9 @@ export default function CelebrationsUnitWeek4() {
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-4 text-amber-700">Week 4: What I Like About Celebrations</h1>
+          <h1 className="text-3xl font-bold mb-4 text-orange-700">Week 4: What I Like About Celebrations</h1>
           <div className="bg-amber-50 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2 text-amber-700">Weekly Focus</h2>
+            <h2 className="text-xl font-semibold mb-2 text-orange-700">Weekly Focus</h2>
             <p>
               Children reflect on their favorite aspects of celebrations and festivals, share personal experiences, and
               develop appreciation for the diversity of celebration customs across different families and cultures.
@@ -35,26 +35,26 @@ export default function CelebrationsUnitWeek4() {
         <div className="md:w-1/3">
           <Card className="border-amber-200 shadow-md">
             <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="flex items-center text-amber-700">
+              <CardTitle className="flex items-center text-orange-700">
                 <Clock className="mr-2 h-5 w-5" /> Week at a Glance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Reflect on favorite celebration experiences</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Share personal celebration stories</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Explore carnival traditions and celebrations</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Create celebration-themed art and crafts</span>
                 </li>
               </ul>
@@ -94,7 +94,7 @@ export default function CelebrationsUnitWeek4() {
               "dance",
               "together",
             ]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -102,11 +102,11 @@ export default function CelebrationsUnitWeek4() {
       <TeacherTip
         title="Encouraging Respectful Sharing"
         tip="When children share what they like about celebrations, emphasize that everyone's preferences are valid and important. This is a great opportunity to reinforce that families celebrate differently, and there's no 'right way' to celebrate. Encourage children to use descriptive language when explaining why they enjoy certain aspects of celebrations."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -134,7 +134,7 @@ export default function CelebrationsUnitWeek4() {
                 "Thinking caps (optional)",
               ]}
               assessmentNotes="Observe children's ability to express preferences and reasons for enjoying specific celebration aspects."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -154,7 +154,7 @@ export default function CelebrationsUnitWeek4() {
                 "Costume pictures for sorting",
               ]}
               assessmentNotes="Note children's understanding of carnival as a celebration and their ability to describe costumes and music."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -174,7 +174,7 @@ export default function CelebrationsUnitWeek4() {
                 "Riddle cards",
               ]}
               assessmentNotes="Observe children's engagement with carnival traditions and their ability to identify different aspects of the celebration."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -194,7 +194,7 @@ export default function CelebrationsUnitWeek4() {
                 "Mask templates",
               ]}
               assessmentNotes="Note children's creativity in costume design and their understanding of carnival character types."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -214,14 +214,14 @@ export default function CelebrationsUnitWeek4() {
                 "Camera for documentation",
               ]}
               assessmentNotes="Evaluate children's overall understanding of celebrations and their ability to express what they enjoy about them."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -231,7 +231,7 @@ export default function CelebrationsUnitWeek4() {
             duration="30 minutes"
             materials={["Postcard templates", "Crayons/markers", "Stickers", "Glue", "Magazine cutouts"]}
             learningAreas={["Literacy", "Art", "Social Studies"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -240,7 +240,7 @@ export default function CelebrationsUnitWeek4() {
             duration="25 minutes"
             materials={["Picture cards of celebrations", "Open space", "Timer", "Celebration props (optional)"]}
             learningAreas={["Drama", "Physical Movement", "Social Studies"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -256,7 +256,7 @@ export default function CelebrationsUnitWeek4() {
               "Photos from class activities",
             ]}
             learningAreas={["Literacy", "Art", "Social Studies", "Collaboration"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -265,7 +265,7 @@ export default function CelebrationsUnitWeek4() {
             duration="40 minutes"
             materials={["Mask templates", "Craft sticks", "Sequins", "Feathers", "Glitter", "Colored paper"]}
             learningAreas={["Art", "Fine Motor Skills", "Cultural Studies"]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -273,17 +273,17 @@ export default function CelebrationsUnitWeek4() {
       <TeacherTip
         title="Connecting Home and School"
         tip="Send home a family reflection sheet asking parents to discuss with their child what the family enjoys most about their celebrations. This creates a meaningful connection between home and school learning, and helps children see that their family traditions are valued in the classroom."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="border-amber-200">
             <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Books</CardTitle>
+              <CardTitle className="text-orange-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -293,7 +293,7 @@ export default function CelebrationsUnitWeek4() {
                 <li>"Caribbean Carnival" by Jillian Powell</li>
                 <li>"Let's Celebrate" by Kate DePalma</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="mt-4 w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Download className="mr-2 h-4 w-4" /> Book List PDF
               </Button>
             </CardContent>
@@ -301,7 +301,7 @@ export default function CelebrationsUnitWeek4() {
 
           <Card className="border-amber-200">
             <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Videos</CardTitle>
+              <CardTitle className="text-orange-700">Videos</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -311,7 +311,7 @@ export default function CelebrationsUnitWeek4() {
                 <li>Children's Carnival Celebrations</li>
                 <li>Carnival Costume Making</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="mt-4 w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Download className="mr-2 h-4 w-4" /> Video Links
               </Button>
             </CardContent>
@@ -319,14 +319,14 @@ export default function CelebrationsUnitWeek4() {
 
           <Card className="border-amber-200">
             <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Home Connection</CardTitle>
+              <CardTitle className="text-orange-700">Home Connection</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <p className="mb-4">
                 Send home a family reflection sheet asking families to share what they enjoy most about their
                 celebrations and traditions.
               </p>
-              <Button variant="outline" className="w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Download className="mr-2 h-4 w-4" /> Family Activity
               </Button>
             </CardContent>

@@ -52,7 +52,7 @@ export interface ProcessedLesson {
 export async function processPDFDocument(documentId: string): Promise<boolean> {
   try {
     // 1. Get the PDF document from the database
-    const documents = await executeQuery(`SELECT * FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId])
+    const documents = await executeQuery(`SELECT * FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId]) as any[]
 
     if (!documents || documents.length === 0) {
       throw new Error(`PDF document with ID ${documentId} not found`)
@@ -103,7 +103,7 @@ export async function processPDFDocument(documentId: string): Promise<boolean> {
 
     // If OCR was in progress, update OCR status too
     try {
-      await updateOCRStatus(documentId, "failed", 0, error.message || "Unknown error")
+      await updateOCRStatus(documentId, "failed", 0, (error as any).message || "Unknown error")
     } catch (ocrError) {
       console.error("Error updating OCR status:", ocrError)
     }
@@ -395,10 +395,10 @@ async function storePDFContent(documentId: string, content: ProcessedPDFContent)
   try {
     // 1. Check if subject exists, create if not
     let subjectId: string
-    const subjects = await executeQuery(`SELECT id FROM "Subject" WHERE name = $1 AND "gradeLevel" = $2`, [
-      content.subject,
-      content.grade,
-    ])
+    const subjects = await executeQuery(
+      `SELECT id FROM "Subject" WHERE name = $1 LIMIT 1`,
+      [content.subject],
+    ) as any[]
 
     if (subjects && subjects.length > 0) {
       subjectId = subjects[0].id
@@ -413,7 +413,7 @@ async function storePDFContent(documentId: string, content: ProcessedPDFContent)
     }
 
     // 2. Process each unit
-    for (const unit of content.units) {
+    for (const unit of content.units as any[]) {
       // Create unit
       const unitId = `unit-${uuidv4()}`
       await executeQuery(

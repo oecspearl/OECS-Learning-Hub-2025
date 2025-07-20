@@ -33,10 +33,10 @@ export default function WavesElectromagneticRadiationPage() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <StandardsBadge standard="6.WER.1" />
-          <StandardsBadge standard="6.WER.2" />
-          <StandardsBadge standard="6.WER.3" />
-          <StandardsBadge standard="6.WER.4" />
+          <StandardsBadge code="6.WER.1" description="Waves and Electromagnetic Radiation standards for Grade 6 Science" subject="Science" grade="6" strand="Waves and Electromagnetic Radiation" />
+          <StandardsBadge code="6.WER.2" description="Waves and Electromagnetic Radiation standards for Grade 6 Science" subject="Science" grade="6" strand="Waves and Electromagnetic Radiation" />
+          <StandardsBadge code="6.WER.3" description="Waves and Electromagnetic Radiation standards for Grade 6 Science" subject="Science" grade="6" strand="Waves and Electromagnetic Radiation" />
+          <StandardsBadge code="6.WER.4" description="Waves and Electromagnetic Radiation standards for Grade 6 Science" subject="Science" grade="6" strand="Waves and Electromagnetic Radiation" />
         </div>
       </div>
 

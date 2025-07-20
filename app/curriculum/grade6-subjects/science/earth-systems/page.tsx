@@ -30,10 +30,10 @@ export default function EarthSystemsPage() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <StandardsBadge standard="6.ES.1" />
-          <StandardsBadge standard="6.ES.2" />
-          <StandardsBadge standard="6.ES.3" />
-          <StandardsBadge standard="6.ES.4" />
+          <StandardsBadge code="6.ES.1" description="Earth Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Earth Systems" />
+          <StandardsBadge code="6.ES.2" description="Earth Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Earth Systems" />
+          <StandardsBadge code="6.ES.3" description="Earth Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Earth Systems" />
+          <StandardsBadge code="6.ES.4" description="Earth Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Earth Systems" />
         </div>
       </div>
 

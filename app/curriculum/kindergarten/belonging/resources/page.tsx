@@ -51,7 +51,6 @@ export default function BelongingUnitResources() {
               <Input
                 placeholder="Search resources..."
                 className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
-                className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
               />
               <Button className="bg-purple-600 hover:bg-purple-700">Search</Button>
             </div>

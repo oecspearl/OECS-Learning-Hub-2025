@@ -55,7 +55,13 @@ export default function PersuasiveWritingCampaignPage() {
                   </div>
                 </div>
               </div>
-              <StandardsBadge standardsIds={["LA.4.WR.3", "LA.4.WR.5", "LA.4.LS.2"]} />
+              <StandardsBadge 
+                code="LA.4.WR.3"
+                description="Persuasive writing standards for Grade 4 Language Arts"
+                subject="Language Arts"
+                grade="4"
+                strand="Writing"
+              />
             </div>
           </div>
         </div>

@@ -240,7 +240,7 @@ export function CrossCurricularForm() {
                 <Label>Learning Styles</Label>
                 <MultiSelect
                   options={learningStyles}
-                  value={form.watch("learning_styles")}
+                  value={form.watch("learning_styles") || []}
                   onChange={(value) => form.setValue("learning_styles", value)}
                   placeholder="Select learning styles to address"
                 />
@@ -250,7 +250,7 @@ export function CrossCurricularForm() {
                 <Label>Multiple Intelligences</Label>
                 <MultiSelect
                   options={multipleIntelligences}
-                  value={form.watch("multiple_intelligences")}
+                  value={form.watch("multiple_intelligences") || []}
                   onChange={(value) => form.setValue("multiple_intelligences", value)}
                   placeholder="Select intelligences to address"
                 />

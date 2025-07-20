@@ -8,7 +8,12 @@ import { Download, Copy, Printer, Save, Edit, Check } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { saveCrossCurricularPlan } from "@/app/actions/save-cross-curricular-plan"
 
-export function CrossCurricularOutput({ plan, isGenerating }) {
+interface CrossCurricularOutputProps {
+  plan: any
+  isGenerating: boolean
+}
+
+export function CrossCurricularOutput({ plan, isGenerating }: CrossCurricularOutputProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(plan?.content || "")
   const [isSaving, setIsSaving] = useState(false)

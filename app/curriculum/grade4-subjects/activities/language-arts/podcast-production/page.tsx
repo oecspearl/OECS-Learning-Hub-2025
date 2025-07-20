@@ -116,6 +116,7 @@ export default function PodcastProductionPage() {
               <FallbackImage
                 src="/placeholder-9r9wm.png"
                 alt="Students recording a podcast"
+                fallbackSrc="/placeholder.svg?height=200&width=400&query=podcast+production"
                 fill
                 className="object-cover"
               />

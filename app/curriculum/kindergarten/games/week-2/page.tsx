@@ -23,9 +23,9 @@ export default function GamesUnitWeek2() {
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-4 text-amber-700">Week 2: Who do I play games with?</h1>
-          <div className="bg-amber-50 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2 text-amber-700">Weekly Focus</h2>
+          <h1 className="text-3xl font-bold mb-4 text-orange-700">Week 2: Who do I play games with?</h1>
+          <div className="bg-orange-50 p-4 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-2 text-orange-700">Weekly Focus</h2>
             <p>
               Children explore the social aspects of games, learning about playing with family, friends, and classmates.
               They develop an understanding of teamwork, cooperation, and how behavior affects others during game play.
@@ -33,28 +33,28 @@ export default function GamesUnitWeek2() {
           </div>
         </div>
         <div className="md:w-1/3">
-          <Card className="border-amber-200 shadow-md">
-            <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="flex items-center text-amber-700">
+          <Card className="border-orange-200 shadow-md">
+            <CardHeader className="bg-orange-50 border-b border-orange-100">
+              <CardTitle className="flex items-center text-orange-700">
                 <Clock className="mr-2 h-5 w-5" /> Week at a Glance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Identify different people to play games with</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Develop teamwork and cooperation skills</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Understand how behavior affects others</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-500 mr-2 mt-0.5" />
                   <span>Practice responsible caring behavior in play</span>
                 </li>
               </ul>
@@ -89,7 +89,7 @@ export default function GamesUnitWeek2() {
               "friend",
               "family",
             ]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -97,11 +97,11 @@ export default function GamesUnitWeek2() {
       <TeacherTip
         title="Fostering Positive Social Interactions"
         tip="Use games as opportunities to teach and reinforce positive social skills. Before playing games, review expectations for behavior such as taking turns, using kind words, and being a good sport. After playing, have students reflect on how well they worked together. Recognize and praise examples of good teamwork and cooperation you observe during game play."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -129,7 +129,7 @@ export default function GamesUnitWeek2() {
                 "Game materials",
               ]}
               assessmentNotes="Observe students' ability to work cooperatively with a partner and take turns during game play."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -149,7 +149,7 @@ export default function GamesUnitWeek2() {
                 "Team identification items (colored bands, etc.)",
               ]}
               assessmentNotes="Note students' understanding of teamwork and their ability to work together toward a common goal."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -169,7 +169,7 @@ export default function GamesUnitWeek2() {
                 "Pictures of family games",
               ]}
               assessmentNotes="Observe students' ability to describe family interactions during game play and their understanding of inclusion."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -189,7 +189,7 @@ export default function GamesUnitWeek2() {
                 "Puppet characters",
               ]}
               assessmentNotes="Note students' understanding of good sportsmanship and their ability to demonstrate appropriate behavior when winning or losing."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -209,14 +209,14 @@ export default function GamesUnitWeek2() {
                 "Counting materials",
               ]}
               assessmentNotes="Evaluate students' understanding that children everywhere play games and their ability to respect different cultural traditions."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -226,7 +226,7 @@ export default function GamesUnitWeek2() {
             duration="20 minutes"
             materials={["Chairs", "Music player", "Open space"]}
             learningAreas={["Cooperation", "Problem Solving", "Listening Skills"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -235,7 +235,7 @@ export default function GamesUnitWeek2() {
             duration="30 minutes"
             materials={["Simple puzzles", "Team identification markers", "Timer (optional)"]}
             learningAreas={["Teamwork", "Spatial Reasoning", "Communication"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -244,7 +244,7 @@ export default function GamesUnitWeek2() {
             duration="45 minutes"
             materials={["Large paper", "Paint", "Markers", "Collage materials", "Photos of students playing together"]}
             learningAreas={["Art", "Social Awareness", "Self-Expression"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -253,7 +253,7 @@ export default function GamesUnitWeek2() {
             duration="15 minutes"
             materials={["Ball", "Music player", "Open space for circle"]}
             learningAreas={["Speaking Skills", "Listening Skills", "Social Awareness"]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -261,17 +261,17 @@ export default function GamesUnitWeek2() {
       <TeacherTip
         title="Including All Students"
         tip="Games provide wonderful opportunities for inclusion, but they can also highlight differences in abilities. Be proactive in adapting games to ensure all students can participate successfully. This might mean modifying rules, providing extra support, or creating mixed-ability teams. Emphasize that everyone has different strengths, and games are more fun when everyone can participate."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-amber-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-orange-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-amber-200">
-            <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Books</CardTitle>
+          <Card className="border-orange-200">
+            <CardHeader className="bg-orange-50 border-b border-orange-100">
+              <CardTitle className="text-orange-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -281,15 +281,15 @@ export default function GamesUnitWeek2() {
                 <li>"Should I Share My Ice Cream?" by Mo Willems</li>
                 <li>"A Little Spot of Teamwork" by Diane Alber</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="mt-4 w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Download className="mr-2 h-4 w-4" /> Book List PDF
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200">
-            <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Printables</CardTitle>
+          <Card className="border-orange-200">
+            <CardHeader className="bg-orange-50 border-b border-orange-100">
+              <CardTitle className="text-orange-700">Printables</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -299,22 +299,22 @@ export default function GamesUnitWeek2() {
                 <li>Cooperative game instruction cards</li>
                 <li>Games from around the world information sheets</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="mt-4 w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Printer className="mr-2 h-4 w-4" /> Print Materials
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200">
-            <CardHeader className="bg-amber-50 border-b border-amber-100">
-              <CardTitle className="text-amber-700">Home Connection</CardTitle>
+          <Card className="border-orange-200">
+            <CardHeader className="bg-orange-50 border-b border-orange-100">
+              <CardTitle className="text-orange-700">Home Connection</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <p className="mb-4">
                 Send home a family activity sheet that encourages families to share traditional games from their culture
                 or family history. Invite family members to visit the classroom to teach a game from their childhood.
               </p>
-              <Button variant="outline" className="w-full border-amber-500 text-amber-700 hover:bg-amber-50">
+              <Button variant="outline" className="w-full border-orange-500 text-orange-700 hover:bg-orange-50">
                 <Download className="mr-2 h-4 w-4" /> Family Game Traditions
               </Button>
             </CardContent>

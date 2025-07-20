@@ -1,25 +1,27 @@
-import { sql } from "@/lib/db"
+import { executeQuery } from "@/lib/db"
 
 export async function inspectTable(tableName: string) {
   try {
     // Query to get column information for the specified table
-    const columns = await sql`
-      SELECT column_name, data_type, is_nullable
+    const columns = await executeQuery(
+      `SELECT column_name, data_type, is_nullable
       FROM information_schema.columns
-      WHERE table_name = ${tableName}
-      ORDER BY ordinal_position
-    `
+      WHERE table_name = $1
+      ORDER BY ordinal_position`,
+      [tableName]
+    ) as any[]
 
     // Query to get constraint information
-    const constraints = await sql`
-      SELECT con.conname as constraint_name,
+    const constraints = await executeQuery(
+      `SELECT con.conname as constraint_name,
              con.contype as constraint_type,
              pg_get_constraintdef(con.oid) as constraint_definition
       FROM pg_constraint con
       JOIN pg_class rel ON rel.oid = con.conrelid
       JOIN pg_namespace nsp ON nsp.oid = rel.relnamespace
-      WHERE rel.relname = ${tableName}
-    `
+      WHERE rel.relname = $1`,
+      [tableName]
+    ) as any[]
 
     return {
       columns,
@@ -49,7 +51,7 @@ export async function createOrUpdateTable(tableName: string, columnDefinitions: 
           ${columnDefinitions.join(",\n          ")}
         )
       `
-      await sql.query(createTableSQL)
+      await executeQuery(createTableSQL, [])
       return { success: true, action: "created" }
     } else {
       // Table exists, check for missing columns
@@ -72,7 +74,7 @@ export async function createOrUpdateTable(tableName: string, columnDefinitions: 
         for (const colName of missingColumns) {
           const colDef = columnDefinitions.find((def) => def.startsWith(`${colName} `))
           if (colDef) {
-            await sql.query(`ALTER TABLE ${tableName} ADD COLUMN ${colDef}`)
+            await executeQuery(`ALTER TABLE ${tableName} ADD COLUMN ${colDef}`, [])
           }
         }
         return { success: true, action: "updated", addedColumns: missingColumns }

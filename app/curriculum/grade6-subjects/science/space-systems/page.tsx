@@ -30,10 +30,10 @@ export default function SpaceSystemsPage() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <StandardsBadge standard="6.SS.1" />
-          <StandardsBadge standard="6.SS.2" />
-          <StandardsBadge standard="6.SS.3" />
-          <StandardsBadge standard="6.SS.4" />
+          <StandardsBadge code="6.SS.1" description="Space Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Space Systems" />
+          <StandardsBadge code="6.SS.2" description="Space Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Space Systems" />
+          <StandardsBadge code="6.SS.3" description="Space Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Space Systems" />
+          <StandardsBadge code="6.SS.4" description="Space Systems standards for Grade 6 Science" subject="Science" grade="6" strand="Space Systems" />
         </div>
       </div>
 

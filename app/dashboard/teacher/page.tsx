@@ -65,7 +65,7 @@ export default function TeacherDashboardPage() {
           }
         } else {
           setLessonPlans(lessonResult.data)
-          const grouped = lessonResult.data.reduce((acc, plan) => {
+          const grouped = lessonResult.data.reduce((acc: Record<string, DashboardLessonPlan[]>, plan: DashboardLessonPlan) => {
             const subject = plan.subject.toLowerCase()
             if (!acc[subject]) {
               acc[subject] = []

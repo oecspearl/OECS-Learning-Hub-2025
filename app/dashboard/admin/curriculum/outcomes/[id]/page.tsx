@@ -25,7 +25,7 @@ export default async function OutcomePage({ params }: { params: Promise<{ id: st
     WHERE sco.id = $1
   `
 
-  const scoResults = await executeQuery(scoQuery, [scoId])
+  const scoResults = await executeQuery(scoQuery, [scoId]) as any[]
 
   if (!scoResults || scoResults.length === 0) {
     return (

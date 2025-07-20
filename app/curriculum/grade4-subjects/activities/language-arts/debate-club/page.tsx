@@ -119,6 +119,7 @@ export default function DebateClubPage() {
               <FallbackImage
                 src="/placeholder-12wti.png"
                 alt="Students participating in a classroom debate"
+                fallbackSrc="/placeholder.svg?height=200&width=400&query=debate+club"
                 fill
                 className="object-cover"
               />

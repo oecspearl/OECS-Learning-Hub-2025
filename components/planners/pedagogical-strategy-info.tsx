@@ -153,9 +153,13 @@ const STRATEGY_INFO = {
   },
 }
 
-export function PedagogicalStrategyInfo({ strategyId }) {
+interface PedagogicalStrategyInfoProps {
+  strategyId: string
+}
+
+export function PedagogicalStrategyInfo({ strategyId }: PedagogicalStrategyInfoProps) {
   const [open, setOpen] = useState(false)
-  const strategy = STRATEGY_INFO[strategyId] || {
+  const strategy = STRATEGY_INFO[strategyId as keyof typeof STRATEGY_INFO] || {
     title: "Strategy Information",
     description: "Information about this strategy is not available.",
     benefits: [],
@@ -187,7 +191,7 @@ export function PedagogicalStrategyInfo({ strategyId }) {
             <div>
               <h4 className="font-medium mb-2">Benefits</h4>
               <ul className="list-disc pl-5 space-y-1">
-                {strategy.benefits.map((benefit, index) => (
+                {strategy.benefits.map((benefit: string, index: number) => (
                   <li key={index} className="text-sm">
                     {benefit}
                   </li>

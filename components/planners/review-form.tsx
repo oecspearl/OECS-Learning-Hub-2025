@@ -25,7 +25,11 @@ const FOCUS_AREAS = [
   { id: "inclusivity", label: "Inclusivity and Accessibility" },
 ]
 
-export function ReviewForm({ onReviewGenerated }) {
+interface ReviewFormProps {
+  onReviewGenerated: (review: any) => void
+}
+
+export function ReviewForm({ onReviewGenerated }: ReviewFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [planContent, setPlanContent] = useState("")
   const [selectedAreas, setSelectedAreas] = useState<string[]>([])

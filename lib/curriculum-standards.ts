@@ -1,4 +1,4 @@
-import { sql } from "@/lib/db"
+import { executeQuery } from "@/lib/db"
 
 // Define types for curriculum standards
 export interface CurriculumStandard {
@@ -17,10 +17,11 @@ export async function getCurriculumStandards(subject: string, gradeLevel: string
   try {
     // First, try to fetch from the database if we have a standards table
     try {
-      const result = await sql`
-        SELECT * FROM curriculum_standards 
-        WHERE subject = ${subject} AND grade_level = ${gradeLevel}
-      `
+      const result = await executeQuery(
+        `SELECT * FROM curriculum_standards 
+        WHERE subject = $1 AND grade_level = $2`,
+        [subject, gradeLevel]
+      ) as any[]
 
       if (result && result.length > 0) {
         return result.map((row: any) => ({
@@ -169,10 +170,11 @@ async function extractSocialStudiesStandards(gradeLevel: string, strand: string)
   try {
     // Try to fetch from the social_studies_standards table if it exists
     try {
-      const result = await sql`
-        SELECT * FROM social_studies_standards 
-        WHERE grade_level = ${gradeLevel} AND strand = ${strand}
-      `
+      const result = await executeQuery(
+        `SELECT * FROM social_studies_standards 
+        WHERE grade_level = $1 AND strand = $2`,
+        [gradeLevel, strand]
+      ) as any[]
 
       if (result && result.length > 0) {
         return result.map((row: any) => ({
@@ -358,10 +360,11 @@ async function extractMathStandards(gradeLevel: string, strand: string): Promise
   try {
     // Try to fetch from the mathematics_standards table if it exists
     try {
-      const result = await sql`
-        SELECT * FROM mathematics_standards 
-        WHERE grade_level = ${gradeLevel} AND strand = ${strand}
-      `
+      const result = await executeQuery(
+        `SELECT * FROM mathematics_standards 
+        WHERE grade_level = $1 AND strand = $2`,
+        [gradeLevel, strand]
+      ) as any[]
 
       if (result && result.length > 0) {
         return result.map((row: any) => ({
@@ -445,10 +448,11 @@ async function extractLanguageArtsStandards(gradeLevel: string, strand: string):
   try {
     // Try to fetch from the language_arts_standards table if it exists
     try {
-      const result = await sql`
-        SELECT * FROM language_arts_standards 
-        WHERE grade_level = ${gradeLevel} AND strand = ${strand}
-      `
+      const result = await executeQuery(
+        `SELECT * FROM language_arts_standards 
+        WHERE grade_level = $1 AND strand = $2`,
+        [gradeLevel, strand]
+      ) as any[]
 
       if (result && result.length > 0) {
         return result.map((row: any) => ({
@@ -654,10 +658,11 @@ async function extractScienceStandards(gradeLevel: string, strand: string): Prom
   try {
     // Try to fetch from the science_standards table if it exists
     try {
-      const result = await sql`
-        SELECT * FROM science_standards 
-        WHERE grade_level = ${gradeLevel} AND strand = ${strand}
-      `
+      const result = await executeQuery(
+        `SELECT * FROM science_standards 
+        WHERE grade_level = $1 AND strand = $2`,
+        [gradeLevel, strand]
+      ) as any[]
 
       if (result && result.length > 0) {
         return result.map((row: any) => ({

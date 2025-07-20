@@ -108,7 +108,7 @@ export default function CelebrationsUnitWeek1() {
       <TeacherTip
         title="Creating an Inclusive Environment"
         tip="Be sensitive to children who may have different family structures or limited experience with celebrations. Focus on the diversity of celebrations rather than assuming all children celebrate in the same way. Send a note home before beginning the unit asking families to share photos or stories of family celebrations if they feel comfortable doing so."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">
@@ -140,7 +140,7 @@ export default function CelebrationsUnitWeek1() {
                 "Picture cards of celebrations",
               ]}
               assessmentNotes="Observe students' prior knowledge about celebrations and their ability to identify different types of celebrations."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -160,7 +160,7 @@ export default function CelebrationsUnitWeek1() {
                 "Calendar",
               ]}
               assessmentNotes="Note students' understanding of birthday traditions and their ability to identify similarities and differences in how birthdays are celebrated."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -180,7 +180,7 @@ export default function CelebrationsUnitWeek1() {
                 "Chart paper",
               ]}
               assessmentNotes="Observe students' ability to describe family gatherings and their understanding of why families come together for celebrations."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -200,7 +200,7 @@ export default function CelebrationsUnitWeek1() {
                 "Sorting cards",
               ]}
               assessmentNotes="Note students' understanding of traditions and their ability to identify and describe traditions in their own families."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -220,7 +220,7 @@ export default function CelebrationsUnitWeek1() {
                 "Art supplies",
               ]}
               assessmentNotes="Observe how students apply what they've learned about family celebrations to planning their own classroom celebration."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
         </Tabs>
@@ -237,7 +237,7 @@ export default function CelebrationsUnitWeek1() {
             duration="30 minutes"
             materials={["Chart paper", "Markers", "Birthday stickers or icons", "Children's birth date information"]}
             learningAreas={["Math", "Social-Emotional", "Language"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -246,7 +246,7 @@ export default function CelebrationsUnitWeek1() {
             duration="45 minutes"
             materials={["Construction paper", "Drawing supplies", "Photos from home (optional)", "Binding materials"]}
             learningAreas={["Literacy", "Social Studies", "Art", "Social-Emotional"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -262,7 +262,7 @@ export default function CelebrationsUnitWeek1() {
               "Celebration cards",
             ]}
             learningAreas={["Social-Emotional", "Language", "Dramatic Play", "Social Studies"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -271,7 +271,7 @@ export default function CelebrationsUnitWeek1() {
             duration="40 minutes"
             materials={["Construction paper", "Magazines for cutting", "Glue", "Scissors", "Markers", "Stapler"]}
             learningAreas={["Fine Motor", "Art", "Social Studies", "Language"]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -279,7 +279,7 @@ export default function CelebrationsUnitWeek1() {
       <TeacherTip
         title="Family Engagement"
         tip="Create a celebration display area where children can bring in items related to their family celebrations (with parent permission) to share with the class. This helps children see the diversity of celebrations and feel proud of their family traditions."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">

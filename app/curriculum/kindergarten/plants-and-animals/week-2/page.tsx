@@ -89,7 +89,7 @@ export default function PlantsAndAnimalsWeek2() {
               "nutrients",
               "growth",
             ]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function PlantsAndAnimalsWeek2() {
       <TeacherTip
         title="Plant Experiments"
         tip="When conducting plant experiments, use clear plastic cups so children can observe root development. Label each plant with the variable being tested (e.g., 'No Water,' 'No Light'). Take photos every few days to document changes over time, and create a class book of observations. This helps children visualize the effects of different conditions on plant growth."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">
@@ -129,7 +129,7 @@ export default function PlantsAndAnimalsWeek2() {
                 "Scenario cards",
               ]}
               assessmentNotes="Observe students' understanding of the concept of survival and their ability to identify basic survival needs."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -150,7 +150,7 @@ export default function PlantsAndAnimalsWeek2() {
                 "Magnifying glasses",
               ]}
               assessmentNotes="Note students' predictions about plant needs and their observation skills."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -170,7 +170,7 @@ export default function PlantsAndAnimalsWeek2() {
                 "Pictures of plants",
               ]}
               assessmentNotes="Observe students' understanding that plants make their own food and don't need to move around."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -190,7 +190,7 @@ export default function PlantsAndAnimalsWeek2() {
                 "Animal masks/props",
               ]}
               assessmentNotes="Note students' understanding that animals need food to survive and different animals eat different foods."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -210,7 +210,7 @@ export default function PlantsAndAnimalsWeek2() {
                 "Pet pictures",
               ]}
               assessmentNotes="Evaluate students' understanding of plant and animal needs and their ability to apply this knowledge to a creative context."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
         </Tabs>
@@ -227,7 +227,7 @@ export default function PlantsAndAnimalsWeek2() {
             duration="Initial setup: 30 minutes, Daily observations: 10 minutes"
             materials={["Small plants or seeds", "Clear cups", "Soil", "Water", "Observation journals", "Markers"]}
             learningAreas={["Science", "Observation Skills", "Recording Data"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -236,7 +236,7 @@ export default function PlantsAndAnimalsWeek2() {
             duration="Ongoing center"
             materials={["Play money", "Plant pictures", "Price tags", "Shop signs", "Plant care cards"]}
             learningAreas={["Dramatic Play", "Science", "Math"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -245,7 +245,7 @@ export default function PlantsAndAnimalsWeek2() {
             duration="35 minutes"
             materials={["Animal pictures", "Food pictures", "Sorting mats", "Chart paper", "Glue"]}
             learningAreas={["Science", "Classification", "Collaboration"]}
-            color="amber"
+            color="orange"
           />
 
           <ActivityCard
@@ -254,7 +254,7 @@ export default function PlantsAndAnimalsWeek2() {
             duration="45 minutes"
             materials={["Tunnels", "Cones", "Toy sun", "Water jugs", "Animal masks"]}
             learningAreas={["Physical Development", "Science", "Role Play"]}
-            color="amber"
+            color="orange"
           />
         </div>
       </div>
@@ -262,7 +262,7 @@ export default function PlantsAndAnimalsWeek2() {
       <TeacherTip
         title="Making Abstract Concepts Concrete"
         tip="The concept of 'survival' can be abstract for young children. Make it concrete by relating it to their daily experiences: 'Just like you need food when you're hungry and water when you're thirsty, plants and animals need certain things to stay alive and healthy.' Use simple analogies that connect to children's lives, such as comparing a plant's need for water to their own need for water when they're thirsty."
-        color="amber"
+        color="orange"
       />
 
       <div className="mb-8">

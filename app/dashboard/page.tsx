@@ -23,12 +23,27 @@ export default async function DashboardPage() {
   // For now, return empty arrays since we haven't implemented lesson plans yet
   const lessonPlans: any[] = []
   const plansBySubject: Record<string, any[]> = {}
+  const multigradePlans: any[] = []
+  const crossCurricularPlans: any[] = []
+  const quizzes: any[] = []
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <ProfileCard />
-      <StatsCards />
-      <DashboardTabs lessonPlans={lessonPlans} plansBySubject={plansBySubject} />
+      <StatsCards 
+        lessonPlansCount={0}
+        quizzesCount={0}
+        multigradePlansCount={0}
+        crossCurricularPlansCount={0}
+        totalResources={0}
+      />
+      <DashboardTabs 
+        lessonPlans={lessonPlans} 
+        plansBySubject={plansBySubject}
+        multigradePlans={multigradePlans}
+        crossCurricularPlans={crossCurricularPlans}
+        quizzes={quizzes}
+      />
       <QuickActions />
     </div>
   )

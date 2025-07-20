@@ -31,9 +31,9 @@ export default function CelebrationsUnitWeek3() {
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-4 text-cyan-700">Week 3: Special Foods & Decorations</h1>
-          <div className="bg-cyan-50 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2 text-cyan-700">Weekly Focus</h2>
+          <h1 className="text-3xl font-bold mb-4 text-blue-700">Week 3: Special Foods & Decorations</h1>
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-2 text-blue-700">Weekly Focus</h2>
             <p>
               Children explore the special foods, decorations, and events that are part of different celebrations and
               how these elements make celebrations meaningful.
@@ -41,28 +41,28 @@ export default function CelebrationsUnitWeek3() {
           </div>
         </div>
         <div className="md:w-1/3">
-          <Card className="border-cyan-200 shadow-md">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="flex items-center text-cyan-700">
+          <Card className="border-blue-200 shadow-md">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="flex items-center text-blue-700">
                 <Clock className="mr-2 h-5 w-5" /> Week at a Glance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-cyan-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2 mt-0.5" />
                   <span>Identify special foods associated with celebrations</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-cyan-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2 mt-0.5" />
                   <span>Explore decorations used in different celebrations</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-cyan-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2 mt-0.5" />
                   <span>Learn about special events and activities in celebrations</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-cyan-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2 mt-0.5" />
                   <span>Compare and contrast celebration elements across cultures</span>
                 </li>
               </ul>
@@ -102,7 +102,7 @@ export default function CelebrationsUnitWeek3() {
               "ceremony",
               "custom",
             ]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -110,11 +110,11 @@ export default function CelebrationsUnitWeek3() {
       <TeacherTip
         title="Food Allergies and Sensitivities"
         tip="Be mindful of food allergies and dietary restrictions when planning celebration food activities. Consider non-food alternatives or ensure all children can participate safely. Always check with families before introducing food items in the classroom."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -142,7 +142,7 @@ export default function CelebrationsUnitWeek3() {
                 "Chart paper",
               ]}
               assessmentNotes="Observe students' prior knowledge about celebration foods and their ability to identify foods from different cultures."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -162,7 +162,7 @@ export default function CelebrationsUnitWeek3() {
                 "Chart paper",
               ]}
               assessmentNotes="Note students' understanding of wedding traditions and their ability to identify similarities and differences in how weddings are celebrated."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -183,7 +183,7 @@ export default function CelebrationsUnitWeek3() {
                 "String",
               ]}
               assessmentNotes="Observe students' understanding of patterns and their ability to create decorations with patterns."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -203,7 +203,7 @@ export default function CelebrationsUnitWeek3() {
                 "Poster-making materials",
               ]}
               assessmentNotes="Note students' understanding of Diwali traditions and their ability to identify and create patterns in rangoli designs."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -223,14 +223,14 @@ export default function CelebrationsUnitWeek3() {
                 "Camera for documentation",
               ]}
               assessmentNotes="Evaluate students' understanding of the role of special foods, decorations, and events in celebrations."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,7 +240,7 @@ export default function CelebrationsUnitWeek3() {
             duration="30 minutes"
             materials={["Construction paper", "Magazines", "Scissors", "Glue", "Drawing supplies"]}
             learningAreas={["Art", "Cultural Studies", "Fine Motor Skills", "Language"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -249,7 +249,7 @@ export default function CelebrationsUnitWeek3() {
             duration="35 minutes"
             materials={["Colored paper shapes", "String", "Glue", "Scissors", "Pattern cards"]}
             learningAreas={["Math", "Art", "Fine Motor Skills", "Pattern Recognition"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -258,7 +258,7 @@ export default function CelebrationsUnitWeek3() {
             duration="25 minutes"
             materials={["Box with lid", "Various celebration items", "Picture cards of celebrations", "Sorting mats"]}
             learningAreas={["Social Studies", "Language", "Critical Thinking", "Cultural Awareness"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -267,7 +267,7 @@ export default function CelebrationsUnitWeek3() {
             duration="Ongoing centers"
             materials={["Celebration props", "Dress-up clothes", "Pretend foods", "Decorations", "Center signs"]}
             learningAreas={["Dramatic Play", "Social-Emotional", "Language", "Cultural Studies"]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -275,17 +275,17 @@ export default function CelebrationsUnitWeek3() {
       <TeacherTip
         title="Documentation"
         tip="Document the children's exploration of celebration foods, decorations, and events through photos and work samples. Create a display that shows the diversity of celebration elements and helps children make connections between different cultural traditions."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-cyan-200">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="text-cyan-700">Books</CardTitle>
+          <Card className="border-blue-200">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="text-blue-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -295,15 +295,15 @@ export default function CelebrationsUnitWeek3() {
                 <li>"Binny's Diwali" by Thrity Umrigar</li>
                 <li>"Let's Have a Celebration" by Gyo Fujikawa</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-cyan-500 text-cyan-700 hover:bg-cyan-50">
+              <Button variant="outline" className="mt-4 w-full border-blue-500 text-blue-700 hover:bg-blue-50">
                 <Download className="mr-2 h-4 w-4" /> Book List PDF
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-cyan-200">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="text-cyan-700">Printables</CardTitle>
+          <Card className="border-blue-200">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="text-blue-700">Printables</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">

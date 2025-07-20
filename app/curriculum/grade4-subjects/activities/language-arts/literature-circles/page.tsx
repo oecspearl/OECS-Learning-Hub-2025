@@ -118,6 +118,7 @@ export default function LiteratureCirclesPage() {
               <FallbackImage
                 src="/placeholder-bbn15.png"
                 alt="Students in a literature circle discussion"
+                fallbackSrc="/placeholder.svg?height=200&width=400&query=literature+circles"
                 fill
                 className="object-cover"
               />

@@ -93,7 +93,7 @@ export function MultigradeEditForm({ plan }: { plan: MultigradePlan }) {
       const result = await saveMultigradePlan(submitData)
 
       if (!result.success) {
-        throw new Error(result.error || "Failed to save multigrade plan")
+        throw new Error("Failed to save multigrade plan")
       }
 
       toast({
@@ -118,7 +118,7 @@ export function MultigradeEditForm({ plan }: { plan: MultigradePlan }) {
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      await deleteMultigradePlan(plan.id)
+      await deleteMultigradePlan(Number(plan.id))
       toast({
         title: "Plan deleted",
         description: "Your multigrade lesson plan has been deleted.",

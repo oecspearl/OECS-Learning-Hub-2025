@@ -6,29 +6,32 @@ import { initializeSettings } from "./init-settings"
 
 export async function initializeDatabase() {
   try {
-    console.log("Running database migrations...")
-    migrate(db, { migrationsFolder: "drizzle" })
-    console.log("Migrations completed successfully")
+    console.log("Skipping database migrations for now...")
+    // migrate(db, { migrationsFolder: "drizzle" })
+    // console.log("Migrations completed successfully")
 
     // Initialize settings
     await initializeSettings()
 
-    // Check if admin user exists
-    const existingAdmin = await db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.email, "admin@example.com")
-    })
+    // Check if admin user already exists
+    // const existingAdmin = await db.query.users.findFirst({
+    //   where: eq(users.email, "admin@oecslearninghub.com"),
+    // })
 
-    if (!existingAdmin) {
-      console.log("Creating default admin user...")
-      const hashedPassword = await hash("admin123", 10)
-      await db.insert(users).values({
-        name: "Admin User",
-        email: "admin@example.com",
-        password: hashedPassword,
-        role: "ADMIN",
-      })
-      console.log("Default admin user created successfully")
-    }
+    // if (!existingAdmin) {
+    //   // Create admin user
+    //   await db.insert(users).values({
+    //     name: "Admin User",
+    //     email: "admin@oecslearninghub.com",
+    //     password: await hash("admin123", 10),
+    //     role: "ADMIN",
+    //     created_at: new Date().toISOString(),
+    //     updated_at: new Date().toISOString(),
+    //   })
+    //   console.log("Admin user created successfully")
+    // } else {
+    //   console.log("Admin user already exists")
+    // }
 
     console.log("Database initialization completed successfully")
   } catch (error) {

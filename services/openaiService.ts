@@ -1,8 +1,10 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -219,6 +221,10 @@ export class OpenAIService {
     context: ConversationContext,
     userId: string
   ): Promise<string> {
+    if (!openai) {
+      return "OpenAI API key is not configured. Please set the OPENAI_API_KEY environment variable to use the AI assistant.";
+    }
+
     console.log('🚀 OpenAIService: Starting sendMessage');
     
     const rateLimitCheck = this.checkRateLimit(userId);
@@ -240,14 +246,14 @@ export class OpenAIService {
 
       console.log('📤 OpenAIService: Sending request to OpenAI');
       // Get response from OpenAI
-      const completion = await openai.chat.completions.create({
+      const completion = await openai?.chat.completions.create({
         model: process.env.OPENAI_MODEL || 'gpt-4',
         messages: this.conversationHistory,
         temperature: 0.7,
         max_tokens: 500,
       });
 
-      const response = completion.choices[0]?.message?.content || '';
+      const response = completion?.choices[0]?.message?.content || '';
       console.log('📨 OpenAIService: Received response from OpenAI');
 
       if (!response) {
@@ -286,6 +292,13 @@ export class OpenAIService {
     userId: string,
     onUpdate: (chunk: string) => void
   ): Promise<void> {
+    if (!openai) {
+      onUpdate("OpenAI API key is not configured. Please set the OPENAI_API_KEY environment variable to use the AI assistant.");
+      return;
+    }
+
+    console.log('📤 OpenAIService: Starting streamResponse');
+    
     if (!this.checkRateLimit(userId)) {
       throw new Error('Rate limit exceeded. Please try again later.');
     }
@@ -298,7 +311,7 @@ export class OpenAIService {
         content: contextualizedMessage,
       });
 
-      const stream = await openai.chat.completions.create({
+      const stream = await openai?.chat.completions.create({
         model: process.env.OPENAI_MODEL || 'gpt-4',
         messages: this.conversationHistory,
         temperature: 0.7,
@@ -308,7 +321,7 @@ export class OpenAIService {
 
       let fullResponse = '';
 
-      for await (const chunk of stream) {
+      for await (const chunk of stream!) {
         const content = chunk.choices[0]?.delta?.content || '';
         if (content) {
           fullResponse += content;

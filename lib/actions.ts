@@ -3,7 +3,7 @@
 // import { generateText } from "ai"
 // import { openai } from "@ai-sdk/openai"
 import { revalidatePath } from "next/cache"
-import { sql } from "@/lib/db"
+import { executeQuery } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
 
 // This is a direct implementation of lesson plan generation that bypasses any potential issues
@@ -271,8 +271,8 @@ export async function saveLessonPlan(formData: FormData) {
       }
 
       // Insert the lesson plan into the database
-      const result = await sql`
-        INSERT INTO lesson_plans (
+      const result = await executeQuery(
+        `INSERT INTO lesson_plans (
           title, 
           subject, 
           grade_level, 
@@ -281,18 +281,10 @@ export async function saveLessonPlan(formData: FormData) {
           content, 
           created_at, 
           updated_at
-        ) VALUES (
-          ${title}, 
-          ${subject}, 
-          ${gradeLevel}, 
-          ${duration},
-          ${topic || null}, 
-          ${content}, 
-          NOW(), 
-          NOW()
-        )
-        RETURNING id, title, subject, grade_level, topic, created_at
-      `
+        ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+        RETURNING id, title, subject, grade_level, topic, created_at`,
+        [title, subject, gradeLevel, duration, topic || null, content]
+      ) as any[]
 
       console.log("SAVE LESSON PLAN: Database save successful:", result)
 
@@ -330,8 +322,8 @@ export async function getLessonPlans() {
 
     // Try to get from database
     try {
-      const result = await sql`
-        SELECT 
+      const result = await executeQuery(
+        `SELECT 
           id, 
           title, 
           subject, 
@@ -341,8 +333,9 @@ export async function getLessonPlans() {
           created_at, 
           updated_at
         FROM lesson_plans
-        ORDER BY created_at DESC
-      `
+        ORDER BY created_at DESC`,
+        []
+      ) as any[]
 
       console.log(`GET LESSON PLANS: Retrieved ${result.length} plans from database`)
       return {
@@ -375,11 +368,12 @@ export async function getLessonPlanById(id: string) {
 
     // Try database
     try {
-      const result = await sql`
-        SELECT *
+      const result = await executeQuery(
+        `SELECT *
         FROM lesson_plans
-        WHERE id = ${id}
-      `
+        WHERE id = $1`,
+        [id]
+      ) as any[]
 
       if (result.length === 0) {
         console.log(`GET LESSON PLAN BY ID: Plan ${id} not found in database`)
@@ -438,19 +432,20 @@ export async function updateLessonPlan(id: string, formData: FormData) {
     try {
       console.log(`UPDATE LESSON PLAN: Attempting database update for plan ${id}`)
 
-      const result = await sql`
-        UPDATE lesson_plans
+      const result = await executeQuery(
+        `UPDATE lesson_plans
         SET 
-          title = ${title},
-          subject = ${subject},
-          grade_level = ${gradeLevel},
-          duration = ${duration},
-          topic = ${topic || null},
-          content = ${content},
+          title = $1,
+          subject = $2,
+          grade_level = $3,
+          duration = $4,
+          topic = $5,
+          content = $6,
           updated_at = NOW()
-        WHERE id = ${id}
-        RETURNING id, title, subject, grade_level, topic, updated_at
-      `
+        WHERE id = $7
+        RETURNING id, title, subject, grade_level, topic, updated_at`,
+        [title, subject, gradeLevel, duration, topic || null, content, id]
+      ) as any[]
 
       if (result.length === 0) {
         console.log(`UPDATE LESSON PLAN: Plan ${id} not found in database`)
@@ -497,10 +492,11 @@ export async function deleteLessonPlan(id: string) {
     try {
       console.log(`DELETE LESSON PLAN: Attempting database deletion for plan ${id}`)
 
-      await sql`
-        DELETE FROM lesson_plans
-        WHERE id = ${id}
-      `
+      await executeQuery(
+        `DELETE FROM lesson_plans
+        WHERE id = $1`,
+        [id]
+      )
 
       console.log(`DELETE LESSON PLAN: Database deletion successful for plan ${id}`)
 

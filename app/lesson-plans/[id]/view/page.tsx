@@ -118,7 +118,7 @@ export default async function ViewLessonPlanPage({ params }: { params: Promise<{
                 </Card>
               ) : (
                 <div className="space-y-6">
-                  {reflections.map((reflection) => (
+                  {reflections.map((reflection: any) => (
                     <LessonReflectionDisplay
                       key={reflection.id}
                       reflection={reflection}

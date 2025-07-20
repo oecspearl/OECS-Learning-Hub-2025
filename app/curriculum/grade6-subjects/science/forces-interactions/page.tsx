@@ -30,10 +30,10 @@ export default function ForcesInteractionsPage() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <StandardsBadge standard="6.FI.1" />
-          <StandardsBadge standard="6.FI.2" />
-          <StandardsBadge standard="6.FI.3" />
-          <StandardsBadge standard="6.FI.4" />
+          <StandardsBadge code="6.FI.1" description="Forces and Interactions standards for Grade 6 Science" subject="Science" grade="6" strand="Forces and Interactions" />
+          <StandardsBadge code="6.FI.2" description="Forces and Interactions standards for Grade 6 Science" subject="Science" grade="6" strand="Forces and Interactions" />
+          <StandardsBadge code="6.FI.3" description="Forces and Interactions standards for Grade 6 Science" subject="Science" grade="6" strand="Forces and Interactions" />
+          <StandardsBadge code="6.FI.4" description="Forces and Interactions standards for Grade 6 Science" subject="Science" grade="6" strand="Forces and Interactions" />
         </div>
       </div>
 

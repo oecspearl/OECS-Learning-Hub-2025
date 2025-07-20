@@ -52,7 +52,7 @@ export function AddUserModal({
       toast({
         title: "Success!",
         description: "User created successfully",
-        type: "success",
+        variant: "default",
       })
 
       // Reset form
@@ -68,7 +68,7 @@ export function AddUserModal({
       toast({
         title: "Error",
         description: err.message || "Failed to create user",
-        type: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)

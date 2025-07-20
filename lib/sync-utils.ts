@@ -48,7 +48,7 @@ export async function syncFallbackLessonPlans() {
         // Try to save to database
         const result = await saveLessonPlan(formData)
 
-        if (result.success && !result.fallback) {
+        if (result.success && !result.fallbackData) {
           syncedCount++
         } else {
           failedPlans.push(plan)

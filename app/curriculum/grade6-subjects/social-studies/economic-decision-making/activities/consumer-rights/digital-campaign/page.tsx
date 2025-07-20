@@ -78,14 +78,11 @@ export default function DigitalCampaignPage() {
         </div>
 
         <StandardsBadge
+          code="6.EDM.4"
+          description="Digital consumer education standards for Grade 6 Social Studies"
           subject="Social Studies"
           grade="6"
           strand="Economic Decision Making"
-          standards={[
-            "Create educational materials about consumer rights",
-            "Use digital tools for civic engagement",
-            "Communicate consumer protection information effectively",
-          ]}
         />
 
         <Card>

@@ -58,7 +58,7 @@ ${review.conclusion}
     toast({
       title: "Copied to clipboard",
       description: "Lesson plan review has been copied to clipboard.",
-      type: "success",
+      variant: "default",
     })
   }
 

@@ -90,7 +90,7 @@ export default function GamesUnitWeek5() {
               "skills",
               "growth",
             ]}
-            color="indigo"
+            color="purple"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function GamesUnitWeek5() {
       <TeacherTip
         title="Fostering a Growth Mindset"
         tip="Use game play as an opportunity to develop a growth mindset in your students. When children struggle with a game, encourage them to use phrases like 'I can't do this yet' instead of 'I can't do this.' Celebrate effort and improvement rather than just winning. Share examples of how practice helps us improve in all areas of life, not just games."
-        color="indigo"
+        color="purple"
       />
 
       <div className="mb-8">
@@ -130,7 +130,7 @@ export default function GamesUnitWeek5() {
                 "Skill practice stations",
               ]}
               assessmentNotes="Observe students' understanding of how practice leads to improvement and their persistence when practicing skills."
-              color="indigo"
+              color="purple"
             />
           </TabsContent>
 
@@ -150,7 +150,7 @@ export default function GamesUnitWeek5() {
                 "Timer",
               ]}
               assessmentNotes="Note students' willingness to persist when faced with challenges and their use of strategies to overcome difficulties."
-              color="indigo"
+              color="purple"
             />
           </TabsContent>
 
@@ -170,7 +170,7 @@ export default function GamesUnitWeek5() {
                 "Good sport badges",
               ]}
               assessmentNotes="Observe students' ability to demonstrate good sportsmanship when winning or losing and their understanding of fair play."
-              color="indigo"
+              color="purple"
             />
           </TabsContent>
 
@@ -190,7 +190,7 @@ export default function GamesUnitWeek5() {
                 "Non-standard measuring tools",
               ]}
               assessmentNotes="Note students' ability to learn from others and their willingness to share their own knowledge and skills."
-              color="indigo"
+              color="purple"
             />
           </TabsContent>
 
@@ -210,7 +210,7 @@ export default function GamesUnitWeek5() {
                 "Camera to document celebration",
               ]}
               assessmentNotes="Evaluate students' understanding of how practice, perseverance, and good sportsmanship help improve game-playing skills."
-              color="indigo"
+              color="purple"
             />
           </TabsContent>
         </Tabs>
@@ -227,7 +227,7 @@ export default function GamesUnitWeek5() {
             duration="40 minutes"
             materials={["Station signs", "Various game equipment", "Recording sheets", "Stickers for achievements"]}
             learningAreas={["Physical Skills", "Perseverance", "Self-Assessment"]}
-            color="indigo"
+            color="purple"
           />
 
           <ActivityCard
@@ -236,7 +236,7 @@ export default function GamesUnitWeek5() {
             duration="25 minutes"
             materials={["Behavior picture cards", "Sorting mats", "Discussion prompts", "Role-play props"]}
             learningAreas={["Social Skills", "Critical Thinking", "Character Education"]}
-            color="indigo"
+            color="purple"
           />
 
           <ActivityCard
@@ -245,7 +245,7 @@ export default function GamesUnitWeek5() {
             duration="30 minutes"
             materials={["Challenge cards", "Game equipment", "Growth mindset phrase cards", "Timer"]}
             learningAreas={["Resilience", "Problem Solving", "Positive Self-Talk"]}
-            color="indigo"
+            color="purple"
           />
 
           <ActivityCard
@@ -254,7 +254,7 @@ export default function GamesUnitWeek5() {
             duration="35 minutes"
             materials={["Various game equipment", "Presentation schedule", "Audience feedback forms", "Certificates"]}
             learningAreas={["Communication", "Self-Reflection", "Confidence Building"]}
-            color="indigo"
+            color="purple"
           />
         </div>
       </div>
@@ -262,7 +262,7 @@ export default function GamesUnitWeek5() {
       <TeacherTip
         title="Celebrating All Types of Improvement"
         tip="When celebrating improvement in game skills, be sure to recognize various types of growth beyond just physical skills. Acknowledge improvements in following rules, showing good sportsmanship, helping others, persevering through challenges, and working as a team. This helps children understand that becoming better at games involves many different skills and attitudes."
-        color="indigo"
+        color="purple"
       />
 
       <div className="mb-8">

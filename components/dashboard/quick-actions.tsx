@@ -8,11 +8,20 @@ import { ScheduleDialog } from "./schedule-dialog"
 import { TeacherTimetable } from "./teacher-timetable"
 import { useParams } from "next/navigation"
 import Link from "next/link"
+import { useState } from "react"
 
 export function QuickActions() {
   const params = useParams()
   const resourceId = params?.id as string || "new"
   const resourceTitle = params?.title as string || "New Resource"
+
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
+
+  // Stub for onAddSchedule
+  const handleAddSchedule = async (slot: any) => {
+    // Implement schedule addition logic here
+    return Promise.resolve()
+  }
 
   return (
     <div className="space-y-6">
@@ -33,7 +42,11 @@ export function QuickActions() {
               resourceId={resourceId}
               resourceTitle={resourceTitle}
             />
-            <ScheduleDialog />
+            <ScheduleDialog 
+              open={scheduleDialogOpen}
+              onOpenChange={setScheduleDialogOpen}
+              onAddSchedule={handleAddSchedule}
+            />
             <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2 hover:bg-green-50">
               <Download className="h-5 w-5 text-green-600" />
               <span>Download</span>

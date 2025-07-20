@@ -25,7 +25,13 @@ export default function ParentDashboardPage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <ProfileCard />
-      <StatsCards />
+      <StatsCards 
+        lessonPlansCount={0}
+        quizzesCount={0}
+        multigradePlansCount={0}
+        crossCurricularPlansCount={0}
+        totalResources={0}
+      />
       <ParentDashboardTabs studentProgress={studentProgress} progressBySubject={progressBySubject} />
       <QuickActions />
     </div>

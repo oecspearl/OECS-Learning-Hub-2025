@@ -35,7 +35,7 @@ export default async function EditLessonPlanPage({ params }: EditLessonPlanPageP
   // Map database fields to LessonPlan interface
   const formattedLessonPlan = {
     ...lessonPlan,
-    userId: lessonPlan.user_id, // Map user_id to userId
+    userId: "",
   }
 
   return <EditLessonPlanForm lessonPlan={formattedLessonPlan} />

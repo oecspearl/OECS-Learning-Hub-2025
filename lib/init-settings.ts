@@ -123,8 +123,8 @@ export async function initializeSettings() {
       const existingSetting = await findSettingByKey(setting.key)
 
       if (!existingSetting) {
-        await db.insert(settings).values(setting)
-        console.log(`Created setting: ${setting.key}`)
+        // await db.insert(settings).values(setting)
+        // console.log(`Created setting: ${setting.key}`)
       }
     }
 

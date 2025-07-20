@@ -78,14 +78,11 @@ export default function ScenarioAnalysisPage() {
         </div>
 
         <StandardsBadge
+          code="6.EDM.2"
+          description="Consumer scenario analysis standards for Grade 6 Social Studies"
           subject="Social Studies"
           grade="6"
           strand="Economic Decision Making"
-          standards={[
-            "Apply consumer rights knowledge to real-world scenarios",
-            "Analyze consumer problems and propose solutions",
-            "Demonstrate understanding of consumer responsibilities",
-          ]}
         />
 
         <Card>

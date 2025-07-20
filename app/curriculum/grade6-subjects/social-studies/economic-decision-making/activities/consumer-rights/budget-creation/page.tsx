@@ -78,14 +78,11 @@ export default function BudgetCreationPage() {
         </div>
 
         <StandardsBadge
+          code="6.EDM.5"
+          description="Budget creation and management standards for Grade 6 Social Studies"
           subject="Social Studies"
           grade="6"
           strand="Economic Decision Making"
-          standards={[
-            "Apply budgeting principles to real-world scenarios",
-            "Distinguish between needs and wants in financial planning",
-            "Analyze trade-offs in budget allocation decisions",
-          ]}
         />
 
         <Card>

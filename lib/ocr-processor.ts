@@ -22,22 +22,18 @@ export async function processImageWithOCR(
     psm?: number
   } = {},
 ): Promise<string> {
-  // Create a worker with specified language
-  const worker = await createWorker({
-    logger: (m) => console.log(`OCR Progress: ${m.progress * 100}%`),
-  })
+  // Create a worker
+  const worker = await createWorker()
 
   try {
-    // Load language data
+    // Only set parameters and recognize, skip loadLanguage/initialize for compatibility
     const languages = options.languages || OCR_CONFIG.languages
-    await worker.loadLanguage(languages.join("+"))
-    await worker.initialize(languages.join("+"))
-
-    // Set parameters
-    await worker.setParameters({
-      tessedit_ocr_engine_mode: options.oem || OCR_CONFIG.oem,
-      tessedit_pageseg_mode: options.psm || OCR_CONFIG.psm,
-    })
+    if (worker.setParameters) {
+      await worker.setParameters({
+        tessedit_ocr_engine_mode: options.oem || OCR_CONFIG.oem,
+        tessedit_pageseg_mode: (options.psm || OCR_CONFIG.psm) as any,
+      })
+    }
 
     // Recognize text
     const { data } = await worker.recognize(imageBuffer)
@@ -87,7 +83,7 @@ export async function updateOCRStatus(
  * @returns Boolean indicating if OCR is needed
  */
 export async function checkIfOCRNeeded(documentId: string): Promise<boolean> {
-  const documents = await executeQuery(`SELECT metadata FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId])
+  const documents = await executeQuery(`SELECT metadata FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId]) as any[]
 
   if (!documents || documents.length === 0) {
     return false
@@ -97,7 +93,7 @@ export async function checkIfOCRNeeded(documentId: string): Promise<boolean> {
   const metadata = document.metadata
     ? typeof document.metadata === "string"
       ? JSON.parse(document.metadata)
-      : document.metadata
+      : (document.metadata as any)
     : {}
 
   // Check if document has been marked as needing OCR

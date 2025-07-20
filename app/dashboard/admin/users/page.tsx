@@ -31,7 +31,7 @@ export default function UsersPage() {
       toast({
         title: "Error",
         description: err.message || "Failed to fetch users",
-        type: "error",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -53,7 +53,7 @@ export default function UsersPage() {
     toast({
       title: "Success",
       description: "User added successfully",
-      type: "success",
+      variant: "default",
     })
   }
 

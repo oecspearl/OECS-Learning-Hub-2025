@@ -547,7 +547,7 @@ export function MultigradeForm() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="special_needs">Special Educational Needs</Label>
-                    <SpecialNeedsModalController form={mockForm} />
+                    <SpecialNeedsModalController form={mockForm as any} />
                   </div>
                   <Textarea
                     id="special_needs"

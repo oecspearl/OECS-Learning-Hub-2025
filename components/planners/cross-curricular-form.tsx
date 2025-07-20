@@ -117,10 +117,10 @@ export function CrossCurricularForm({ setGeneratedPlan, setActiveTab, isGenerati
       })
     } catch (error) {
       console.error("Error generating plan:", error)
-      setError(error.message || "Failed to generate lesson plan")
+      setError(error instanceof Error ? error.message : "Failed to generate lesson plan")
       toast({
         title: "Error",
-        description: error.message || "Failed to generate lesson plan. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to generate lesson plan. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -731,7 +731,7 @@ export function CrossCurricularForm({ setGeneratedPlan, setActiveTab, isGenerati
               )}
             </div>
 
-            <Button type="button" onClick={() => router.push(`/cross-curricular/${params.id}/edit`)}>
+            <Button type="button" onClick={() => router.push(`/cross-curricular/${params?.id}/edit`)}>
               Edit Plan
             </Button>
           </form>

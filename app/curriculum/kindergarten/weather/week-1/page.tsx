@@ -129,7 +129,7 @@ export default function WeatherUnitWeek1() {
                 "Weather photographs",
               ]}
               assessmentNotes="Observe students' prior knowledge about weather and their ability to identify different types of weather in pictures."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -149,7 +149,7 @@ export default function WeatherUnitWeek1() {
                 "Simple graphing materials",
               ]}
               assessmentNotes="Note students' observational skills and their use of vocabulary to describe what they see, hear, and feel outside."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -169,7 +169,7 @@ export default function WeatherUnitWeek1() {
                 "Camera (for taking photos of reporters)",
               ]}
               assessmentNotes="Observe students' ability to use weather vocabulary accurately and their comfort with reporting observations."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -189,7 +189,7 @@ export default function WeatherUnitWeek1() {
                 "Weather symbols",
               ]}
               assessmentNotes="Note students' understanding of how weather affects daily activities and choices."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -209,7 +209,7 @@ export default function WeatherUnitWeek1() {
                 "Graphing materials",
               ]}
               assessmentNotes="Evaluate students' understanding of basic weather concepts and their ability to recall the week's weather patterns."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
         </Tabs>
@@ -226,7 +226,7 @@ export default function WeatherUnitWeek1() {
             duration="40 minutes"
             materials={["Clear plastic bottles", "Water", "Food coloring", "Glitter", "Cotton balls", "Sequins"]}
             learningAreas={["Science", "Fine Motor", "Art"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -235,7 +235,7 @@ export default function WeatherUnitWeek1() {
             duration="25 minutes"
             materials={["Weather sound recordings", "Weather picture cards", "Listening center", "Headphones"]}
             learningAreas={["Science", "Listening Skills", "Vocabulary"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -244,7 +244,7 @@ export default function WeatherUnitWeek1() {
             duration="30 minutes"
             materials={["Blue paper", "Cotton balls", "Glue", "Cloud pictures", "Observation sheets"]}
             learningAreas={["Science", "Language Arts", "Observation Skills"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -253,7 +253,7 @@ export default function WeatherUnitWeek1() {
             duration="Ongoing center"
             materials={["Weather symbols", "Various clothing items", "Accessories for different weather", "Mirror"]}
             learningAreas={["Dramatic Play", "Life Skills", "Decision Making"]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -261,7 +261,7 @@ export default function WeatherUnitWeek1() {
       <TeacherTip
         title="Outdoor Weather Learning"
         tip="Weather is an ideal topic to take learning outdoors. Plan for short, focused outdoor observation periods throughout the week. Bring clipboards and simple recording sheets so students can document what they see, feel, and hear. Consider having a designated 'weather spot' on your playground that students visit each day to observe changes."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">

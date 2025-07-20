@@ -23,9 +23,9 @@ export default function PlantsAndAnimalsWeek4() {
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-4 text-emerald-700">Week 4: Changing Environments</h1>
-          <div className="bg-emerald-50 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2 text-emerald-700">Weekly Focus</h2>
+          <h1 className="text-3xl font-bold mb-4 text-green-700">Week 4: Changing Environments</h1>
+          <div className="bg-green-50 p-4 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-2 text-green-700">Weekly Focus</h2>
             <p>
               Children discover how plants and animals (including humans) can change their environments to meet their
               needs, and learn to identify evidence of these changes.
@@ -33,28 +33,28 @@ export default function PlantsAndAnimalsWeek4() {
           </div>
         </div>
         <div className="md:w-1/3">
-          <Card className="border-emerald-200 shadow-md">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="flex items-center text-emerald-700">
+          <Card className="border-green-200 shadow-md">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="flex items-center text-green-700">
                 <Clock className="mr-2 h-5 w-5" /> Week at a Glance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Understand how plants can change their environment</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Explore how animals change their environment</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Recognize how humans change the environment</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500 mr-2 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                   <span>Identify evidence of environmental changes</span>
                 </li>
               </ul>
@@ -89,7 +89,7 @@ export default function PlantsAndAnimalsWeek4() {
               "evidence",
               "impact",
             ]}
-            color="emerald"
+            color="green"
           />
         </div>
       </div>
@@ -97,11 +97,11 @@ export default function PlantsAndAnimalsWeek4() {
       <TeacherTip
         title="Observing Environmental Changes"
         tip="Take children on a 'detective walk' around the school grounds to look for evidence of how plants and animals have changed the environment. Look for ant hills, bird nests, plant roots breaking through concrete, or vines growing up walls. Take photographs of these examples to create a class book of 'Environmental Detectives' that children can revisit and discuss."
-        color="emerald"
+        color="green"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -129,7 +129,7 @@ export default function PlantsAndAnimalsWeek4() {
                 "Plant photographs",
               ]}
               assessmentNotes="Observe students' understanding of how plants can change their environment and their ability to identify examples."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -149,7 +149,7 @@ export default function PlantsAndAnimalsWeek4() {
                 "Plant specimens or pictures",
               ]}
               assessmentNotes="Note students' ability to understand and explain how specific plants change their environment."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -169,7 +169,7 @@ export default function PlantsAndAnimalsWeek4() {
                 "Video clips of animals",
               ]}
               assessmentNotes="Observe students' understanding of how animals change their environment to meet their needs."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -189,7 +189,7 @@ export default function PlantsAndAnimalsWeek4() {
                 "Environmental change cards",
               ]}
               assessmentNotes="Note students' ability to provide specific examples of how animals change their environment and why."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
 
@@ -203,14 +203,14 @@ export default function PlantsAndAnimalsWeek4() {
               afternoonActivity="Nature walk to observe environmental changes and take photographs"
               materials={["Clipboards", "Observation sheets", "Magnifying glasses", "Camera", "Collection bags"]}
               assessmentNotes="Evaluate students' ability to identify evidence of plants and animals changing their environment in a real-world context."
-              color="emerald"
+              color="green"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,7 +225,7 @@ export default function PlantsAndAnimalsWeek4() {
               "Magnifying glasses",
             ]}
             learningAreas={["Science", "Reading", "Fine Motor Skills"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -234,7 +234,7 @@ export default function PlantsAndAnimalsWeek4() {
             duration="40 minutes"
             materials={["Clay/play dough", "Natural materials", "Animal figures", "Craft sticks", "Cotton balls"]}
             learningAreas={["Science", "Art", "Critical Thinking"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -243,7 +243,7 @@ export default function PlantsAndAnimalsWeek4() {
             duration="30 minutes"
             materials={["Picture cards of environmental changes", "Props (optional)", "Timer"]}
             learningAreas={["Physical Development", "Science", "Communication"]}
-            color="emerald"
+            color="green"
           />
 
           <ActivityCard
@@ -252,7 +252,7 @@ export default function PlantsAndAnimalsWeek4() {
             duration="35 minutes"
             materials={["Paper divided in half", "Drawing supplies", "Before/after example cards", "Scissors", "Glue"]}
             learningAreas={["Science", "Art", "Sequential Thinking"]}
-            color="emerald"
+            color="green"
           />
         </div>
       </div>
@@ -260,17 +260,17 @@ export default function PlantsAndAnimalsWeek4() {
       <TeacherTip
         title="Connecting to Children's Experiences"
         tip="Help children connect to the concept of changing environments by starting with their own experiences. Ask them how they change their environment at home or school (e.g., rearranging toys, building with blocks, digging in sand). This helps them understand that all living things, including humans, modify their surroundings to meet their needs."
-        color="emerald"
+        color="green"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-emerald-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Books</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -280,15 +280,15 @@ export default function PlantsAndAnimalsWeek4() {
                 <li>"Bee Builds a Hive" by Pam Scheunemann</li>
                 <li>"Plants Can't Sit Still" by Rebecca E. Hirsch</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="mt-4 w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Download className="mr-2 h-4 w-4" /> Book List PDF
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Printables</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Printables</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -298,22 +298,22 @@ export default function PlantsAndAnimalsWeek4() {
                 <li>Environmental detective observation sheets</li>
                 <li>Before and after template sheets</li>
               </ul>
-              <Button variant="outline" className="mt-4 w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="mt-4 w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Printer className="mr-2 h-4 w-4" /> Print Materials
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-200">
-            <CardHeader className="bg-emerald-50 border-b border-emerald-100">
-              <CardTitle className="text-emerald-700">Home Connection</CardTitle>
+          <Card className="border-green-200">
+            <CardHeader className="bg-green-50 border-b border-green-100">
+              <CardTitle className="text-green-700">Home Connection</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <p className="mb-4">
                 Send home a family activity sheet that encourages parents/caregivers to look for evidence of plants and
                 animals changing their environment in their neighborhood or local park.
               </p>
-              <Button variant="outline" className="w-full border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" className="w-full border-green-500 text-green-700 hover:bg-green-50">
                 <Download className="mr-2 h-4 w-4" /> Family Activity
               </Button>
             </CardContent>

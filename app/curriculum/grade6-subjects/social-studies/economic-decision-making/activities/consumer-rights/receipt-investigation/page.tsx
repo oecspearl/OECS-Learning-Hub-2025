@@ -78,14 +78,11 @@ export default function ReceiptInvestigationPage() {
         </div>
 
         <StandardsBadge
+          code="6.EDM.3"
+          description="Financial document analysis standards for Grade 6 Social Studies"
           subject="Social Studies"
           grade="6"
           strand="Economic Decision Making"
-          standards={[
-            "Analyze financial documents and their components",
-            "Understand taxation and fee structures",
-            "Recognize importance of financial record-keeping",
-          ]}
         />
 
         <Card>

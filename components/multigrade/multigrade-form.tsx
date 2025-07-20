@@ -50,7 +50,7 @@ export function MultigradeForm() {
   const [selectedDifferentiation, setSelectedDifferentiation] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",

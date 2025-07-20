@@ -53,7 +53,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
   }
 
   // Otherwise, generate breadcrumbs from pathname
-  const segments = pathname
+  const segments = (pathname || "")
     .split("/")
     .filter((segment) => segment !== "")
     .map((segment) => {

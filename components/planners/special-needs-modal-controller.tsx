@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { UseFormReturn } from "react-hook-form"
-import { LessonPlanFormValues } from "@/app/planner/page" // Import the type from planner-form
+import { LessonPlanFormValues } from "./planner-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,

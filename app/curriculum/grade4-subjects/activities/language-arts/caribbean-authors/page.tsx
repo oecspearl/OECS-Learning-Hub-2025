@@ -117,6 +117,7 @@ export default function CaribbeanAuthorsPage() {
               <FallbackImage
                 src="/caribbean-childrens-books.png"
                 alt="Collection of Caribbean children's books"
+                fallbackSrc="/placeholder.svg?height=200&width=400&query=Caribbean+childrens+books"
                 fill
                 className="object-cover"
               />

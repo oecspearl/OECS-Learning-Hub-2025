@@ -13,7 +13,7 @@ export default async function PDFContentPage({ params }: PageProps) {
   const { id } = await params
 
   // Fetch the PDF document
-  const documents = await executeQuery(`SELECT * FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [id])
+  const documents = await executeQuery(`SELECT * FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [id]) as any[]
 
   if (!documents || documents.length === 0) {
     return (
@@ -43,24 +43,24 @@ export default async function PDFContentPage({ params }: PageProps) {
   const subjects = await executeQuery(`SELECT * FROM "Subject" WHERE name = $1 AND "gradeLevel" = $2`, [
     metadata.subject || metadata.processed?.subject || "",
     metadata.grade || metadata.processed?.grade || 0,
-  ])
+  ]) as any[]
 
   // Fetch units and lessons if a subject was found
-  let units = []
-  let lessons = []
+  let units: any[] = []
+  let lessons: any[] = []
 
   if (subjects && subjects.length > 0) {
     const subject = subjects[0]
 
     // Fetch units
-    units = await executeQuery(`SELECT * FROM "Unit" WHERE "subjectId" = $1 ORDER BY "order"`, [subject.id])
+    units = await executeQuery(`SELECT * FROM "Unit" WHERE "subjectId" = $1 ORDER BY "order"`, [subject.id]) as any[]
 
     // Fetch lessons
     if (units && units.length > 0) {
       const unitIds = units.map((unit) => unit.id)
       lessons = await executeQuery(`SELECT * FROM "Lesson" WHERE "unitId" = ANY($1) ORDER BY "unitId", "createdAt"`, [
         unitIds,
-      ])
+      ]) as any[]
     }
   }
 
@@ -247,7 +247,7 @@ export default async function PDFContentPage({ params }: PageProps) {
                               <div className="pl-6">
                                 <p className="text-sm font-medium">Objectives:</p>
                                 <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                                  {lesson.objectives.map((objective, index) => (
+                                  {lesson.objectives.map((objective: any, index: number) => (
                                     <li key={index}>{objective}</li>
                                   ))}
                                 </ul>

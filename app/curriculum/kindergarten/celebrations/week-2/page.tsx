@@ -102,7 +102,7 @@ export default function CelebrationsUnitWeek2() {
               "respect",
               "global",
             ]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -110,11 +110,11 @@ export default function CelebrationsUnitWeek2() {
       <TeacherTip
         title="Cultural Sensitivity"
         tip="Focus on the meaning and purpose behind cultural celebrations rather than just the external elements. Help children understand why these celebrations are important to different groups of people. Be mindful of presenting cultural celebrations authentically and respectfully. Avoid stereotypes and generalizations, and emphasize that there is diversity within cultures as well."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <Calendar className="mr-2 h-6 w-6" /> Daily Plans
         </h2>
         <Tabs defaultValue="monday" className="w-full">
@@ -142,7 +142,7 @@ export default function CelebrationsUnitWeek2() {
                 "Pictures of cultural celebrations",
               ]}
               assessmentNotes="Observe students' prior knowledge about cultural celebrations and their ability to identify different cultures on a map."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -163,7 +163,7 @@ export default function CelebrationsUnitWeek2() {
                 "LED tea lights",
               ]}
               assessmentNotes="Note students' understanding of the symbolism of light in different cultural celebrations."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -183,7 +183,7 @@ export default function CelebrationsUnitWeek2() {
                 "Sorting trays",
               ]}
               assessmentNotes="Observe students' understanding of how harvests are celebrated in different cultures and their ability to sort and classify harvest items."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -202,7 +202,7 @@ export default function CelebrationsUnitWeek2() {
                 "Number cards 1-10",
               ]}
               assessmentNotes="Note students' understanding of similarities and differences between New Year celebrations from different cultures."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
 
@@ -222,14 +222,14 @@ export default function CelebrationsUnitWeek2() {
                 "Graphing materials",
               ]}
               assessmentNotes="Evaluate students' understanding of cultural celebrations and their ability to show respect for diverse traditions."
-              color="cyan"
+              color="blue"
             />
           </TabsContent>
         </Tabs>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <Lightbulb className="mr-2 h-6 w-6" /> Featured Activities
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -244,7 +244,7 @@ export default function CelebrationsUnitWeek2() {
               "Pins or tape",
             ]}
             learningAreas={["Social Studies", "Geography", "Cultural Awareness", "Language"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -253,7 +253,7 @@ export default function CelebrationsUnitWeek2() {
             duration="30 minutes"
             materials={["Colored paper", "Scissors", "Glue", "String", "Decorative materials", "LED tea lights"]}
             learningAreas={["Art", "Cultural Studies", "Fine Motor Skills", "Science"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -267,7 +267,7 @@ export default function CelebrationsUnitWeek2() {
               "Music from Lunar New Year celebrations",
             ]}
             learningAreas={["Music", "Movement", "Cultural Studies", "Cooperation"]}
-            color="cyan"
+            color="blue"
           />
 
           <ActivityCard
@@ -281,7 +281,7 @@ export default function CelebrationsUnitWeek2() {
               "Battery tea lights",
             ]}
             learningAreas={["Cultural Studies", "Art", "Sensory Exploration", "Language"]}
-            color="cyan"
+            color="blue"
           />
         </div>
       </div>
@@ -289,17 +289,17 @@ export default function CelebrationsUnitWeek2() {
       <TeacherTip
         title="Community Connections"
         tip="Invite family members or community volunteers to share their cultural celebration traditions with the class if possible. This provides children with authentic experiences and helps them connect with real people who celebrate these traditions."
-        color="cyan"
+        color="blue"
       />
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-cyan-700 flex items-center">
+        <h2 className="text-2xl font-bold mb-4 text-blue-700 flex items-center">
           <BookOpen className="mr-2 h-6 w-6" /> Resources
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-cyan-200">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="text-cyan-700">Books</CardTitle>
+          <Card className="border-blue-200">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="text-blue-700">Books</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -315,9 +315,9 @@ export default function CelebrationsUnitWeek2() {
             </CardContent>
           </Card>
 
-          <Card className="border-cyan-200">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="text-cyan-700">Printables</CardTitle>
+          <Card className="border-blue-200">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="text-blue-700">Printables</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <ul className="space-y-2">
@@ -333,9 +333,9 @@ export default function CelebrationsUnitWeek2() {
             </CardContent>
           </Card>
 
-          <Card className="border-cyan-200">
-            <CardHeader className="bg-cyan-50 border-b border-cyan-100">
-              <CardTitle className="text-cyan-700">Home Connection</CardTitle>
+          <Card className="border-blue-200">
+            <CardHeader className="bg-blue-50 border-b border-blue-100">
+              <CardTitle className="text-blue-700">Home Connection</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               <p className="mb-4">

@@ -79,14 +79,11 @@ export default function AnticipationGuidePage() {
         </div>
 
         <StandardsBadge
+          code="6.EDM.1"
+          description="Consumer rights and responsibilities standards for Grade 6 Social Studies"
           subject="Social Studies"
           grade="6"
           strand="Economic Decision Making"
-          standards={[
-            "Demonstrate understanding of consumer rights and responsibilities",
-            "Analyze consumer protection scenarios",
-            "Evaluate consumer decision-making processes",
-          ]}
         />
 
         <Card>

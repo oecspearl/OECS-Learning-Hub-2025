@@ -134,7 +134,7 @@ export default function WeatherUnitWeek4() {
                 "Paper dolls with weather-appropriate clothing",
               ]}
               assessmentNotes="Observe students' understanding of appropriate clothing choices for different weather conditions."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -155,7 +155,7 @@ export default function WeatherUnitWeek4() {
                 "Art supplies",
               ]}
               assessmentNotes="Note students' ability to match appropriate activities to weather conditions and their reasoning."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -175,7 +175,7 @@ export default function WeatherUnitWeek4() {
                 "Props for dramatic play",
               ]}
               assessmentNotes="Observe students' understanding of basic weather safety concepts and procedures."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -195,7 +195,7 @@ export default function WeatherUnitWeek4() {
                 "Art supplies",
               ]}
               assessmentNotes="Note students' ability to express and recognize emotions related to different weather conditions."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
 
@@ -215,7 +215,7 @@ export default function WeatherUnitWeek4() {
                 "Art supplies",
               ]}
               assessmentNotes="Evaluate students' understanding that weather can be different in different places at the same time."
-              color="amber"
+              color="orange"
             />
           </TabsContent>
         </Tabs>
