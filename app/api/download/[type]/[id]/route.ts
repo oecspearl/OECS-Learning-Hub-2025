@@ -21,7 +21,8 @@ export async function GET(
         resourceData = await db.lessonPlans.findFirst({ id })
         break
       case "multigrade":
-        resourceData = await db.multigradePlans.findFirst({ id })
+        // multigradePlans expects a number id
+        resourceData = await db.multigradePlans.findFirst({ id: parseInt(id) })
         break
       case "cross-curricular":
         resourceData = await db.crossCurricularPlans.findFirst({ id })
