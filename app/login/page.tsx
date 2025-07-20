@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
-import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from '@supabase/supabase-js'
@@ -40,37 +39,19 @@ export default function LoginPage() {
     }
 
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
-        callbackUrl,
       })
 
-      if (!result) {
-        setError("An unexpected error occurred. Please try again.")
+      if (error) {
+        console.error('Sign in error:', error)
+        setError('Invalid email or password')
         return
       }
 
-      if (result.error) {
-        // Handle specific error cases
-        switch (result.error) {
-          case "CredentialsSignin":
-            setError("Invalid email or password")
-            break
-          case "AccessDenied":
-            setError("You do not have permission to sign in")
-            break
-          default:
-            setError(result.error)
-        }
-        return
-      }
-
-      // Successful login
-      if (result.url) {
-        router.push(result.url)
-      } else {
+      if (data.user) {
+        console.log('Sign in successful:', data.user.email)
         router.push(callbackUrl)
       }
     } catch (err) {

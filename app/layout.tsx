@@ -8,14 +8,13 @@ import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Providers } from "@/components/providers"
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { AssistantProvider } from '@/contexts/AssistantContext'
 import { AssistantWrapper } from '@/components/assistant/AssistantWrapper'
 import { SkipToContent } from '@/components/skip-to-content'
 import { AccessibilityToolbar } from '@/components/accessibility-toolbar'
 import { KeyboardIndicator } from '@/components/keyboard-indicator'
 import { GlobalSearch } from '@/components/global-search'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -36,13 +35,11 @@ export const metadata: Metadata = {
   themeColor: '#4F46E5',
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -55,18 +52,18 @@ export default async function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <ErrorBoundary>
           <Providers>
-            <AssistantProvider>
-              <SkipToContent />
-              <KeyboardIndicator />
-              <GlobalSearch />
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1" tabIndex={-1}>{children}</main>
-                <Footer />
-              </div>
-              {session?.user && (
+            <AuthProvider>
+              <AssistantProvider>
+                <SkipToContent />
+                <KeyboardIndicator />
+                <GlobalSearch />
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-1" tabIndex={-1}>{children}</main>
+                  <Footer />
+                </div>
                 <AssistantWrapper
-                  userRole={session.user.role || 'user'}
+                  userRole="teacher"
                   theme={{
                     primary: '#4F46E5',
                     secondary: '#818CF8',
@@ -74,9 +71,9 @@ export default async function RootLayout({
                     text: '#1F2937',
                   }}
                 />
-              )}
-              <AccessibilityToolbar />
-            </AssistantProvider>
+                <AccessibilityToolbar />
+              </AssistantProvider>
+            </AuthProvider>
             <Toaster />
           </Providers>
         </ErrorBoundary>

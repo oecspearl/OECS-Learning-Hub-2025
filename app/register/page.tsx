@@ -11,8 +11,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, CheckCircle } from "lucide-react"
-import { registerUser } from "@/app/actions/auth"
-import { signIn } from "next-auth/react"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from '@supabase/supabase-js'
 
@@ -73,20 +71,30 @@ export default function RegisterPage() {
     setError(null)
 
     try {
-      const result = await registerUser({
-        name: formData.name.trim(),
+      // Sign up with Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
-        role: formData.role,
+        options: {
+          data: {
+            name: formData.name.trim(),
+            role: formData.role,
+          }
+        }
       })
 
-      if (result.success) {
+      if (error) {
+        console.error('Sign up error:', error)
+        setError(error.message || "Registration failed. Please try again.")
+        return
+      }
+
+      if (data.user) {
+        console.log('Sign up successful:', data.user.email)
         setSuccess(true)
         setTimeout(() => {
-          router.push("/login?message=Registration successful! Please log in.")
+          router.push("/login?message=Registration successful! Please check your email to verify your account.")
         }, 2000)
-      } else {
-        setError(result.error || "Registration failed. Please try again.")
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.")
@@ -130,7 +138,7 @@ export default function RegisterPage() {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
               <h2 className="text-2xl font-bold text-green-700">Registration Successful!</h2>
               <p className="text-gray-600">
-                Your account has been created successfully. You will be redirected to the login page shortly.
+                Your account has been created successfully. Please check your email to verify your account.
               </p>
             </div>
           </CardContent>
