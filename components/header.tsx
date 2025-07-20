@@ -51,6 +51,9 @@ export function Header() {
           <Link href="/innovative-tools" className="text-white hover:text-green-200 transition-colors font-medium">
             Innovative Tools
           </Link>
+          <Link href="/help" className="text-white hover:text-green-200 transition-colors font-medium">
+            Help
+          </Link>
         </nav>
 
         {/* Right Side Interactive Elements */}
@@ -125,6 +128,13 @@ export function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Innovative Tools
+            </Link>
+            <Link 
+              href="/help" 
+              className="block text-white hover:text-green-200 transition-colors font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Help
             </Link>
           </nav>
         </div>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, FileText, ClipboardCheck, Users, BookOpen } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/contexts/AuthContext"
 
 interface Resource {
   id: string
@@ -28,11 +29,20 @@ interface DashboardTabsProps {
 export function DashboardTabs({ type, title, description, emptyMessage, createLink }: DashboardTabsProps) {
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
+  const { user } = useAuth()
 
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        // Mock data - replace with actual API call
+        const response = await fetch(`/api/dashboard/resources?type=${type}&userId=${user?.id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch resources')
+        }
+        const data = await response.json()
+        setResources(data.resources || [])
+      } catch (error) {
+        console.error("Error fetching resources:", error)
+        // Fallback to sample data if API fails
         const mockResources: Resource[] = [
           { id: "1", title: "Introduction to Fractions", subject: "Mathematics", grade: "Grade 3", createdAt: "2024-01-15", status: "active" },
           { id: "2", title: "Reading Comprehension", subject: "Language Arts", grade: "Grade 4", createdAt: "2024-01-14", status: "active" },
@@ -40,15 +50,15 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
           { id: "4", title: "World History", subject: "Social Studies", grade: "Grade 6", createdAt: "2024-01-12", status: "active" }
         ]
         setResources(mockResources)
-      } catch (error) {
-        console.error("Error fetching resources:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchResources()
-  }, [type])
+    if (user?.id) {
+      fetchResources()
+    }
+  }, [type, user?.id])
 
   const subjects = ["All", "Mathematics", "Language Arts", "Science", "Social Studies"]
   const [selectedSubject, setSelectedSubject] = useState("All")

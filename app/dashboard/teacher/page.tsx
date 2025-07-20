@@ -9,6 +9,7 @@ import { FileText, ClipboardCheck, Users, BookOpen, Plus, RefreshCw, GraduationC
 import Link from "next/link"
 import { ProfileCard } from "@/components/dashboard/profile-card"
 import { DashboardTabs } from "@/components/dashboard/dashboard-tabs"
+import { useAuth } from "@/contexts/AuthContext"
 
 interface TeacherStats {
   lessonPlans: number
@@ -29,11 +30,20 @@ export default function TeacherDashboard() {
     totalClasses: 0
   })
   const [loading, setLoading] = useState(true)
+  const { user } = useAuth()
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // This would be replaced with actual API calls
+        const response = await fetch(`/api/dashboard/stats?role=teacher&userId=${user?.id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch stats')
+        }
+        const data = await response.json()
+        setStats(data.stats)
+      } catch (error) {
+        console.error("Error fetching stats:", error)
+        // Fallback to sample data if API fails
         setStats({
           lessonPlans: 24,
           quizzes: 12,
@@ -42,15 +52,15 @@ export default function TeacherDashboard() {
           totalStudents: 156,
           totalClasses: 4
         })
-      } catch (error) {
-        console.error("Error fetching stats:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchStats()
-  }, [])
+    if (user?.id) {
+      fetchStats()
+    }
+  }, [user?.id])
 
   const handleRefresh = () => {
     setLoading(true)

@@ -9,6 +9,7 @@ import { Users, BookOpen, TrendingUp, MessageSquare, Calendar, Award } from "luc
 import Link from "next/link"
 import { ProfileCard } from "@/components/dashboard/profile-card"
 import { ParentDashboardTabs } from "@/components/dashboard/parent-dashboard-tabs"
+import { useAuth } from "@/contexts/AuthContext"
 
 interface StudentProgress {
   subject: string
@@ -36,6 +37,7 @@ interface ParentStats {
 }
 
 export default function ParentDashboard() {
+  const { user } = useAuth()
   const [stats, setStats] = useState<ParentStats>({
     totalChildren: 0,
     activeSubjects: 0,
@@ -49,7 +51,17 @@ export default function ParentDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // This would be replaced with actual API calls
+        const response = await fetch(`/api/dashboard/progress?parentId=${user?.id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch progress data')
+        }
+        const data = await response.json()
+        setStats(data.stats)
+        setStudentProgress(data.studentProgress)
+        setRecentActivities(data.recentActivities)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        // Fallback to sample data if API fails
         setStats({
           totalChildren: 2,
           activeSubjects: 8,
@@ -70,15 +82,15 @@ export default function ParentDashboard() {
           { id: "3", type: "lesson", title: "Reading Comprehension", subject: "Language Arts", date: "2024-01-13" },
           { id: "4", type: "quiz", title: "History Test", subject: "Social Studies", date: "2024-01-12", achievement: "88%" }
         ])
-      } catch (error) {
-        console.error("Error fetching data:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchData()
-  }, [])
+    if (user?.id) {
+      fetchData()
+    }
+  }, [user?.id])
 
   const statCards = [
     {

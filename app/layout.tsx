@@ -15,6 +15,7 @@ import { AccessibilityToolbar } from '@/components/accessibility-toolbar'
 import { KeyboardIndicator } from '@/components/keyboard-indicator'
 import { GlobalSearch } from '@/components/global-search'
 import { AuthProvider } from '@/contexts/AuthContext'
+import Link from "next/link"
 
 const inter = Inter({ subsets: ["latin"] })
 

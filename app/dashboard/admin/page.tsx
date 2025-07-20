@@ -35,7 +35,15 @@ export default function AdminDashboard() {
     // Fetch system statistics
     const fetchStats = async () => {
       try {
-        // This would be replaced with actual API calls
+        const response = await fetch('/api/dashboard/stats?role=admin')
+        if (!response.ok) {
+          throw new Error('Failed to fetch stats')
+        }
+        const data = await response.json()
+        setStats(data.stats)
+      } catch (error) {
+        console.error("Error fetching stats:", error)
+        // Fallback to sample data if API fails
         setStats({
           totalUsers: 1250,
           totalLessonPlans: 3420,
@@ -43,8 +51,6 @@ export default function AdminDashboard() {
           totalClasses: 156,
           totalStudents: 2840
         })
-      } catch (error) {
-        console.error("Error fetching stats:", error)
       } finally {
         setLoading(false)
       }
