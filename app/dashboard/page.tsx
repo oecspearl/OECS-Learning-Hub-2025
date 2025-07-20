@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,19 +10,25 @@ import { Loader2 } from "lucide-react"
 export default function DashboardPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const [hasRedirected, setHasRedirected] = useState(false)
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && !hasRedirected) {
+      setHasRedirected(true)
+      
       // Role-based routing
       if (user.role === "admin") {
-        router.push("/dashboard/admin")
+        router.replace("/dashboard/admin")
       } else if (user.role === "teacher") {
-        router.push("/dashboard/teacher")
+        router.replace("/dashboard/teacher")
       } else if (user.role === "parent") {
-        router.push("/dashboard/parent")
+        router.replace("/dashboard/parent")
+      } else {
+        // Default to teacher dashboard if no role is set
+        router.replace("/dashboard/teacher")
       }
     }
-  }, [user, loading, router])
+  }, [user, loading, router, hasRedirected])
 
   if (loading) {
     return (
