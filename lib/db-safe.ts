@@ -193,7 +193,10 @@ export async function ensureAdminUserExists() {
 
 // Export empty functions for compatibility
 export const sql = () => []
-export const safeQuery = async () => []
+export const safeQuery = async (query: string, params: any[] = []) => {
+  console.log("Database queries disabled for production deployment")
+  return []
+}
 export const ensureTablesExist = async () => true
 export const ensureSchedulesTableExists = async () => true
 export const ensureUsersTableExists = async () => true
