@@ -1,14 +1,10 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import GoogleProvider from "next-auth/providers/google"
 import { db } from "@/lib/db"
 import { compare } from "bcryptjs"
 import { 
   logLoginSuccess, 
   logLoginFailure, 
-  logOAuthSuccess, 
-  logOAuthFailure, 
-  logUserCreation, 
   logUserLookup 
 } from "@/lib/auth-logger"
 
@@ -40,10 +36,6 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -111,56 +103,6 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
-      if (account?.provider === "google") {
-        try {
-          console.log("Processing Google OAuth sign in for:", user.email)
-          
-          // Check if user exists in our database
-          const existingUser = await db.users.findFirst({
-            email: user.email!
-          })
-
-          await logUserLookup(user.email!, !!existingUser)
-
-          if (!existingUser) {
-            console.log("Creating new user from Google OAuth")
-            try {
-              // Create new user in our database
-              const newUser = await db.users.create({
-                name: user.name!,
-                email: user.email!,
-                password_hash: "google_oauth_user", // Placeholder for OAuth users
-                role: "teacher", // Default role for Google users
-              })
-              
-              console.log("Created new user from Google OAuth:", newUser)
-              await logUserCreation(user.email!, "google", newUser.id.toString())
-              await logOAuthSuccess(user.email!, "google", newUser.id.toString())
-            } catch (createError) {
-              console.error("Failed to create user in database:", createError)
-              await logOAuthFailure(user.email!, "google", createError instanceof Error ? createError.message : "Database creation failed")
-              
-              // If RLS is blocking, we'll still allow the sign-in
-              // The user can be created later through admin interface
-              console.log("Allowing sign-in despite database creation failure")
-              return true
-            }
-          } else {
-            console.log("Existing user found:", existingUser)
-            await logOAuthSuccess(user.email!, "google", existingUser.id.toString())
-          }
-          
-          return true
-        } catch (error) {
-          console.error("Error handling Google OAuth:", error)
-          await logOAuthFailure(user.email!, "google", error instanceof Error ? error.message : "OAuth processing failed")
-          // Don't block the sign-in if there's a database error
-          return true
-        }
-      }
-      return true
-    },
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id

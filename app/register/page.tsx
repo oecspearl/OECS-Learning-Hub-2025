@@ -14,6 +14,12 @@ import { Loader2, CheckCircle } from "lucide-react"
 import { registerUser } from "@/app/actions/auth"
 import { signIn } from "next-auth/react"
 import { Separator } from "@/components/ui/separator"
+import { createClient } from '@supabase/supabase-js'
+
+// Create Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -85,6 +91,31 @@ export default function RegisterPage() {
     } catch (err) {
       setError("An unexpected error occurred. Please try again.")
       console.error("Registration error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignUp = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      })
+      
+      if (error) {
+        console.error('Google OAuth error:', error)
+        setError('Google sign-up failed. Please try again.')
+      }
+      // If successful, Supabase will redirect automatically
+    } catch (err) {
+      console.error('Google OAuth error:', err)
+      setError('Google sign-up failed. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -226,7 +257,7 @@ export default function RegisterPage() {
               type="button"
               variant="outline"
               className="w-full"
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              onClick={handleGoogleSignUp}
               disabled={isLoading}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">

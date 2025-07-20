@@ -12,6 +12,12 @@ import { Loader2 } from "lucide-react"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
+import { createClient } from '@supabase/supabase-js'
+
+// Create Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -70,6 +76,31 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Sign in error:", err)
       setError("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      })
+      
+      if (error) {
+        console.error('Google OAuth error:', error)
+        setError('Google sign-in failed. Please try again.')
+      }
+      // If successful, Supabase will redirect automatically
+    } catch (err) {
+      console.error('Google OAuth error:', err)
+      setError('Google sign-in failed. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -140,7 +171,7 @@ export default function LoginPage() {
             type="button"
             variant="outline"
             className="w-full"
-            onClick={() => signIn("google", { callbackUrl })}
+            onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
