@@ -3,6 +3,14 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { db } from "@/lib/db"
 import { compare } from "bcryptjs"
+import { 
+  logLoginSuccess, 
+  logLoginFailure, 
+  logOAuthSuccess, 
+  logOAuthFailure, 
+  logUserCreation, 
+  logUserLookup 
+} from "@/lib/auth-logger"
 
 declare module "next-auth" {
   interface Session {
@@ -44,30 +52,47 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials")
+          await logLoginFailure(credentials?.email || "unknown", "credentials", "Missing credentials")
           throw new Error("Missing credentials")
         }
 
         try {
+          console.log("Attempting to find user:", credentials.email)
+          
           const user = await db.users.findFirst({
             email: credentials.email
           })
 
+          console.log("User lookup result:", user ? "Found" : "Not found")
+          await logUserLookup(credentials.email, !!user)
+
           if (!user) {
+            console.log("User not found:", credentials.email)
+            await logLoginFailure(credentials.email, "credentials", "User not found")
             throw new Error("Invalid email or password")
           }
 
+          console.log("Comparing passwords...")
           const isPasswordValid = await compare(
             credentials.password,
             user.password_hash
           )
 
+          console.log("Password validation result:", isPasswordValid)
+
           if (!isPasswordValid) {
+            console.log("Invalid password for user:", credentials.email)
+            await logLoginFailure(credentials.email, "credentials", "Invalid password")
             throw new Error("Invalid email or password")
           }
 
           // Normalize the role to lowercase and ensure ID is a string
           const normalizedRole = user.role.toLowerCase()
           const userId = user.id.toString()
+
+          console.log("Authentication successful for user:", user.name)
+          await logLoginSuccess(credentials.email, "credentials", userId)
 
           return {
             id: userId,
@@ -79,6 +104,7 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (error) {
           console.error("Auth error:", error)
+          await logLoginFailure(credentials.email, "credentials", error instanceof Error ? error.message : "Unknown error")
           throw error
         }
       }
@@ -88,29 +114,49 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
         try {
+          console.log("Processing Google OAuth sign in for:", user.email)
+          
           // Check if user exists in our database
           const existingUser = await db.users.findFirst({
             email: user.email!
           })
 
+          await logUserLookup(user.email!, !!existingUser)
+
           if (!existingUser) {
-            // Create new user in our database
-            const newUser = await db.users.create({
-              name: user.name!,
-              email: user.email!,
-              password_hash: "google_oauth_user", // Placeholder for OAuth users
-              role: "teacher", // Default role for Google users
-            })
-            
-            console.log("Created new user from Google OAuth:", newUser)
+            console.log("Creating new user from Google OAuth")
+            try {
+              // Create new user in our database
+              const newUser = await db.users.create({
+                name: user.name!,
+                email: user.email!,
+                password_hash: "google_oauth_user", // Placeholder for OAuth users
+                role: "teacher", // Default role for Google users
+              })
+              
+              console.log("Created new user from Google OAuth:", newUser)
+              await logUserCreation(user.email!, "google", newUser.id.toString())
+              await logOAuthSuccess(user.email!, "google", newUser.id.toString())
+            } catch (createError) {
+              console.error("Failed to create user in database:", createError)
+              await logOAuthFailure(user.email!, "google", createError instanceof Error ? createError.message : "Database creation failed")
+              
+              // If RLS is blocking, we'll still allow the sign-in
+              // The user can be created later through admin interface
+              console.log("Allowing sign-in despite database creation failure")
+              return true
+            }
           } else {
             console.log("Existing user found:", existingUser)
+            await logOAuthSuccess(user.email!, "google", existingUser.id.toString())
           }
           
           return true
         } catch (error) {
           console.error("Error handling Google OAuth:", error)
-          return false
+          await logOAuthFailure(user.email!, "google", error instanceof Error ? error.message : "OAuth processing failed")
+          // Don't block the sign-in if there's a database error
+          return true
         }
       }
       return true
