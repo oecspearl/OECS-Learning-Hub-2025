@@ -31,13 +31,7 @@ export function Header() {
           <Link href="/" className="flex items-center space-x-3">
             {/* OECS Logo */}
             <div className="flex items-center space-x-2">
-              <div className="relative">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-yellow-300 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
+              <img src="/oecsnavlogo.png" alt="OECS Logo" className="h-10 w-auto" />
               <div className="flex flex-col">
                 <span className="text-white text-2xl font-bold">OECS</span>
                 <span className="text-white text-xs">LEARNING HUB</span>
