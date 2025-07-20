@@ -1,3 +1,8 @@
+// This file is commented out for production deployment
+// better-sqlite3 is not compatible with serverless environments like Vercel
+// The application uses Supabase for database functionality instead
+
+/*
 import Database from 'better-sqlite3'
 import crypto from "crypto"
 
@@ -184,3 +189,12 @@ export async function ensureAdminUserExists() {
     console.error('Error ensuring admin user exists:', error)
   }
 }
+*/
+
+// Export empty functions for compatibility
+export const sql = () => []
+export const safeQuery = async () => []
+export const ensureTablesExist = async () => true
+export const ensureSchedulesTableExists = async () => true
+export const ensureUsersTableExists = async () => true
+export const ensureAdminUserExists = async () => true

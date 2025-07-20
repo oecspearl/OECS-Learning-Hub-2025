@@ -1,7 +1,7 @@
 import { db } from "@/lib/db"
 import { users } from "@/lib/schema"
 import { hash } from "bcrypt"
-import { migrate } from "drizzle-orm/better-sqlite3/migrator"
+// import { migrate } from "drizzle-orm/better-sqlite3/migrator"
 import { initializeSettings } from "./init-settings"
 
 export async function initializeDatabase() {
