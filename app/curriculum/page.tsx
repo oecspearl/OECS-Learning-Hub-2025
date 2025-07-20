@@ -265,7 +265,7 @@ export default function CurriculumPage() {
           {/* Grade 2 */}
           <div className="bg-white rounded-lg border shadow-sm hover:shadow-lg transition-shadow">
             <div className="relative w-full h-48 overflow-hidden">
-              <Image src="/grade_2.png" alt="Grade 2 classroom" fill className="object-cover" />
+              <Image src="/Grade_2.png" alt="Grade 2 classroom" fill className="object-cover" />
             </div>
             <div className="p-4">
               <h3 className="text-lg font-semibold mb-1">Grade 2</h3>

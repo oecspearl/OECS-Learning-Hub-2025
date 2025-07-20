@@ -5,10 +5,11 @@ import { eq } from "drizzle-orm"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const quiz = await db.quizzes.findFirst({ id: params.id })
+    const { id } = await params
+    const quiz = await db.quizzes.findFirst({ id })
     
     if (!quiz) {
       return NextResponse.json({ error: "Quiz not found" }, { status: 404 })
@@ -23,12 +24,13 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     
-    const updatedQuiz = await db.quizzes.update(params.id, {
+    const updatedQuiz = await db.quizzes.update(id, {
       title: body.title,
       description: body.description,
       subject: body.subject,
@@ -53,10 +55,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await db.quizzes.delete(params.id)
+    const { id } = await params
+    await db.quizzes.delete(id)
     
     return NextResponse.json({ success: true })
   } catch (error) {
