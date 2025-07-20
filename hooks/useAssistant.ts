@@ -11,7 +11,7 @@ interface Message {
 }
 
 export const useAssistant = () => {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -28,15 +28,49 @@ export const useAssistant = () => {
 
     setMessages(prev => [...prev, newMessage])
 
-    // TODO: Implement actual message sending to API
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      content: "I'm here to help! This is a placeholder response.",
-      role: 'assistant',
-      timestamp: new Date(),
-    }
+    try {
+      // Call the OpenAI API
+      const response = await fetch('/api/assistant/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({
+          message: content,
+          context: {
+            currentPage,
+            userRole: user?.user_metadata?.role || 'teacher',
+          },
+        }),
+      })
 
-    setMessages(prev => [...prev, assistantMessage])
+      if (!response.ok) {
+        throw new Error('Failed to get response from assistant')
+      }
+
+      const data = await response.json()
+      
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: data.response || 'Sorry, I encountered an error. Please try again.',
+        role: 'assistant',
+        timestamp: new Date(),
+      }
+
+      setMessages(prev => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Error sending message to assistant:', error)
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: 'Sorry, I encountered an error. Please try again.',
+        role: 'assistant',
+        timestamp: new Date(),
+      }
+
+      setMessages(prev => [...prev, errorMessage])
+    }
   }
 
   const clearMessages = () => {
