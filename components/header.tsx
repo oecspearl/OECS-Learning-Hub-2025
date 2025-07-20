@@ -51,6 +51,9 @@ export function Header() {
           <Link href="/innovative-tools" className="text-white hover:text-green-200 transition-colors font-medium">
             Innovative Tools
           </Link>
+          <Link href="/dashboard" className="text-white hover:text-green-200 transition-colors font-medium">
+            Dashboard
+          </Link>
           <Link href="/help" className="text-white hover:text-green-200 transition-colors font-medium">
             Help
           </Link>
