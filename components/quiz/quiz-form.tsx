@@ -155,14 +155,26 @@ export function QuizForm() {
   }
 
   const handleSaveQuiz = async () => {
-    if (!generatedQuiz || !user?.id) {
+    if (!generatedQuiz) {
       toast({
         title: "Error",
-        description: "Please generate a quiz first and ensure you're logged in.",
+        description: "Please generate a quiz first.",
         variant: "destructive",
       })
       return
     }
+
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "Please log in to save quizzes.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    console.log("Saving quiz with user ID:", user.id)
+    console.log("Generated quiz data:", generatedQuiz)
 
     setSaving(true)
     try {
@@ -174,13 +186,15 @@ export function QuizForm() {
         topic: generatedQuiz.topic,
         content: generatedQuiz.content,
         question_count: generatedQuiz.questionCount,
-        question_types: JSON.stringify(generatedQuiz.questionTypes),
+        question_types: JSON.stringify(generatedQuiz.questionTypes || []),
         difficulty: generatedQuiz.difficulty,
         time_limit: generatedQuiz.timeLimit,
-        tags: JSON.stringify(generatedQuiz.tags),
+        tags: JSON.stringify(generatedQuiz.tags || []),
         instructions: generatedQuiz.instructions,
         user_id: user.id
       })
+
+      console.log("Save result:", saveResult)
 
       if (saveResult.success) {
         toast({
@@ -194,9 +208,10 @@ export function QuizForm() {
           id: saveResult.data.id
         })
       } else {
+        console.error("Save failed:", saveResult.error, saveResult.details)
         toast({
           title: "Save failed",
-          description: "Failed to save quiz. Please try again.",
+          description: saveResult.error || "Failed to save quiz. Please try again.",
           variant: "destructive",
         })
       }

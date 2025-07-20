@@ -2,8 +2,6 @@
 
 import { z } from "zod"
 import { db } from "@/lib/db"
-import { quizzes as quizzesTable } from "@/lib/schema"
-import { eq, desc } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 interface Quiz {
@@ -27,6 +25,8 @@ interface Quiz {
 
 export async function saveQuiz(quizData: Quiz) {
   try {
+    console.log("Attempting to save quiz with data:", quizData)
+    
     const id = `quiz_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     const quiz = {
@@ -48,12 +48,25 @@ export async function saveQuiz(quizData: Quiz) {
       updated_at: new Date().toISOString(),
     }
     
+    console.log("Quiz object to save:", quiz)
+    
     const result = await db.quizzes.create(quiz)
+    
+    console.log("Quiz saved successfully:", result)
     
     return { success: true, data: result }
   } catch (error) {
     console.error("Error saving quiz:", error)
-    return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      quizData
+    })
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Unknown error",
+      details: error instanceof Error ? error.stack : undefined
+    }
   }
 }
 
@@ -89,7 +102,7 @@ export async function getQuizById(id: string): Promise<Quiz | null> {
 
 export async function updateQuiz(id: string, quizData: Partial<Quiz>) {
   try {
-    await db.quizzes.update(id, {
+    const result = await db.quizzes.update(id, {
       ...quizData,
       updated_at: new Date().toISOString()
     })
@@ -97,7 +110,7 @@ export async function updateQuiz(id: string, quizData: Partial<Quiz>) {
     revalidatePath('/dashboard/teacher')
     revalidatePath('/quiz')
     
-    return { success: true }
+    return { success: true, data: result }
   } catch (error) {
     console.error("Error updating quiz:", error)
     return { success: false, error: "Failed to update quiz" }
