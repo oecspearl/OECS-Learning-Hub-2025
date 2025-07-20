@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Plus, FileText, ClipboardCheck, Users, BookOpen } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { FileText, ClipboardCheck, Users, BookOpen, Plus, Eye, Edit, Download, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -29,6 +30,7 @@ interface DashboardTabsProps {
 export function DashboardTabs({ type, title, description, emptyMessage, createLink }: DashboardTabsProps) {
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
+  const [downloading, setDownloading] = useState<string | null>(null)
   const { user } = useAuth()
 
   useEffect(() => {
@@ -86,6 +88,63 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
         return "bg-gray-100 text-gray-800"
       default:
         return "bg-blue-100 text-blue-800"
+    }
+  }
+
+  const getEditLink = (resourceId: string, resourceType: string) => {
+    switch (resourceType) {
+      case "quizzes":
+        return `/quiz/edit/${resourceId}`
+      case "lesson-plans":
+        return `/planner/edit/${resourceId}`
+      case "multigrade":
+        return `/multigrade/edit/${resourceId}`
+      case "cross-curricular":
+        return `/cross-curricular/edit/${resourceId}`
+      default:
+        return `/${resourceType}/${resourceId}`
+    }
+  }
+
+  const getViewLink = (resourceId: string, resourceType: string) => {
+    switch (resourceType) {
+      case "quizzes":
+        return `/quiz/view/${resourceId}`
+      case "lesson-plans":
+        return `/planner/view/${resourceId}`
+      case "multigrade":
+        return `/multigrade/view/${resourceId}`
+      case "cross-curricular":
+        return `/cross-curricular/view/${resourceId}`
+      default:
+        return `/${resourceType}/${resourceId}`
+    }
+  }
+
+  const handleDownload = async (resourceId: string, format: string) => {
+    try {
+      setDownloading(resourceId)
+      
+      const response = await fetch(`/api/download/${type}/${resourceId}?format=${format}`)
+      
+      if (!response.ok) {
+        throw new Error('Download failed')
+      }
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${type}-${resourceId}.${format}`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Download error:', error)
+      alert('Failed to download file')
+    } finally {
+      setDownloading(null)
     }
   }
 
@@ -161,13 +220,44 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
                       <span>Created: {resource.createdAt}</span>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/${type}/${resource.id}`}>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" asChild className="flex-1">
+                        <Link href={getViewLink(resource.id, type)}>
+                          <Eye className="h-3 w-3 mr-1" />
                           View
                         </Link>
                       </Button>
+                      <Button variant="outline" size="sm" asChild className="flex-1">
+                        <Link href={getEditLink(resource.id, type)}>
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Link>
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm" disabled={downloading === resource.id}>
+                            {downloading === resource.id ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-900" />
+                            ) : (
+                              <Download className="h-3 w-3" />
+                            )}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'pdf')}>
+                            Download as PDF
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'docx')}>
+                            Download as Word
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'json')}>
+                            Download as JSON
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </CardContent>
                 </Card>
@@ -192,13 +282,44 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-xs text-gray-500">
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
                         <span>Created: {resource.createdAt}</span>
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/${type}/${resource.id}`}>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" asChild className="flex-1">
+                          <Link href={getViewLink(resource.id, type)}>
+                            <Eye className="h-3 w-3 mr-1" />
                             View
                           </Link>
                         </Button>
+                        <Button variant="outline" size="sm" asChild className="flex-1">
+                          <Link href={getEditLink(resource.id, type)}>
+                            <Edit className="h-3 w-3 mr-1" />
+                            Edit
+                          </Link>
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" disabled={downloading === resource.id}>
+                              {downloading === resource.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-900" />
+                              ) : (
+                                <Download className="h-3 w-3" />
+                              )}
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'pdf')}>
+                              Download as PDF
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'docx')}>
+                              Download as Word
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'json')}>
+                              Download as JSON
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </CardContent>
                   </Card>

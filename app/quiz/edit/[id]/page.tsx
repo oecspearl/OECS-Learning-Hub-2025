@@ -15,6 +15,7 @@ import { Loader2, Save, ArrowLeft, Edit, Trash2, Plus } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
 import { toast } from "@/components/ui/use-toast"
 import Link from "next/link"
+import { QuizDownload } from "@/components/quiz/quiz-download"
 
 interface QuizQuestion {
   id: string
@@ -290,19 +291,22 @@ export default function EditQuizPage() {
             <p className="text-muted-foreground">Modify your quiz content and settings</p>
           </div>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4 mr-2" />
-              Save Changes
-            </>
-          )}
-        </Button>
+        <div className="flex items-center gap-4">
+          <QuizDownload quizId={quizId} quizTitle={quiz?.title || "Untitled Quiz"} />
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {error && (
