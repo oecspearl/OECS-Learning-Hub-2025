@@ -1,153 +1,114 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { redirect } from "next/navigation"
-import { useEffect, useState } from "react"
-import { ProfileCard } from "@/components/dashboard/profile-card"
-import { StatsCards } from "@/components/dashboard/stats-cards"
-import { DashboardTabs } from "@/components/dashboard/dashboard-tabs"
-import { QuickActions } from "@/components/dashboard/quick-actions"
-import { getLessonPlans } from "@/app/actions/lesson-plans"
-import { getMultigradePlans } from "@/app/actions/multigrade-plans"
-import { getCrossCurricularPlans } from "@/app/actions/cross-curricular-plans"
-import { getAllQuizzes, getQuizzesByUserId } from "@/app/actions/quizzes"
-import type { LessonPlan } from "@/app/actions/lesson-plans"
-import type { CrossCurricularPlan } from "@/app/actions/cross-curricular-plans"
-import { createTestLessonPlan } from "@/app/actions/lesson-plans"
+import { useAuth } from "@/contexts/AuthContext"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { BookOpen, FileEdit, FileCheck, MessageSquare, Users, BarChart } from "lucide-react"
+import Link from "next/link"
 
-// Update the local LessonPlan interface to match the database schema
-interface DashboardLessonPlan {
-  id: string
-  title: string
-  subject: string
-  grade: string
-  topic: string | null
-  content: string
-  duration: string | null
-  materials: string | null
-  pedagogical_strategy: string | null
-  differentiation_strategies: string | null
-  grouping_strategy: string | null
-  assessment_approach: string | null
-  curriculum_standards: string | null
-  overview: string | null
-  objectives: string | null
-  vocabulary: string | null
-  homework: string | null
-  extensions: string | null
-  standards: string | null
-  user_id: string
-  created_at: string
-  updated_at: string
-}
+export default function TeacherDashboard() {
+  const { user, loading } = useAuth()
 
-export default function TeacherDashboardPage() {
-  const { data: session, status } = useSession()
-  const [lessonPlans, setLessonPlans] = useState<DashboardLessonPlan[]>([])
-  const [multigradePlans, setMultigradePlans] = useState<any[]>([])
-  const [crossCurricularPlans, setCrossCurricularPlans] = useState<any[]>([])
-  const [quizzes, setQuizzes] = useState<any[]>([])
-  const [plansBySubject, setPlansBySubject] = useState<Record<string, DashboardLessonPlan[]>>({})
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">Loading...</div>
+      </div>
+    )
+  }
 
-  const loadPlans = async () => {
-    try {
-      const lessonResult = await getLessonPlans()
-      if (lessonResult.success && lessonResult.data) {
-        if (lessonResult.data.length === 0) {
-          const testResult = await createTestLessonPlan()
-          if (testResult.success && testResult.data) {
-            setLessonPlans([testResult.data])
-            const grouped = { [testResult.data.subject.toLowerCase()]: [testResult.data] }
-            setPlansBySubject(grouped)
-          }
-        } else {
-          setLessonPlans(lessonResult.data)
-          const grouped = lessonResult.data.reduce((acc: Record<string, DashboardLessonPlan[]>, plan: DashboardLessonPlan) => {
-            const subject = plan.subject.toLowerCase()
-            if (!acc[subject]) {
-              acc[subject] = []
-            }
-            acc[subject].push(plan)
-            return acc
-          }, {} as Record<string, DashboardLessonPlan[]>)
-          setPlansBySubject(grouped)
-        }
-      }
-      const multigradeResult = await getMultigradePlans()
-      setMultigradePlans(multigradeResult || [])
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-4">Please log in to access the teacher dashboard.</p>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
-      const crossCurricularResult = await getCrossCurricularPlans()
-      if (crossCurricularResult.success && crossCurricularResult.data) {
-        setCrossCurricularPlans(crossCurricularResult.data)
-      }
-
-      // Ensure user ID is a string for consistency
-      const userId = session?.user?.id?.toString() || session?.user?.email || "1"
-      
-      try {
-        const quizzesResult = await getQuizzesByUserId(userId)
-        setQuizzes(quizzesResult)
-      } catch (error) {
-        console.error("Error fetching quizzes:", error)
-        setQuizzes([])
-      }
-    } catch (error) {
-      console.error("Error loading plans:", error)
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
+  const dashboardItems = [
+    {
+      title: "My Classes",
+      description: "Manage your classes and students",
+      icon: <BookOpen className="h-6 w-6" />,
+      href: "/dashboard/teacher/classes",
+      color: "bg-blue-500"
+    },
+    {
+      title: "Lesson Plans",
+      description: "Create and manage lesson plans",
+      icon: <FileEdit className="h-6 w-6" />,
+      href: "/dashboard/teacher/lesson-plans",
+      color: "bg-green-500"
+    },
+    {
+      title: "Assessments",
+      description: "Create and grade assessments",
+      icon: <FileCheck className="h-6 w-6" />,
+      href: "/dashboard/teacher/assessments",
+      color: "bg-purple-500"
+    },
+    {
+      title: "Feedback",
+      description: "View student feedback and comments",
+      icon: <MessageSquare className="h-6 w-6" />,
+      href: "/dashboard/teacher/feedback",
+      color: "bg-orange-500"
+    },
+    {
+      title: "Student Progress",
+      description: "Track student performance and progress",
+      icon: <Users className="h-6 w-6" />,
+      href: "/dashboard/teacher/progress",
+      color: "bg-teal-500"
+    },
+    {
+      title: "Analytics",
+      description: "View teaching analytics and insights",
+      icon: <BarChart className="h-6 w-6" />,
+      href: "/dashboard/teacher/analytics",
+      color: "bg-indigo-500"
     }
-  }
-
-  const handleRefresh = () => {
-    setRefreshing(true)
-    loadPlans()
-  }
-
-  useEffect(() => {
-    if (session?.user) {
-      loadPlans()
-    }
-  }, [session])
-
-  if (status === "loading" || loading) {
-    return <div>Loading...</div>
-  }
-
-  if (!session || session.user.role.toLowerCase() !== "teacher") {
-    redirect("/login")
-  }
+  ]
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
-        <Button onClick={handleRefresh} disabled={refreshing} variant="outline">
-          {refreshing ? "Refreshing..." : "Refresh"}
-        </Button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Welcome back, {user.user_metadata?.name || "Teacher"}!
+        </h1>
+        <p className="text-gray-600">
+          Manage your classes, create lesson plans, and track student progress.
+        </p>
       </div>
-      
 
-      
-      <ProfileCard />
-      <StatsCards 
-        lessonPlansCount={lessonPlans.length}
-        quizzesCount={quizzes.length}
-        multigradePlansCount={multigradePlans.length}
-        crossCurricularPlansCount={crossCurricularPlans.length}
-        totalResources={lessonPlans.length + quizzes.length + multigradePlans.length + crossCurricularPlans.length}
-      />
-      <DashboardTabs 
-        lessonPlans={lessonPlans} 
-        plansBySubject={plansBySubject} 
-        multigradePlans={multigradePlans}
-        crossCurricularPlans={crossCurricularPlans}
-        quizzes={quizzes}
-      />
-      <QuickActions />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {dashboardItems.map((item, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className={`p-2 rounded-lg ${item.color} text-white`}>
+                  {item.icon}
+                </div>
+                <CardTitle className="text-lg">{item.title}</CardTitle>
+              </div>
+              <CardDescription>{item.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full">
+                <Link href={item.href}>
+                  Access {item.title}
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }

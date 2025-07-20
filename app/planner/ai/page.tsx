@@ -118,6 +118,22 @@ export default function AILessonPlannerPage() {
     }
   }
 
+  // Create a mock plan object for the PlannerOutput component
+  const mockPlan = {
+    id: "mock-id",
+    title: topic || "Generated Lesson Plan",
+    description: lessonPlan || "No lesson plan generated yet",
+    type: "lesson-plan",
+    subject: subject || "General",
+    grade: gradeLevel || "All Grades",
+    duration: "60 minutes",
+    objectives: ["Learning objective 1", "Learning objective 2"],
+    activities: ["Activity 1", "Activity 2"],
+    materials: ["Material 1", "Material 2"],
+    assessment: "Assessment method",
+    created_at: new Date().toISOString()
+  }
+
   return (
     <div className="flex flex-col items-center min-h-[calc(100vh-4rem)] py-8 px-4">
       {/* Main heading section */}
@@ -165,7 +181,7 @@ export default function AILessonPlannerPage() {
           </TabsContent>
 
           <TabsContent value="output" className="mt-0 w-full">
-            <PlannerOutput />
+            <PlannerOutput plan={mockPlan} />
           </TabsContent>
         </Tabs>
       </div>

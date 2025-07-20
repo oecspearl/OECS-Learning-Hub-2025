@@ -1,37 +1,52 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { useUser } from "@/lib/hooks/use-user"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AvatarUpload } from "@/components/ui/avatar-upload"
-import { useUser } from "@/lib/hooks/use-user"
-import { Loader2 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, Mail, Shield, User } from "lucide-react"
 
 export function ProfileCard() {
-  const { user, loading, error } = useUser()
+  const { user, loading } = useUser()
   const [avatarUrl, setAvatarUrl] = useState<string | null>((user as any)?.avatar_url ?? null)
 
   useEffect(() => {
-    setAvatarUrl((user as any)?.avatar_url ?? null)
-  }, [user])
+    if (user?.avatar_url) {
+      setAvatarUrl(user.avatar_url)
+    }
+  }, [user?.avatar_url])
 
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center p-6">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <CardHeader>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>Loading profile information...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+              <div className="h-3 bg-gray-200 rounded w-24 animate-pulse" />
+            </div>
+          </div>
         </CardContent>
       </Card>
     )
   }
 
-  if (error || !user) {
+  if (!user) {
     return (
       <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">
-            {error || "Failed to load profile information"}
-          </p>
+        <CardHeader>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>No user information available</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Please log in to view your profile.</p>
         </CardContent>
       </Card>
     )
@@ -43,31 +58,37 @@ export function ProfileCard() {
         <CardTitle>Profile</CardTitle>
         <CardDescription>Your account information</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex flex-col items-center space-y-4">
-          <AvatarUpload
-            currentAvatarUrl={avatarUrl}
-            userName={user.name}
-            onAvatarUpdate={setAvatarUrl}
-            size="lg"
-          />
-          <div className="text-center">
-            <h3 className="font-medium text-lg">{user.name}</h3>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
+      <CardContent>
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-16 w-16">
+            <AvatarImage src={avatarUrl || undefined} alt={user.name || "User"} />
+            <AvatarFallback className="text-lg">
+              {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <h3 className="text-lg font-semibold">{user.name || "User"}</h3>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <Mail className="h-4 w-4" />
+              <span>{user.email}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="h-4 w-4 text-muted-foreground" />
+              <Badge variant="secondary">
+                {user.role || "User"}
+              </Badge>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4" />
+              <span>Member since {user.created_at ? new Date(user.created_at).toLocaleDateString() : "Unknown"}</span>
+            </div>
           </div>
         </div>
-        
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Role</span>
-            <span className="text-sm font-medium capitalize">{user.role}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Member Since</span>
-            <span className="text-sm font-medium">
-              {new Date(user.created_at).toLocaleDateString()}
-            </span>
-          </div>
+        <div className="mt-4 flex space-x-2">
+          <Button variant="outline" size="sm">
+            <User className="mr-2 h-4 w-4" />
+            Edit Profile
+          </Button>
         </div>
       </CardContent>
     </Card>

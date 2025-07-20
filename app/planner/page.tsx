@@ -10,6 +10,22 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function PlannerPage() {
+  // Create a mock plan object for the PlannerOutput component
+  const mockPlan = {
+    id: "mock-id",
+    title: "Sample Lesson Plan",
+    description: "This is a sample lesson plan. Generate your own using the AI tools.",
+    type: "lesson-plan",
+    subject: "General",
+    grade: "All Grades",
+    duration: "60 minutes",
+    objectives: ["Learning objective 1", "Learning objective 2"],
+    activities: ["Activity 1", "Activity 2"],
+    materials: ["Material 1", "Material 2"],
+    assessment: "Assessment method",
+    created_at: new Date().toISOString()
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50">
       <div className="container mx-auto px-4 py-8">
@@ -80,7 +96,7 @@ export default function PlannerPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <PlannerOutput />
+                <PlannerOutput plan={mockPlan} />
               </CardContent>
             </Card>
           </div>

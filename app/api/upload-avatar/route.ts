@@ -1,67 +1,79 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const authHeader = request.headers.get('authorization')
     
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!authHeader) {
+      return NextResponse.json({ error: 'No authorization header' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error } = await supabase.auth.getUser(token)
+
+    if (error || !user) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     const formData = await request.formData()
-    const file = formData.get("avatar") as File
-    
+    const file = formData.get('avatar') as File
+
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 })
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
     // Validate file type
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 })
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json({ error: 'File must be an image' }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: "File size must be less than 5MB" }, { status: 400 })
+      return NextResponse.json({ error: 'File size must be less than 5MB' }, { status: 400 })
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), "public", "uploads", "avatars")
-    await mkdir(uploadsDir, { recursive: true })
-
     // Generate unique filename
-    const timestamp = Date.now()
-    const fileExtension = file.name.split(".").pop()
-    const fileName = `avatar_${session.user.id}_${timestamp}.${fileExtension}`
-    const filePath = join(uploadsDir, fileName)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`
 
-    // Convert file to buffer and save
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    await writeFile(filePath, buffer)
+    // Upload to Supabase Storage
+    const { data, error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file)
 
-    // Update user's avatar_url in database
-    const avatarUrl = `/uploads/avatars/${fileName}`
-    
-    await db.users.update(parseInt(session.user.id), { 
-      avatar_url: avatarUrl,
-      updated_at: new Date().toISOString()
+    if (uploadError) {
+      console.error('Upload error:', uploadError)
+      return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 })
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(fileName)
+
+    // Update user metadata with new avatar URL
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { avatar_url: publicUrl }
     })
+
+    if (updateError) {
+      console.error('Update error:', updateError)
+      return NextResponse.json({ error: 'Failed to update avatar' }, { status: 500 })
+    }
 
     return NextResponse.json({ 
       success: true, 
-      avatarUrl 
+      avatar_url: publicUrl 
     })
-
   } catch (error) {
-    console.error("Error uploading avatar:", error)
+    console.error('Avatar upload error:', error)
     return NextResponse.json(
-      { error: "Failed to upload avatar" }, 
+      { error: 'Failed to upload avatar' },
       { status: 500 }
     )
   }
@@ -69,17 +81,28 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const authHeader = request.headers.get('authorization')
     
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!authHeader) {
+      return NextResponse.json({ error: 'No authorization header' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error } = await supabase.auth.getUser(token)
+
+    if (error || !user) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Update user's avatar_url to null in database
-    await db.users.update(parseInt(session.user.id), { 
-      avatar_url: null,
-      updated_at: new Date().toISOString()
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { avatar_url: null }
     })
+
+    if (updateError) {
+      console.error('Update error:', updateError)
+      return NextResponse.json({ error: 'Failed to remove avatar' }, { status: 500 })
+    }
 
     return NextResponse.json({ 
       success: true, 

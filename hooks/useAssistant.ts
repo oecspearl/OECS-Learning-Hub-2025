@@ -1,74 +1,80 @@
-import { useCallback, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useAssistant as useAssistantContext } from '@/contexts/AssistantContext';
+"use client"
+
+import { useAuth } from "@/contexts/AuthContext"
+import { useState } from "react"
 
 interface Message {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
 }
 
-interface QuickAction {
-  id: string;
-  label: string;
-  prompt: string;
-  icon?: string;
-}
+export const useAssistant = () => {
+  const { user } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState('')
+  const [messages, setMessages] = useState<Message[]>([])
+  
+  const sendMessage = async (content: string) => {
+    if (!content.trim()) return
 
-interface AssistantState {
-  messages: Message[];
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  sendMessage: (content: string) => Promise<void>;
-  quickActions: QuickAction[];
-  currentPage: string;
-  clearMessages: () => void;
-}
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      content,
+      role: 'user',
+      timestamp: new Date(),
+    }
 
-export const useAssistant = (): AssistantState => {
-  const { data: session } = useSession();
-  const {
-    messages,
+    setMessages(prev => [...prev, newMessage])
+
+    // TODO: Implement actual message sending to API
+    const assistantMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: "I'm here to help! This is a placeholder response.",
+      role: 'assistant',
+      timestamp: new Date(),
+    }
+
+    setMessages(prev => [...prev, assistantMessage])
+  }
+
+  const clearMessages = () => {
+    setMessages([])
+  }
+
+  const quickActions = [
+    {
+      id: 'help',
+      label: 'Get Help',
+      prompt: 'How can I help you with the current page?',
+      icon: 'help',
+    },
+    {
+      id: 'tutorial',
+      label: 'Show Tutorial',
+      prompt: 'Can you show me how to use this feature?',
+      icon: 'school',
+    },
+    {
+      id: 'feedback',
+      label: 'Give Feedback',
+      prompt: 'I would like to provide feedback about this feature.',
+      icon: 'feedback',
+    },
+  ]
+  
+  return {
+    user,
+    userRole: user?.user_metadata?.role || 'teacher',
+    isAuthenticated: !!user,
     isOpen,
     setIsOpen,
-    sendMessage: contextSendMessage,
-    quickActions,
     currentPage,
     setCurrentPage,
-    clearMessages,
-  } = useAssistantContext();
-
-  const sendMessage = useCallback(
-    async (content: string) => {
-      if (!session?.user) return;
-
-      try {
-        await contextSendMessage(content);
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
-    },
-    [session?.user, contextSendMessage]
-  );
-
-  // Update current page when route changes
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setCurrentPage(window.location.pathname);
-    };
-
-    window.addEventListener('popstate', handleRouteChange);
-    return () => window.removeEventListener('popstate', handleRouteChange);
-  }, [setCurrentPage]);
-
-  return {
     messages,
-    isOpen,
-    setIsOpen,
     sendMessage,
     quickActions,
-    currentPage,
-    clearMessages,
-  };
-}; 
+    clearMessages
+  }
+} 

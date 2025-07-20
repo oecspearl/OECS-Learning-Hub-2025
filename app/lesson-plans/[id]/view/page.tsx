@@ -44,7 +44,7 @@ export default async function ViewLessonPlanPage({ params }: { params: Promise<{
 
     // Get reflections for this lesson plan
     const reflectionsResult = await getLessonReflectionsByLessonPlan(id)
-    const reflections = reflectionsResult.success ? reflectionsResult.reflections || [] : []
+    const reflections = reflectionsResult.success ? reflectionsResult.data || [] : []
 
     return (
       <div className="flex min-h-screen flex-col page-transition bg-gradient-to-b from-blue-50 to-white">

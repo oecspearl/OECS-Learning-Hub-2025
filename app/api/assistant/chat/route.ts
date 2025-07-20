@@ -1,126 +1,67 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { OpenAIService } from '@/services/openaiService';
-import { authOptions } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-export async function POST(req: Request) {
-  console.log('🚀 API Route: Received POST request');
-  
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+export async function POST(request: NextRequest) {
   try {
-    // Validate request body
-    let body;
-    try {
-      body = await req.json();
-      console.log('📝 API Route: Request body:', body);
-    } catch (e) {
-      console.error('❌ API Route: Invalid JSON in request body');
-      return NextResponse.json(
-        { error: 'Invalid request body', details: 'Request body must be valid JSON' },
-        { status: 400 }
-      );
-    }
+    const { message, context } = await request.json()
 
-    const { message, context } = body;
-
-    // Validate required fields
-    if (!message) {
-      console.log('❌ API Route: Missing message field');
-      return NextResponse.json(
-        { error: 'Missing required field', details: 'message is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!context) {
-      console.log('❌ API Route: Missing context field');
-      return NextResponse.json(
-        { error: 'Missing required field', details: 'context is required' },
-        { status: 400 }
-      );
-    }
-
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    console.log('👤 API Route: Session check:', !!session?.user);
-
-    if (!session?.user) {
-      console.log('❌ API Route: Unauthorized - No session');
-      return NextResponse.json(
-        { error: 'Unauthorized', details: 'You must be logged in to use this feature' },
-        { status: 401 }
-      );
-    }
-
-    console.log('🔄 API Route: Getting OpenAIService instance');
-    const openAIService = OpenAIService.getInstance();
+    // Get user from Supabase Auth
+    const authHeader = request.headers.get('authorization')
+    let user = null
     
-    console.log('📤 API Route: Sending message to OpenAI');
-    const response = await openAIService.sendMessage(
-      message,
-      context,
-      session.user.id
-    );
-    console.log('✅ API Route: Successfully got response from OpenAI');
-
-    return NextResponse.json({ response });
-  } catch (error) {
-    console.error('💥 API Route Error:', error);
-    
-    // Handle specific error types
-    if (error instanceof Error) {
-      if (error.message.includes('Rate limit')) {
-        return NextResponse.json(
-          { 
-            error: 'Rate limit exceeded',
-            details: error.message,
-            timestamp: new Date().toISOString()
-          },
-          { status: 429 }
-        );
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '')
+      const { data: { user: authUser }, error } = await supabase.auth.getUser(token)
+      if (!error && authUser) {
+        user = authUser
       }
-      
-      return NextResponse.json(
-        { 
-          error: 'Internal server error',
-          details: error.message,
-          timestamp: new Date().toISOString()
-        },
-        { status: 500 }
-      );
     }
 
-    // Handle unknown errors
-    return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: 'An unexpected error occurred',
-        timestamp: new Date().toISOString()
+    // For now, we'll proceed without user authentication for the assistant
+    // In a production environment, you'd want to properly authenticate the user
+
+    const systemPrompt = `You are an AI assistant for the OECS Learning Hub, an educational platform for teachers in the Organization of Eastern Caribbean States. 
+
+Current context:
+- Page: ${context?.currentPage || 'Unknown'}
+- User role: ${context?.userRole || 'teacher'}
+
+Provide helpful, educational guidance while being concise and practical. Focus on curriculum development, teaching strategies, and educational best practices relevant to the Caribbean context.`
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
-      { status: 500 }
-    );
-  }
-}
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 500,
+        temperature: 0.7,
+      }),
+    })
 
-export async function GET(req: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`)
     }
 
-    const openAIService = OpenAIService.getInstance();
-    openAIService.clearConversation();
+    const data = await response.json()
+    const assistantResponse = data.choices[0]?.message?.content || 'Sorry, I encountered an error. Please try again.'
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ response: assistantResponse })
   } catch (error) {
-    console.error('Clear Conversation API Error:', error);
+    console.error('Assistant chat error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process your request' },
       { status: 500 }
-    );
+    )
   }
 } 

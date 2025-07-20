@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -15,13 +14,8 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { CalendarIcon, Loader2 } from "lucide-react"
-import { testDatabaseConnection } from "@/lib/db"
 
-export default async function CreateLessonPlanPage() {
-  // Test database connection
-  const connectionTest = await testDatabaseConnection()
-  console.log("Database connection test result:", connectionTest)
-
+export default function CreateLessonPlanPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [date, setDate] = useState<Date>()

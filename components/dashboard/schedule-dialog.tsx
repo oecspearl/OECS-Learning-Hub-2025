@@ -1,163 +1,159 @@
 "use client"
 
-import { useState } from "react"
-import { useSession } from "next-auth/react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useAuth } from "@/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "sonner"
-import { Schedule } from "@/app/actions/schedules"
+import { Calendar, Clock, Users, BookOpen } from "lucide-react"
+import { useState } from "react"
 
 interface ScheduleDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAddSchedule: (slot: Omit<Schedule, "id" | "user_id" | "created_at" | "updated_at">) => Promise<void>
+  onAddSchedule: (slot: any) => Promise<void>
 }
 
 export function ScheduleDialog({ open, onOpenChange, onAddSchedule }: ScheduleDialogProps) {
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
-    day: "",
-    time: "",
     subject: "",
     grade: "",
+    day: "",
+    time: "",
     room: "",
+    duration: "60"
   })
-  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-
     try {
       await onAddSchedule(formData)
+      onOpenChange(false)
       setFormData({
-        day: "",
-        time: "",
         subject: "",
         grade: "",
+        day: "",
+        time: "",
         room: "",
+        duration: "60"
       })
-      onOpenChange(false)
-      toast.success("Schedule added successfully!")
     } catch (error) {
-      toast.error("Failed to add schedule")
-    } finally {
-      setIsLoading(false)
+      console.error("Error adding schedule:", error)
     }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Schedule</DialogTitle>
-          <DialogDescription>Add a new class to your weekly schedule</DialogDescription>
+          <DialogTitle>Add New Schedule</DialogTitle>
+          <DialogDescription>
+            Create a new teaching schedule entry.
+          </DialogDescription>
         </DialogHeader>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="day">Day</Label>
-            <Select
-              value={formData.day}
-              onValueChange={(value) => handleSelectChange("day", value)}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select day" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Monday">Monday</SelectItem>
-                <SelectItem value="Tuesday">Tuesday</SelectItem>
-                <SelectItem value="Wednesday">Wednesday</SelectItem>
-                <SelectItem value="Thursday">Thursday</SelectItem>
-                <SelectItem value="Friday">Friday</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="subject">Subject</Label>
+              <Select value={formData.subject} onValueChange={(value) => setFormData({ ...formData, subject: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mathematics">Mathematics</SelectItem>
+                  <SelectItem value="science">Science</SelectItem>
+                  <SelectItem value="language-arts">Language Arts</SelectItem>
+                  <SelectItem value="social-studies">Social Studies</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="grade">Grade</Label>
+              <Select value={formData.grade} onValueChange={(value) => setFormData({ ...formData, grade: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="grade-1">Grade 1</SelectItem>
+                  <SelectItem value="grade-2">Grade 2</SelectItem>
+                  <SelectItem value="grade-3">Grade 3</SelectItem>
+                  <SelectItem value="grade-4">Grade 4</SelectItem>
+                  <SelectItem value="grade-5">Grade 5</SelectItem>
+                  <SelectItem value="grade-6">Grade 6</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="time">Time</Label>
-            <Select
-              value={formData.time}
-              onValueChange={(value) => handleSelectChange("time", value)}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select time" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="8:00 AM">8:00 AM</SelectItem>
-                <SelectItem value="9:00 AM">9:00 AM</SelectItem>
-                <SelectItem value="10:00 AM">10:00 AM</SelectItem>
-                <SelectItem value="11:00 AM">11:00 AM</SelectItem>
-                <SelectItem value="1:00 PM">1:00 PM</SelectItem>
-                <SelectItem value="2:00 PM">2:00 PM</SelectItem>
-                <SelectItem value="3:00 PM">3:00 PM</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="day">Day</Label>
+              <Select value={formData.day} onValueChange={(value) => setFormData({ ...formData, day: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select day" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="monday">Monday</SelectItem>
+                  <SelectItem value="tuesday">Tuesday</SelectItem>
+                  <SelectItem value="wednesday">Wednesday</SelectItem>
+                  <SelectItem value="thursday">Thursday</SelectItem>
+                  <SelectItem value="friday">Friday</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="time">Time</Label>
+              <Input
+                id="time"
+                type="time"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
-            <Input
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              placeholder="e.g., Mathematics"
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="room">Room</Label>
+              <Input
+                id="room"
+                placeholder="Room number"
+                value={formData.room}
+                onChange={(e) => setFormData({ ...formData, room: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="duration">Duration (minutes)</Label>
+              <Select value={formData.duration} onValueChange={(value) => setFormData({ ...formData, duration: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="30">30 minutes</SelectItem>
+                  <SelectItem value="45">45 minutes</SelectItem>
+                  <SelectItem value="60">60 minutes</SelectItem>
+                  <SelectItem value="90">90 minutes</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="grade">Grade</Label>
-            <Input
-              id="grade"
-              name="grade"
-              value={formData.grade}
-              onChange={handleChange}
-              placeholder="e.g., Grade 3"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="room">Room</Label>
-            <Input
-              id="room"
-              name="room"
-              value={formData.room}
-              onChange={handleChange}
-              placeholder="e.g., Room 101"
-              required
-            />
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
-            >
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Schedule"}
-            </Button>
-          </div>
+            <Button type="submit">Create Schedule</Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
