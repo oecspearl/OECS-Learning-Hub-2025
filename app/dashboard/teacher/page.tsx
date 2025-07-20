@@ -179,13 +179,13 @@ export default function TeacherDashboard() {
             </div>
             <div className="flex gap-2">
               <Button asChild size="sm">
-                <Link href="/planner/create">
+                <Link href="/planner">
                   <Plus className="h-4 w-4 mr-2" />
                   New Lesson Plan
                 </Link>
               </Button>
               <Button asChild size="sm" variant="outline">
-                <Link href="/quiz/create">
+                <Link href="/quiz">
                   <Plus className="h-4 w-4 mr-2" />
                   New Quiz
                 </Link>
@@ -208,7 +208,7 @@ export default function TeacherDashboard() {
                 title="Lesson Plans"
                 description="Your created lesson plans organized by subject"
                 emptyMessage="No lesson plans created yet. Start by creating your first lesson plan."
-                createLink="/planner/create"
+                createLink="/planner"
               />
             </TabsContent>
             
@@ -218,7 +218,7 @@ export default function TeacherDashboard() {
                 title="Quizzes & Assessments"
                 description="Your created quizzes and assessments"
                 emptyMessage="No quizzes created yet. Start by creating your first quiz."
-                createLink="/quiz/create"
+                createLink="/quiz"
               />
             </TabsContent>
             
@@ -228,7 +228,7 @@ export default function TeacherDashboard() {
                 title="Multigrade Plans"
                 description="Lesson plans for multiple grade levels"
                 emptyMessage="No multigrade plans created yet. Start by creating your first multigrade plan."
-                createLink="/multigrade/new"
+                createLink="/multigrade"
               />
             </TabsContent>
             
@@ -238,7 +238,7 @@ export default function TeacherDashboard() {
                 title="Cross-Curricular Plans"
                 description="Integrated lesson plans across subjects"
                 emptyMessage="No cross-curricular plans created yet. Start by creating your first cross-curricular plan."
-                createLink="/cross-curricular/new"
+                createLink="/cross-curricular"
               />
             </TabsContent>
           </Tabs>
@@ -254,7 +254,7 @@ export default function TeacherDashboard() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
-              <Link href="/planner/ai">
+              <Link href="/planner">
                 <FileText className="h-6 w-6" />
                 <span>AI Lesson Planner</span>
               </Link>
