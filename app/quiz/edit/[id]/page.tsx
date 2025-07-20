@@ -47,7 +47,20 @@ export default function EditQuizPage() {
   const params = useParams()
   const router = useRouter()
   const { user } = useAuth()
-  const quizId = params.id as string
+  const quizId = params?.id as string
+
+  if (!quizId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600">Invalid quiz ID</p>
+          <Button asChild className="mt-4">
+            <Link href="/dashboard/teacher">Back to Dashboard</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   const [quiz, setQuiz] = useState<QuizData | null>(null)
   const [loading, setLoading] = useState(true)
