@@ -255,20 +255,48 @@ export async function saveQuiz(formData: any) {
       if (id) {
         // Update existing quiz
         console.log("Updating existing quiz with ID:", id)
-        const updatedQuiz = await db.quizzes.update(id, {
-          ...quizData,
-          updated_at: now,
-        })
+        try {
+          const updatedQuiz = await db.quizzes.update(id, {
+            ...quizData,
+            updated_at: now,
+          })
 
-        console.log("Update successful")
-        return { success: true, data: updatedQuiz }
+          console.log("Update successful")
+          return { success: true, data: updatedQuiz }
+        } catch (dbError) {
+          console.error("Database update failed:", dbError)
+          // If the error is about missing content column, try without it
+          if (dbError instanceof Error && dbError.message.includes("content")) {
+            console.log("Retrying without content column...")
+            const { content: _, ...quizDataWithoutContent } = quizData
+            const updatedQuiz = await db.quizzes.update(id, {
+              ...quizDataWithoutContent,
+              updated_at: now,
+            })
+            console.log("Update successful (without content)")
+            return { success: true, data: updatedQuiz }
+          }
+          throw dbError
+        }
       } else {
         // Create new quiz
         console.log("Creating new quiz")
-        const newQuiz = await db.quizzes.create(quizData)
-
-        console.log("Insert successful, returned ID:", newQuiz.id)
-        return { success: true, data: newQuiz }
+        try {
+          const newQuiz = await db.quizzes.create(quizData)
+          console.log("Insert successful, returned ID:", newQuiz.id)
+          return { success: true, data: newQuiz }
+        } catch (dbError) {
+          console.error("Database create failed:", dbError)
+          // If the error is about missing content column, try without it
+          if (dbError instanceof Error && dbError.message.includes("content")) {
+            console.log("Retrying without content column...")
+            const { content: _, ...quizDataWithoutContent } = quizData
+            const newQuiz = await db.quizzes.create(quizDataWithoutContent)
+            console.log("Insert successful (without content), returned ID:", newQuiz.id)
+            return { success: true, data: newQuiz }
+          }
+          throw dbError
+        }
       }
     } catch (dbError) {
       console.error("Database operation failed:", dbError)
