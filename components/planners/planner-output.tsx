@@ -26,7 +26,7 @@ export function PlannerOutput() {
   // Form fields for metadata
   const [title, setTitle] = useState("Lesson Plan")
   const [subject, setSubject] = useState("")
-  const [gradeLevel, setGradeLevel] = useState("")
+  const [grade_level, setGradeLevel] = useState("")
   const [topic, setTopic] = useState("")
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function PlannerOutput() {
       // Debug: Log the current state
       console.log("Save attempt - Current state:", {
         subject,
-        gradeLevel,
+        grade_level,
         topic,
         metadata: metadata,
         hasLessonPlan: !!lessonPlan
@@ -84,13 +84,13 @@ export function PlannerOutput() {
 
       // Try to get values from metadata if state variables are empty
       const subjectToUse = subject || metadata?.subject || ""
-      const gradeLevelToUse = gradeLevel || metadata?.gradeLevel || ""
+      const grade_levelToUse = grade_level || metadata?.gradeLevel || ""
       const topicToUse = topic || metadata?.topic || ""
 
       // Validate required fields with better error messages
       const missingFields = []
       if (!subjectToUse) missingFields.push("subject")
-      if (!gradeLevelToUse) missingFields.push("grade level")
+      if (!grade_levelToUse) missingFields.push("grade level")
       if (!topicToUse) missingFields.push("topic")
 
       if (missingFields.length > 0) {
@@ -100,12 +100,12 @@ export function PlannerOutput() {
       const formData = new FormData()
       formData.append("title", title || 'Lesson Plan')
       formData.append("subject", subjectToUse)
-      formData.append("grade_level", gradeLevelToUse) // Changed from gradeLevel to grade_level
+      formData.append("grade_level", grade_levelToUse)
       formData.append("topic", topicToUse)
       formData.append("content", contentToSave || '')
       formData.append("lesson_content", contentToSave || '')
-      formData.append("duration_minutes", "50") // Changed from duration to duration_minutes
-      formData.append("user_id", user.id) // Changed from userId to user_id
+      formData.append("duration_minutes", "50")
+      formData.append("user_id", user.id)
 
       const result = await saveLessonPlan(formData)
 
@@ -126,7 +126,7 @@ export function PlannerOutput() {
             lessonPlanId: result.data?.id,
             title: title,
             subject: subjectToUse,
-            gradeLevel: gradeLevelToUse,
+            grade_level: grade_levelToUse,
             topic: topicToUse
           }
         }))
@@ -210,7 +210,7 @@ export function PlannerOutput() {
             <div class="meta">
               <h1>${title}</h1>
               <p><strong>Subject:</strong> ${subject}</p>
-              <p><strong>Grade Level:</strong> ${gradeLevel}</p>
+              <p><strong>Grade Level:</strong> ${grade_level}</p>
               <p><strong>Topic:</strong> ${topic}</p>
               <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
             </div>
@@ -290,7 +290,7 @@ export function PlannerOutput() {
           <div>
             <CardTitle className="text-xl">{title}</CardTitle>
             <div className="text-sm text-muted-foreground mt-1">
-              {subject} • Grade {gradeLevel} • {topic}
+              {subject} • Grade {grade_level} • {topic}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -392,7 +392,7 @@ export function PlannerOutput() {
                     <Label htmlFor="gradeLevel">Grade Level</Label>
                     <Input
                       id="gradeLevel"
-                      value={gradeLevel}
+                      value={grade_level}
                       onChange={(e) => setGradeLevel(e.target.value)}
                       className="mt-1"
                     />

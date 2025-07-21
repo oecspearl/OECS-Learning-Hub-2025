@@ -176,7 +176,7 @@ Format the response as a complete, ready-to-use lesson plan.`
       lessonPlan: result.text,
       specialNeeds: formData.specialNeeds || [],
       subject: formData.subject,
-      gradeLevel: formData.gradeLevel,
+      grade_level: formData.gradeLevel,
       topic: formData.topic,
     }
 
