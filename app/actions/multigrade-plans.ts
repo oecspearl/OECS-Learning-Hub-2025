@@ -374,54 +374,62 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     const allStandards = standardsResults.flat()
     const formattedStandards = formatStandardsForPrompt(allStandards)
 
-    const now = new Date().toISOString()
-
-    if (data.id) {
-      // Update existing plan
-      console.log("SAVE MULTIGRADE PLAN: Updating existing plan with ID:", data.id)
+    // Store the plan in the database
+    try {
+      const now = new Date().toISOString()
       
-      const updatedPlan = await db.multigradePlans.update(data.id, {
-        title: data.title || "",
-        subject: data.subject,
-        grade_range: data.gradeRange,
-        topic: data.topic,
-        lesson_content: planContent,
-        duration_minutes: parseInt(data.duration || "60"),
-        materials_needed: data.materials ? data.materials.split(',').map(m => m.trim()) : null,
-        pedagogical_approach: data.pedagogicalStrategy || '',
-        differentiation_strategies: differentiationStrategies ? differentiationStrategies.split(',').map(s => s.trim()) : null,
-        grouping_strategy: data.groupingStrategy || '',
-        assessment_approach: data.assessmentApproach || '',
-        curriculum_standards: formattedStandards ? formattedStandards.split(',').map(s => s.trim()) : null,
-        updated_at: now
-      })
+      if (data.id) {
+        // Update existing plan
+        console.log("SAVE MULTIGRADE PLAN: Updating existing plan with ID:", data.id)
+        
+        const updatedPlan = await db.multigradePlans.update(data.id, {
+          title: data.title || "",
+          subject: data.subject,
+          grade_range: data.gradeRange,
+          topic: data.topic,
+          content: planContent, // Use 'content' instead of 'lesson_content'
+          duration: data.duration || "60", // Use 'duration' instead of 'duration_minutes'
+          materials: data.materials || '', // Use 'materials' instead of 'materials_needed'
+          pedagogical_strategy: data.pedagogicalStrategy || '', // Use 'pedagogical_strategy' instead of 'pedagogical_approach'
+          differentiation_strategies: differentiationStrategies || '', // Use 'differentiation_strategies'
+          grouping_strategy: data.groupingStrategy || '',
+          assessment_approach: data.assessmentApproach || '',
+          curriculum_standards: formattedStandards || '',
+          updated_at: now
+        })
 
-      console.log("SAVE MULTIGRADE PLAN: Update successful")
-      return { success: true, data: updatedPlan }
-    } else {
-      // Create new plan
-      console.log("SAVE MULTIGRADE PLAN: Creating new plan")
-      
-      const newPlan = await db.multigradePlans.create({
-        title: data.title || "",
-        subject: data.subject,
-        grade_range: data.gradeRange,
-        topic: data.topic,
-        lesson_content: planContent,
-        duration_minutes: parseInt(data.duration || "60"),
-        materials_needed: data.materials ? data.materials.split(',').map(m => m.trim()) : null,
-        pedagogical_approach: data.pedagogicalStrategy || '',
-        differentiation_strategies: differentiationStrategies ? differentiationStrategies.split(',').map(s => s.trim()) : null,
-        grouping_strategy: data.groupingStrategy || '',
-        assessment_approach: data.assessmentApproach || '',
-        curriculum_standards: formattedStandards ? formattedStandards.split(',').map(s => s.trim()) : null,
-        created_by: 'placeholder_user_id', // Replace with actual user ID
-        created_at: now,
-        updated_at: now
-      })
+        console.log("SAVE MULTIGRADE PLAN: Update successful")
+        return { success: true, data: updatedPlan }
+      } else {
+        // Create new plan
+        console.log("SAVE MULTIGRADE PLAN: Creating new plan")
+        
+        const newPlan = await db.multigradePlans.create({
+          title: data.title || "",
+          subject: data.subject,
+          grade_range: data.gradeRange,
+          topic: data.topic,
+          content: planContent, // Use 'content' instead of 'lesson_content'
+          duration: data.duration || "60", // Use 'duration' instead of 'duration_minutes'
+          materials: data.materials || '', // Use 'materials' instead of 'materials_needed'
+          pedagogical_strategy: data.pedagogicalStrategy || '', // Use 'pedagogical_strategy' instead of 'pedagogical_approach'
+          differentiation_strategies: differentiationStrategies || '', // Use 'differentiation_strategies'
+          grouping_strategy: data.groupingStrategy || '',
+          assessment_approach: data.assessmentApproach || '',
+          curriculum_standards: formattedStandards || '',
+          created_at: now,
+          updated_at: now
+        })
 
-      console.log("SAVE MULTIGRADE PLAN: Create successful, returned ID:", newPlan.id)
-      return { success: true, data: newPlan }
+        console.log("SAVE MULTIGRADE PLAN: Create successful, returned ID:", newPlan.id)
+        return { success: true, data: newPlan }
+      }
+    } catch (error) {
+      console.error("SAVE MULTIGRADE PLAN: Error:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to save multigrade plan"
+      }
     }
   } catch (error) {
     console.error("SAVE MULTIGRADE PLAN: Error:", error)

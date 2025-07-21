@@ -315,7 +315,7 @@ export async function saveLessonPlan(formData: any) {
           title,
           subject,
           grade_level,
-          duration_minutes,
+          duration: duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
           topic,
           lesson_content,
           updated_at: now,
@@ -330,7 +330,7 @@ export async function saveLessonPlan(formData: any) {
           title,
           subject,
           grade_level,
-          duration_minutes,
+          duration: duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
           topic,
           lesson_content,
           created_by,
@@ -373,7 +373,7 @@ export async function updateLessonPlan(id: string, data: Partial<z.infer<typeof 
         grade_level: data.grade_level,
         topic: data.topic || null,
         lesson_content: data.lesson_content,
-        duration_minutes: data.duration_minutes?.toString() || "50",
+        duration: data.duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
         learning_objectives: data.learning_objectives ? JSON.stringify(data.learning_objectives) : null,
         materials_needed: data.materials_needed ? JSON.stringify(data.materials_needed) : null,
         description: data.description || null,
