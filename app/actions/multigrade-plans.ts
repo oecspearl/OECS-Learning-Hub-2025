@@ -3,9 +3,7 @@
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { revalidatePath } from "next/cache"
-import { db, sql } from "@/lib/db"
-import { multigradePlans } from "@/lib/schema"
-import { eq } from "drizzle-orm"
+import { db } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
 
 export interface MultigradePlanFormData {
@@ -28,19 +26,20 @@ export interface MultigradePlanFormData {
 }
 
 interface MultigradePlan {
-  id: number
+  id: string
   title: string
   subject: string
   grade_range: string
   topic: string | null
-  content: string
-  duration: string | null
-  materials: string | null
-  pedagogical_strategy: string | null
-  differentiation_strategies: string | null
+  lesson_content: string
+  duration_minutes: number | null
+  materials_needed: string[] | null
+  pedagogical_approach: string | null
+  differentiation_strategies: string[] | null
   grouping_strategy: string | null
   assessment_approach: string | null
-  curriculum_standards: string | null
+  curriculum_standards: string[] | null
+  created_by: string
   created_at: string
   updated_at: string
 }
@@ -323,142 +322,167 @@ Ensure the lesson plan is practical, immediately usable, and specifically design
 
 export async function saveMultigradePlan(formData: FormData | MultigradePlanFormData, content?: string) {
   try {
-    console.log('Starting saveMultigradePlan with formData:', formData);
-    
-    // Convert FormData to object if needed
+    console.log("SAVE MULTIGRADE PLAN: Starting save operation")
+
+    // Handle both FormData and object formats
     const data = formData instanceof FormData ? {
-      id: formData.get('id') as string,
-      title: formData.get('title') as string,
-      subject: formData.get('subject') as string,
-      gradeRange: formData.get('gradeRange') as string,
-      topic: formData.get('topic') as string,
-      content: formData.get('content') as string,
-      duration: formData.get('duration') as string,
-      materials: formData.get('materials') as string,
-      pedagogicalStrategy: formData.get('pedagogicalStrategy') as string,
-      differentiationStrategies: formData.get('differentiationStrategies') as string,
-      groupingStrategy: formData.get('groupingStrategy') as string,
-      assessmentApproach: formData.get('assessmentApproach') as string,
-    } : formData;
+      id: formData.get("id") as string,
+      title: formData.get("title") as string,
+      subject: formData.get("subject") as string,
+      gradeRange: formData.get("gradeRange") as string,
+      topic: formData.get("topic") as string,
+      duration: formData.get("duration") as string,
+      materials: formData.get("materials") as string,
+      pedagogicalStrategy: formData.get("pedagogicalStrategy") as string,
+      differentiationStrategies: formData.get("differentiationStrategies") as string,
+      groupingStrategy: formData.get("groupingStrategy") as string,
+      assessmentApproach: formData.get("assessmentApproach") as string,
+      learningOutcomes: formData.get("learningOutcomes") as string,
+      specialNeeds: formData.get("specialNeeds") === "true",
+      specialNeedsDetails: formData.get("specialNeedsDetails") as string,
+      additionalInstructions: formData.get("additionalInstructions") as string,
+    } : formData
+
+    console.log("SAVE MULTIGRADE PLAN: Extracted data:", data)
 
     // Validate required fields
     if (!data.subject || !data.gradeRange || !data.topic) {
-      console.error('Missing required fields:', { 
-        subject: data.subject, 
-        gradeRange: data.gradeRange, 
-        topic: data.topic 
-      });
-      throw new Error('Missing required fields: subject, gradeRange, and topic are required');
+      throw new Error("Missing required fields: subject, gradeRange, and topic are required")
     }
 
-    // Validate grade range format
-    const gradeRangeRegex = /^[K0-6]-[0-6]$/
-    if (!gradeRangeRegex.test(data.gradeRange)) {
-      console.error('Invalid grade range format:', data.gradeRange);
-      throw new Error("Invalid grade range format. Please use format like 'K-2' or '1-3'")
+    const planContent = content || data.content || ""
+    if (!planContent) {
+      throw new Error("No content provided for the multigrade plan")
     }
 
-    // Validate content
-    const planContent = content || data.content;
-    if (!planContent || typeof planContent !== 'string') {
-      console.error('Invalid content:', planContent);
-      throw new Error('Invalid lesson plan content');
-    }
-
-    // Get curriculum standards for each grade level
-    const gradeLevels = data.gradeRange.split("-").map(g => g.trim());
-    const standardsPromises = gradeLevels.map(grade => 
-      getCurriculumStandards(data.subject, grade)
-    );
-    const standardsResults = await Promise.all(standardsPromises);
-    const allStandards = standardsResults.flat();
-    const formattedStandards = formatStandardsForPrompt(allStandards);
-
-    // Generate a title if not provided
-    const title = data.title || `${data.subject} - ${data.topic} (Grades ${data.gradeRange})`;
-    console.log('Generated title:', title);
-
-    // Handle differentiation strategies
-    let differentiationStrategies = '';
+    // Process differentiation strategies
+    let differentiationStrategies = ""
     if (data.differentiationStrategies) {
-      if (typeof data.differentiationStrategies === 'string') {
-        differentiationStrategies = data.differentiationStrategies;
-      } else if (Array.isArray(data.differentiationStrategies)) {
-        differentiationStrategies = data.differentiationStrategies.join(', ');
+      if (Array.isArray(data.differentiationStrategies)) {
+        differentiationStrategies = data.differentiationStrategies.join(", ")
+      } else {
+        differentiationStrategies = data.differentiationStrategies
       }
     }
 
-    // Prepare the data for insertion
-    const now = new Date().toISOString();
-    const dbData = {
-      title,
-      subject: data.subject,
-      grade_range: data.gradeRange,
-      topic: data.topic,
-      content: planContent,
-      duration: data.duration || '60',
-      materials: data.materials || '',
-      pedagogical_strategy: data.pedagogicalStrategy || '',
-      differentiation_strategies: differentiationStrategies,
-      grouping_strategy: data.groupingStrategy || '',
-      assessment_approach: data.assessmentApproach || '',
-      curriculum_standards: formattedStandards,
-      created_at: now,
-      updated_at: now
-    };
+    // Get curriculum standards
+    const gradeLevels = data.gradeRange.split("-").map(g => g.trim())
+    const standardsPromises = gradeLevels.map(grade => 
+      getCurriculumStandards(data.subject, grade)
+    )
+    const standardsResults = await Promise.all(standardsPromises)
+    const allStandards = standardsResults.flat()
+    const formattedStandards = formatStandardsForPrompt(allStandards)
 
-    console.log('Attempting to insert data:', dbData);
+    const now = new Date().toISOString()
 
-    // Insert the plan into the database
-    const result = await db.multigradePlans.create(dbData);
-    console.log('Insert result:', result);
+    if (data.id) {
+      // Update existing plan
+      console.log("SAVE MULTIGRADE PLAN: Updating existing plan with ID:", data.id)
+      
+      const updatedPlan = await db.multigradePlans.update(data.id, {
+        title: data.title || "",
+        subject: data.subject,
+        grade_range: data.gradeRange,
+        topic: data.topic,
+        lesson_content: planContent,
+        duration_minutes: parseInt(data.duration || "60"),
+        materials_needed: data.materials ? data.materials.split(',').map(m => m.trim()) : null,
+        pedagogical_approach: data.pedagogicalStrategy || '',
+        differentiation_strategies: differentiationStrategies ? differentiationStrategies.split(',').map(s => s.trim()) : null,
+        grouping_strategy: data.groupingStrategy || '',
+        assessment_approach: data.assessmentApproach || '',
+        curriculum_standards: formattedStandards ? formattedStandards.split(',').map(s => s.trim()) : null,
+        updated_at: now
+      })
 
-    return { success: true, id: result.id };
+      console.log("SAVE MULTIGRADE PLAN: Update successful")
+      return { success: true, data: updatedPlan }
+    } else {
+      // Create new plan
+      console.log("SAVE MULTIGRADE PLAN: Creating new plan")
+      
+      const newPlan = await db.multigradePlans.create({
+        title: data.title || "",
+        subject: data.subject,
+        grade_range: data.gradeRange,
+        topic: data.topic,
+        lesson_content: planContent,
+        duration_minutes: parseInt(data.duration || "60"),
+        materials_needed: data.materials ? data.materials.split(',').map(m => m.trim()) : null,
+        pedagogical_approach: data.pedagogicalStrategy || '',
+        differentiation_strategies: differentiationStrategies ? differentiationStrategies.split(',').map(s => s.trim()) : null,
+        grouping_strategy: data.groupingStrategy || '',
+        assessment_approach: data.assessmentApproach || '',
+        curriculum_standards: formattedStandards ? formattedStandards.split(',').map(s => s.trim()) : null,
+        created_by: 'placeholder_user_id', // Replace with actual user ID
+        created_at: now,
+        updated_at: now
+      })
+
+      console.log("SAVE MULTIGRADE PLAN: Create successful, returned ID:", newPlan.id)
+      return { success: true, data: newPlan }
+    }
   } catch (error) {
-    console.error('Error saving multigrade plan:', error);
-    throw new Error(
-      `Failed to save multigrade plan: ${error instanceof Error ? error.message : "Unknown error"}`
-    );
+    console.error("SAVE MULTIGRADE PLAN: Error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to save multigrade plan"
+    }
   }
 }
 
 export async function getMultigradePlans() {
   try {
-    console.log('Fetching multigrade plans...');
-    const plans = await db.multigradePlans.findMany();
-    console.log('Successfully fetched plans:', plans.length);
-    return plans || [];
+    console.log("GET MULTIGRADE PLANS: Fetching all plans")
+    const plans = await db.multigradePlans.findMany()
+    console.log(`GET MULTIGRADE PLANS: Found ${plans.length} plans`)
+    return {
+      success: true,
+      data: plans
+    }
   } catch (error) {
-    console.error("Error fetching multigrade plans:", error);
-    // Return empty array instead of throwing error to prevent UI crashes
-    return [];
+    console.error("GET MULTIGRADE PLANS: Error:", error)
+    return {
+      success: false,
+      data: [],
+      error: "Failed to get multigrade plans"
+    }
   }
 }
 
-export async function getMultigradePlanById(id: number) {
+export async function getMultigradePlanById(id: string) {
   try {
-    console.log('Fetching multigrade plan by ID:', id);
-    const plan = await db.multigradePlans.findFirst({ id });
+    console.log('GET MULTIGRADE PLAN BY ID: Fetching plan with ID:', id)
+    const plan = await db.multigradePlans.findFirst({ id })
     
     if (!plan) {
-      console.log('No plan found for ID:', id);
-      return null;
+      console.log('GET MULTIGRADE PLAN BY ID: Plan not found')
+      return null
     }
-
-    console.log('Successfully fetched plan:', plan.id);
-    return plan;
+    
+    console.log('GET MULTIGRADE PLAN BY ID: Plan found')
+    return plan
   } catch (error) {
-    console.error("Error fetching multigrade plan:", error);
-    throw new Error("Failed to fetch multigrade plan");
+    console.error("GET MULTIGRADE PLAN BY ID: Error:", error)
+    return null
   }
 }
 
-export async function deleteMultigradePlan(id: number) {
+export async function deleteMultigradePlan(id: string) {
   try {
+    console.log('DELETE MULTIGRADE PLAN: Deleting plan with ID:', id)
     await db.multigradePlans.delete(id)
-    revalidatePath("/planners/multigrade")
+    console.log('DELETE MULTIGRADE PLAN: Plan deleted successfully')
+    
+    return {
+      success: true
+    }
   } catch (error) {
-    console.error("Error deleting multigrade plan:", error)
-    throw new Error("Failed to delete multigrade plan")
+    console.error("DELETE MULTIGRADE PLAN: Error:", error)
+    return {
+      success: false,
+      error: "Failed to delete multigrade plan"
+    }
   }
 }
