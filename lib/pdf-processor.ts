@@ -3,6 +3,7 @@ import * as pdfjs from "pdfjs-dist"
 import { executeQuery } from "@/lib/db"
 import { v4 as uuidv4 } from "uuid"
 import { updateOCRStatus, checkIfOCRNeeded } from "./ocr-processor"
+import { db } from "@/lib/db"
 
 // For Node.js environment, we need to provide polyfills for browser APIs
 if (typeof window === "undefined") {
@@ -52,16 +53,14 @@ export interface ProcessedLesson {
 export async function processPDFDocument(documentId: string): Promise<boolean> {
   try {
     // 1. Get the PDF document from the database
-    const documents = await executeQuery(`SELECT * FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId]) as any[]
+    const document = await db.pdfDocuments.findFirst({ id: documentId })
 
-    if (!documents || documents.length === 0) {
+    if (!document) {
       throw new Error(`PDF document with ID ${documentId} not found`)
     }
 
-    const document = documents[0]
-
     // 2. Update status to processing
-    await executeQuery(`UPDATE "PDFDocument" SET status = 'processing' WHERE id = $1`, [documentId])
+    await db.pdfDocuments.update(documentId, { status: 'processing' })
 
     // 3. Check if OCR is needed
     const needsOCR = await checkIfOCRNeeded(documentId)
@@ -90,16 +89,17 @@ export async function processPDFDocument(documentId: string): Promise<boolean> {
     await storePDFContent(documentId, processedContent)
 
     // 7. Update the document status to processed
-    await executeQuery(`UPDATE "PDFDocument" SET status = 'processed', processedAt = CURRENT_TIMESTAMP WHERE id = $1`, [
-      documentId,
-    ])
+    await db.pdfDocuments.update(documentId, { 
+      status: 'processed', 
+      processed_at: new Date().toISOString() 
+    })
 
     return true
   } catch (error) {
     console.error("Error processing PDF document:", error)
 
     // Update status to error
-    await executeQuery(`UPDATE "PDFDocument" SET status = 'error' WHERE id = $1`, [documentId])
+    await db.pdfDocuments.update(documentId, { status: 'error' })
 
     // If OCR was in progress, update OCR status too
     try {
@@ -389,89 +389,24 @@ async function processPDFContent(content: string, metadata: any): Promise<Proces
  * Store the processed PDF content in the database
  */
 async function storePDFContent(documentId: string, content: ProcessedPDFContent): Promise<void> {
-  // Start a transaction
-  await executeQuery("BEGIN")
-
   try {
-    // 1. Check if subject exists, create if not
-    let subjectId: string
-    const subjects = await executeQuery(
-      `SELECT id FROM "Subject" WHERE name = $1 LIMIT 1`,
-      [content.subject],
-    ) as any[]
-
-    if (subjects && subjects.length > 0) {
-      subjectId = subjects[0].id
-    } else {
-      // Create new subject
-      subjectId = `subject-${uuidv4()}`
-      await executeQuery(
-        `INSERT INTO "Subject" (id, name, description, "gradeLevel", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-        [subjectId, content.subject, `${content.subject} curriculum for Grade ${content.grade}`, content.grade],
-      )
-    }
-
-    // 2. Process each unit
-    for (const unit of content.units as any[]) {
-      // Create unit
-      const unitId = `unit-${uuidv4()}`
-      await executeQuery(
-        `INSERT INTO "Unit" (id, name, description, "order", "subjectId", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-        [unitId, unit.title, `Unit ${unit.order}: ${unit.title}`, unit.order, subjectId],
-      )
-
-      // 3. Process each lesson in the unit
-      for (const lesson of unit.lessons) {
-        const lessonId = `lesson-${uuidv4()}`
-
-        // Create lesson
-        await executeQuery(
-          `INSERT INTO "Lesson" (
-            id, title, description, objectives, content, status,
-            "createdById", "subjectId", "unitId", "createdAt", "updatedAt"
-          )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-          [
-            lessonId,
-            lesson.title,
-            lesson.content.introduction || `Lesson on ${lesson.title}`,
-            lesson.objectives,
-            JSON.stringify(lesson.content),
-            "draft",
-            "admin-1", // Default to admin user
-            subjectId,
-            unitId,
-          ],
-        )
+    // Update the PDF document with processing metadata
+    await db.pdfDocuments.update(documentId, {
+      metadata: {
+        ...content.metadata,
+        processed: {
+          units: content.units.length,
+          lessons: content.units.reduce((sum, unit) => sum + unit.lessons.length, 0),
+          subject: content.subject,
+          grade: content.grade,
+        },
+        content: content
       }
-    }
+    })
 
-    // 4. Update the PDF document with processing metadata
-    await executeQuery(
-      `UPDATE "PDFDocument" 
-       SET metadata = $1
-       WHERE id = $2`,
-      [
-        JSON.stringify({
-          ...content.metadata,
-          processed: {
-            units: content.units.length,
-            lessons: content.units.reduce((sum, unit) => sum + unit.lessons.length, 0),
-            subject: content.subject,
-            grade: content.grade,
-          },
-        }),
-        documentId,
-      ],
-    )
-
-    // Commit the transaction
-    await executeQuery("COMMIT")
+    console.log(`Stored processed content for document ${documentId}`)
   } catch (error) {
-    // Rollback in case of error
-    await executeQuery("ROLLBACK")
+    console.error("Error storing PDF content:", error)
     throw error
   }
 }
