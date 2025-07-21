@@ -20,6 +20,8 @@ export async function getCurriculumStandards(subject: string, gradeLevel: string
     console.error("Error in getCurriculumStandards server action:", error)
     // Return a default standard to prevent UI errors
     return [{
+      id: `default-${subject}-${gradeLevel}`,
+      code: `${subject.toUpperCase()}.${gradeLevel}.1`,
       subject,
       grade_level: gradeLevel,
       description: `Students will demonstrate understanding of key concepts in Grade ${gradeLevel} ${subject}.`
