@@ -1,19 +1,31 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+// Check if environment variables are available
+if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+  console.warn('Supabase environment variables are not set. Database operations will fail.')
+}
 
 // Create Supabase client for client-side operations
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
+)
 
 // Create Supabase client for server-side operations (with service role)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+export const supabaseAdmin = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseServiceKey || 'placeholder-key',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
   }
-})
+)
 
 // Legacy function for backward compatibility
 export async function executeQuery(query: string, params?: any[]) {

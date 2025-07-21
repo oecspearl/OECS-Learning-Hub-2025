@@ -86,7 +86,7 @@ export function PlannerEditForm({ lessonPlan }: { lessonPlan: LessonPlan }) {
       submitData.append("topic", formData.topic)
       submitData.append("lesson_content", formData.content) // Changed from content to lesson_content
       submitData.append("duration_minutes", "50") // Add duration_minutes field
-      submitData.append("user_id", formData.user_id || "1") // Add user_id field
+      submitData.append("user_id", lessonPlan.user_id || "1") // Use lessonPlan.user_id instead of formData.user_id
 
       if (formData.pedagogicalStrategy) {
         submitData.append("pedagogicalStrategy", formData.pedagogicalStrategy)
