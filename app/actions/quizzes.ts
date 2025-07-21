@@ -180,6 +180,7 @@ Make sure the quiz is:
 export async function saveQuiz(formData: any) {
   try {
     console.log("Starting saveQuiz function")
+    console.log("Received formData:", formData)
 
     // Check if we're dealing with FormData or a regular object
     const id = formData.get ? formData.get("id") : formData.id
@@ -200,7 +201,7 @@ export async function saveQuiz(formData: any) {
     const allow_retakes = formData.get ? formData.get("allow_retakes") === "true" : formData.allow_retakes !== false
     const tags = formData.get ? JSON.parse(formData.get("tags") || "[]") : formData.tags || []
     const is_public = formData.get ? formData.get("is_public") === "true" : formData.is_public || false
-    const created_by = formData.get ? formData.get("userId") : formData.userId || formData.user_id || "1"
+    const created_by = formData.get ? formData.get("user_id") : formData.user_id || formData.userId || "1"
 
     console.log("Extracted quiz data:", {
       title,
@@ -212,6 +213,8 @@ export async function saveQuiz(formData: any) {
       created_by,
       content: content ? "present" : "missing",
       questions: questions ? "present" : "missing",
+      user_id_from_form: formData.user_id,
+      userId_from_form: formData.userId,
     })
 
     // Validate required fields
@@ -287,6 +290,12 @@ export async function saveQuiz(formData: any) {
           return { success: true, data: newQuiz }
         } catch (dbError) {
           console.error("Database create failed:", dbError)
+          console.error("Database error details:", {
+            message: dbError instanceof Error ? dbError.message : "Unknown error",
+            code: (dbError as any)?.code,
+            details: (dbError as any)?.details,
+            hint: (dbError as any)?.hint,
+          })
           // If the error is about missing content column, try without it
           if (dbError instanceof Error && dbError.message.includes("content")) {
             console.log("Retrying without content column...")
