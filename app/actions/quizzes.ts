@@ -273,8 +273,8 @@ export async function saveQuiz(formData: any) {
         difficulty: difficulty_level,
         time_limit: time_limit_minutes,
         tags: '{}', // Empty PostgreSQL array
-        instructions,
-        user_id: created_by,
+        instructions: instructions || 'Complete all questions to the best of your ability.',
+        created_by: created_by, // Use created_by instead of user_id
         created_at: now,
         updated_at: now,
       }
@@ -345,8 +345,8 @@ export async function saveQuiz(formData: any) {
               difficulty: difficulty_level,
               time_limit: time_limit_minutes,
               tags: '{}',
-              instructions,
-              user_id: created_by,
+              instructions: instructions || 'Complete all questions to the best of your ability.',
+              created_by: created_by,
               created_at: now,
               updated_at: now,
             }
@@ -365,7 +365,8 @@ export async function saveQuiz(formData: any) {
                 grade_level: grade_level || "Grade 6",
                 content: content || "Quiz content",
                 questions: JSON.stringify(extractedQuestions),
-                user_id: created_by || "1",
+                instructions: instructions || 'Complete all questions to the best of your ability.',
+                created_by: created_by || "1",
               }
               const newQuiz = await db.quizzes.create(absoluteMinimalData)
               console.log("Insert successful with absolute minimal fields")

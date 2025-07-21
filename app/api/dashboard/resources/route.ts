@@ -5,11 +5,12 @@ export async function GET(request: NextRequest) {
   try {
     console.log("Dashboard resources API called")
 
-    // Get user ID from query params or headers
+    // Get user ID and type from query params
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get("userId") || "1" // Default to "1" for testing
+    const type = searchParams.get("type") // Get the type parameter
 
-    console.log("Fetching resources for user:", userId)
+    console.log("Fetching resources for user:", userId, "type:", type)
 
     // Fetch lesson plans
     let lessonPlans = []
@@ -47,64 +48,116 @@ export async function GET(request: NextRequest) {
       console.error("Error fetching multigrade plans:", error)
     }
 
-    // Format the response
-    const resources = {
-      lessonPlans: lessonPlans.map(plan => ({
-        id: plan.id,
-        title: plan.title,
-        subject: plan.subject,
-        grade_level: plan.grade_level,
-        topic: plan.topic,
-        duration_minutes: plan.duration_minutes,
-        created_at: plan.created_at,
-        updated_at: plan.updated_at,
-        type: "lesson_plan"
-      })),
-      quizzes: quizzes.map(quiz => ({
-        id: quiz.id,
-        title: quiz.title,
-        subject: quiz.subject,
-        grade_level: quiz.grade_level,
-        topic: quiz.topic,
-        question_count: quiz.question_count,
-        difficulty_level: quiz.difficulty_level,
-        created_at: quiz.created_at,
-        updated_at: quiz.updated_at,
-        type: "quiz"
-      })),
-      crossCurricularPlans: crossCurricularPlans.map(plan => ({
-        id: plan.id,
-        title: plan.title,
-        theme: plan.theme,
-        grade_range: plan.grade_range,
-        subjects_included: plan.subjects_included,
-        created_at: plan.created_at,
-        updated_at: plan.updated_at,
-        type: "cross_curricular"
-      })),
-      multigradePlans: multigradePlans.map(plan => ({
-        id: plan.id,
-        title: plan.title,
-        subject: plan.subject,
-        grade_range: plan.grade_range,
-        topic: plan.topic,
-        duration_minutes: plan.duration_minutes,
-        created_at: plan.created_at,
-        updated_at: plan.updated_at,
-        type: "multigrade"
-      }))
+    // Format the response based on type
+    let resources = []
+    
+    if (!type || type === "all") {
+      // Return all resources
+      resources = [
+        ...lessonPlans.map(plan => ({
+          id: plan.id,
+          title: plan.title,
+          subject: plan.subject,
+          grade: plan.grade_level || plan.grade,
+          topic: plan.topic,
+          createdAt: plan.created_at,
+          status: "active",
+          type: "lesson-plans"
+        })),
+        ...quizzes.map(quiz => ({
+          id: quiz.id,
+          title: quiz.title,
+          subject: quiz.subject,
+          grade: quiz.grade_level || quiz.grade,
+          topic: quiz.topic,
+          createdAt: quiz.created_at,
+          status: "active",
+          type: "quizzes"
+        })),
+        ...crossCurricularPlans.map(plan => ({
+          id: plan.id,
+          title: plan.title,
+          subject: plan.subjects || "Cross-curricular",
+          grade: plan.grade_range,
+          topic: plan.theme,
+          createdAt: plan.created_at,
+          status: "active",
+          type: "cross-curricular"
+        })),
+        ...multigradePlans.map(plan => ({
+          id: plan.id,
+          title: plan.title,
+          subject: plan.subject,
+          grade: plan.grade_range,
+          topic: plan.topic,
+          createdAt: plan.created_at,
+          status: "active",
+          type: "multigrade"
+        }))
+      ]
+    } else {
+      // Return specific type
+      switch (type) {
+        case "lesson-plans":
+          resources = lessonPlans.map(plan => ({
+            id: plan.id,
+            title: plan.title,
+            subject: plan.subject,
+            grade: plan.grade_level || plan.grade,
+            topic: plan.topic,
+            createdAt: plan.created_at,
+            status: "active",
+            type: "lesson-plans"
+          }))
+          break
+        case "quizzes":
+          resources = quizzes.map(quiz => ({
+            id: quiz.id,
+            title: quiz.title,
+            subject: quiz.subject,
+            grade: quiz.grade_level || quiz.grade,
+            topic: quiz.topic,
+            createdAt: quiz.created_at,
+            status: "active",
+            type: "quizzes"
+          }))
+          break
+        case "cross-curricular":
+          resources = crossCurricularPlans.map(plan => ({
+            id: plan.id,
+            title: plan.title,
+            subject: plan.subjects || "Cross-curricular",
+            grade: plan.grade_range,
+            topic: plan.theme,
+            createdAt: plan.created_at,
+            status: "active",
+            type: "cross-curricular"
+          }))
+          break
+        case "multigrade":
+          resources = multigradePlans.map(plan => ({
+            id: plan.id,
+            title: plan.title,
+            subject: plan.subject,
+            grade: plan.grade_range,
+            topic: plan.topic,
+            createdAt: plan.created_at,
+            status: "active",
+            type: "multigrade"
+          }))
+          break
+      }
     }
 
     console.log("Returning resources:", {
-      lessonPlans: resources.lessonPlans.length,
-      quizzes: resources.quizzes.length,
-      crossCurricularPlans: resources.crossCurricularPlans.length,
-      multigradePlans: resources.multigradePlans.length
+      type: type || "all",
+      totalResources: resources.length,
+      resources: resources.slice(0, 3) // Log first 3 for debugging
     })
 
     return NextResponse.json({
       success: true,
-      data: resources
+      resources: resources
     })
 
   } catch (error) {
