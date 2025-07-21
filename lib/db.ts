@@ -238,6 +238,16 @@ export const db = {
       return result
     },
 
+    async delete(id: string) {
+      const { error } = await supabaseAdmin
+        .from('cross_curricular_plans')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
+    },
+
     async findFirst(where: any) {
       let query = supabaseAdmin.from('cross_curricular_plans').select('*')
       
@@ -285,6 +295,16 @@ export const db = {
       
       if (error) throw error
       return result
+    },
+
+    async delete(id: string) {
+      const { error } = await supabaseAdmin
+        .from('multigrade_plans')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
     },
 
     async findFirst(where: any) {
