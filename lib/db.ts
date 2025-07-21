@@ -478,5 +478,35 @@ export const db = {
       if (error && error.code !== 'PGRST116') throw error
       return data
     }
+  },
+
+  // Assessment Strategies
+  assessmentStrategies: {
+    async findMany(where?: any) {
+      let query = supabaseAdmin.from('assessment_strategies').select('*')
+      
+      if (where?.elo_id) query = query.eq('elo_id', where.elo_id)
+      if (where?.assessment_type) query = query.eq('assessment_type', where.assessment_type)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    }
+  },
+
+  // Teacher Content (placeholder - adjust table name as needed)
+  teacherContent: {
+    async findMany(where?: any) {
+      // This is a placeholder - adjust the table name based on your schema
+      let query = supabaseAdmin.from('learning_strategies').select('*')
+      
+      if (where?.elo_id) query = query.eq('elo_id', where.elo_id)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    }
   }
 }
