@@ -232,11 +232,34 @@ export async function saveQuiz(formData: any) {
       }
     }
 
+    // Extract questions from content if available
+    function extractQuestions(content: string): any[] {
+      if (!content) return [];
+      
+      const questions: any[] = [];
+      // Use a simpler regex approach that's compatible with older targets
+      const questionMatches = content.match(/^\d+\.\s+.*?(?=\n\d+\.|$)/gm);
+      
+      if (questionMatches) {
+        questionMatches.forEach((q, index) => {
+          questions.push({
+            id: index + 1,
+            question: q.trim(),
+            type: 'Multiple Choice'
+          });
+        });
+      }
+      
+      return questions;
+    }
+
+    const extractedQuestions = extractQuestions(content);
+    
     // Store the quiz in the database
     try {
       const now = new Date().toISOString()
       
-      // Prepare the quiz data for database
+      // Prepare the quiz data for database with PostgreSQL array format
       const quizData = {
         title,
         description,
@@ -244,11 +267,12 @@ export async function saveQuiz(formData: any) {
         grade_level: grade_level, // Use grade_level instead of grade
         topic,
         content: content || JSON.stringify(questions), // Use content if available, otherwise stringify questions
+        questions: JSON.stringify(extractedQuestions), // Add the required questions field
         question_count,
-        question_types: JSON.stringify(questions.length > 0 ? ["Multiple Choice"] : []),
+        question_types: '{Multiple Choice}', // PostgreSQL array format
         difficulty: difficulty_level,
         time_limit: time_limit_minutes,
-        tags: JSON.stringify(tags || []),
+        tags: '{}', // Empty PostgreSQL array
         instructions,
         user_id: created_by,
         created_at: now,
@@ -315,11 +339,12 @@ export async function saveQuiz(formData: any) {
               grade_level: grade_level,
               topic,
               content: content || "Quiz content",
+              questions: JSON.stringify(extractedQuestions),
               question_count,
-              question_types: "Multiple Choice",
+              question_types: '{Multiple Choice}',
               difficulty: difficulty_level,
               time_limit: time_limit_minutes,
-              tags: "general",
+              tags: '{}',
               instructions,
               user_id: created_by,
               created_at: now,
@@ -339,6 +364,7 @@ export async function saveQuiz(formData: any) {
                 subject: subject || "General",
                 grade_level: grade_level || "Grade 6",
                 content: content || "Quiz content",
+                questions: JSON.stringify(extractedQuestions),
                 user_id: created_by || "1",
               }
               const newQuiz = await db.quizzes.create(absoluteMinimalData)
