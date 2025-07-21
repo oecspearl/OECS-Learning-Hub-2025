@@ -435,5 +435,43 @@ export const db = {
       if (error) throw error
       return data || []
     }
+  },
+
+  // Users (for setup-database.ts)
+  users: {
+    async create(data: any) {
+      const { data: result, error } = await supabaseAdmin
+        .from('user_profiles')
+        .insert(data)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async findMany(where?: any) {
+      let query = supabaseAdmin.from('user_profiles').select('*')
+      
+      if (where?.role) query = query.eq('role', where.role)
+      if (where?.school_name) query = query.eq('school_name', where.school_name)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    },
+
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('user_profiles').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.email) query = query.eq('email', where.email)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    }
   }
 }
