@@ -1,9 +1,8 @@
 import { PlannerEditForm } from "@/components/planner-edit-form"
-import { sql } from "@/lib/db"
+import { db } from "@/lib/db"
 import { Suspense } from "react"
 import { AuthWrapper } from "@/components/auth/auth-wrapper"
 import { notFound } from "next/navigation"
-import { executeQuery } from "@/lib/db"
 
 interface EditLessonPlanPageProps {
   params: Promise<{ id: string }>
@@ -13,8 +12,7 @@ export async function generateMetadata({ params }: EditLessonPlanPageProps) {
   const { id } = await params
   
   try {
-    const result = await executeQuery("SELECT * FROM lesson_plans WHERE id = $1 LIMIT 1", [id]) as any[]
-    const lessonPlan = result[0]
+    const lessonPlan = await db.lessonPlans.findFirst({ id })
     
     if (!lessonPlan) {
       return {
@@ -37,8 +35,7 @@ export default async function PlannerEditPage({ params }: EditLessonPlanPageProp
 
   try {
     // Fetch the lesson plan from the database
-    const result = await executeQuery("SELECT * FROM lesson_plans WHERE id = $1 LIMIT 1", [id]) as any[]
-    const lessonPlan = result[0]
+    const lessonPlan = await db.lessonPlans.findFirst({ id })
 
     if (!lessonPlan) {
       notFound()

@@ -11,7 +11,7 @@ interface EditMultigradePlanPageProps {
 
 export async function generateMetadata({ params }: EditMultigradePlanPageProps) {
   const { id } = await params
-  const plan = await getMultigradePlanById(Number(id))
+  const plan = await getMultigradePlanById(id)
   
   if (!plan) {
     return {
@@ -29,7 +29,7 @@ export default async function EditMultigradePlanPage({ params }: EditMultigradeP
   let plan
 
   try {
-    plan = await getMultigradePlanById(Number(id))
+    plan = await getMultigradePlanById(id)
   } catch (error) {
     notFound()
   }

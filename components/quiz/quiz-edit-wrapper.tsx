@@ -97,8 +97,8 @@ export function QuizEditWrapper({ quiz }: QuizEditWrapperProps) {
     try {
       await updateQuiz(quiz.id, {
         ...formData,
-        time_limit: formData.time_limit ? Number.parseInt(formData.time_limit) : undefined,
-        tags: JSON.stringify(formData.tags),
+        time_limit_minutes: formData.time_limit ? Number.parseInt(formData.time_limit) : undefined,
+        tags: formData.tags,
       })
       router.push(`/quiz/view/${quiz.id}`)
     } catch (error) {

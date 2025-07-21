@@ -1,5 +1,6 @@
 import { createWorker } from "tesseract.js"
 import { executeQuery } from "@/lib/db"
+import { db } from "@/lib/db"
 
 // Configuration for OCR
 const OCR_CONFIG = {
@@ -61,20 +62,11 @@ export async function updateOCRStatus(
   }
 
   // Update the document's OCR metadata
-  await executeQuery(
-    `UPDATE "PDFDocument" 
-     SET metadata = jsonb_set(
-       CASE 
-         WHEN metadata IS NULL THEN '{}'::jsonb 
-         WHEN jsonb_typeof(metadata) = 'object' THEN metadata 
-         ELSE '{}'::jsonb 
-       END, 
-       '{ocr}', 
-       $1::jsonb
-     )
-     WHERE id = $2`,
-    [JSON.stringify(ocrMetadata), documentId],
-  )
+  await db.pdfDocuments.update(documentId, {
+    metadata: {
+      ocr: ocrMetadata
+    }
+  })
 }
 
 /**
@@ -83,13 +75,12 @@ export async function updateOCRStatus(
  * @returns Boolean indicating if OCR is needed
  */
 export async function checkIfOCRNeeded(documentId: string): Promise<boolean> {
-  const documents = await executeQuery(`SELECT metadata FROM "PDFDocument" WHERE id = $1 LIMIT 1`, [documentId]) as any[]
+  const document = await db.pdfDocuments.findFirst({ id: documentId })
 
-  if (!documents || documents.length === 0) {
+  if (!document) {
     return false
   }
 
-  const document = documents[0]
   const metadata = document.metadata
     ? typeof document.metadata === "string"
       ? JSON.parse(document.metadata)

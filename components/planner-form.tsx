@@ -130,13 +130,8 @@ export function PlannerForm() {
         console.log("Lesson plan generated successfully, length:", result.lessonPlan.length)
 
         // Store the lesson plan in client storage
-        await storeCurrentLessonPlan({
-          content: result.lessonPlan,
-          subject: values.subject,
-          gradeLevel: values.gradeLevel,
-          topic: values.topic,
-          specialNeeds: selectedNeeds,
-        })
+        const lessonPlanContent = (result as any).lessonPlan
+        await storeCurrentLessonPlan(typeof lessonPlanContent === 'string' ? lessonPlanContent : JSON.stringify(lessonPlanContent))
 
         // Dispatch the event with the lesson plan data
         const eventData = {

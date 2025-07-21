@@ -208,7 +208,7 @@ export function QuizForm() {
           id: saveResult.data.id
         })
       } else {
-        console.error("Save failed:", saveResult.error, saveResult.details)
+        console.error("Save failed:", saveResult.error)
         toast({
           title: "Save failed",
           description: saveResult.error || "Failed to save quiz. Please try again.",

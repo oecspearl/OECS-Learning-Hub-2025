@@ -5,6 +5,7 @@
 import { revalidatePath } from "next/cache"
 import { executeQuery } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
+import { db } from "@/lib/db"
 
 // This is a direct implementation of lesson plan generation that bypasses any potential issues
 export async function generateLessonPlan(formData: any) {
@@ -271,20 +272,15 @@ export async function saveLessonPlan(formData: FormData) {
       }
 
       // Insert the lesson plan into the database
-      const result = await executeQuery(
-        `INSERT INTO lesson_plans (
-          title, 
-          subject, 
-          grade_level, 
-          duration,
-          topic, 
-          content, 
-          created_at, 
-          updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-        RETURNING id, title, subject, grade_level, topic, created_at`,
-        [title, subject, gradeLevel, duration, topic || null, content]
-      ) as any[]
+      const result = await db.lessonPlans.create({
+        title,
+        subject,
+        grade_level: gradeLevel,
+        duration_minutes: duration,
+        topic: topic || null,
+        lesson_content: content,
+        created_by: "system" // You might want to get this from the session
+      })
 
       console.log("SAVE LESSON PLAN: Database save successful:", result)
 
@@ -293,7 +289,7 @@ export async function saveLessonPlan(formData: FormData) {
 
       return {
         success: true,
-        data: result[0],
+        data: result,
         source: "database",
       }
     } catch (dbError) {
@@ -322,20 +318,7 @@ export async function getLessonPlans() {
 
     // Try to get from database
     try {
-      const result = await executeQuery(
-        `SELECT 
-          id, 
-          title, 
-          subject, 
-          grade_level, 
-          duration,
-          topic, 
-          created_at, 
-          updated_at
-        FROM lesson_plans
-        ORDER BY created_at DESC`,
-        []
-      ) as any[]
+      const result = await db.lessonPlans.findMany()
 
       console.log(`GET LESSON PLANS: Retrieved ${result.length} plans from database`)
       return {
@@ -368,14 +351,9 @@ export async function getLessonPlanById(id: string) {
 
     // Try database
     try {
-      const result = await executeQuery(
-        `SELECT *
-        FROM lesson_plans
-        WHERE id = $1`,
-        [id]
-      ) as any[]
+      const result = await db.lessonPlans.findFirst({ id })
 
-      if (result.length === 0) {
+      if (!result) {
         console.log(`GET LESSON PLAN BY ID: Plan ${id} not found in database`)
         return {
           success: false,
@@ -386,7 +364,7 @@ export async function getLessonPlanById(id: string) {
       console.log(`GET LESSON PLAN BY ID: Retrieved plan ${id} from database`)
       return {
         success: true,
-        data: result[0],
+        data: result,
         source: "database",
       }
     } catch (dbError) {
@@ -432,22 +410,16 @@ export async function updateLessonPlan(id: string, formData: FormData) {
     try {
       console.log(`UPDATE LESSON PLAN: Attempting database update for plan ${id}`)
 
-      const result = await executeQuery(
-        `UPDATE lesson_plans
-        SET 
-          title = $1,
-          subject = $2,
-          grade_level = $3,
-          duration = $4,
-          topic = $5,
-          content = $6,
-          updated_at = NOW()
-        WHERE id = $7
-        RETURNING id, title, subject, grade_level, topic, updated_at`,
-        [title, subject, gradeLevel, duration, topic || null, content, id]
-      ) as any[]
+      const result = await db.lessonPlans.update(id, {
+        title,
+        subject,
+        grade_level: gradeLevel,
+        duration_minutes: parseInt(duration) || 50,
+        topic: topic || null,
+        lesson_content: content,
+      })
 
-      if (result.length === 0) {
+      if (!result) {
         console.log(`UPDATE LESSON PLAN: Plan ${id} not found in database`)
         return {
           success: false,
@@ -464,7 +436,7 @@ export async function updateLessonPlan(id: string, formData: FormData) {
 
       return {
         success: true,
-        data: result[0],
+        data: result,
         source: "database",
       }
     } catch (dbError) {

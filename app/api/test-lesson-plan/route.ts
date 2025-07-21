@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         lessonPlan: result.lessonPlan,
-        length: result.lessonPlan.length,
+        length: typeof result.lessonPlan === 'string' ? result.lessonPlan.length : 0,
         message: "Lesson plan generated successfully"
       })
     } else {

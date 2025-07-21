@@ -118,7 +118,7 @@ export function MultigradeEditForm({ plan }: { plan: MultigradePlan }) {
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      await deleteMultigradePlan(Number(plan.id))
+      await deleteMultigradePlan(plan.id)
       toast({
         title: "Plan deleted",
         description: "Your multigrade lesson plan has been deleted.",

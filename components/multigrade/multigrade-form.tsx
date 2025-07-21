@@ -93,7 +93,7 @@ export function MultigradeForm() {
         detail: {
           content: lessonPlan,
           metadata: values,
-          planId: saveResult.id
+          planId: saveResult.data?.id || null
         },
       })
       window.dispatchEvent(event)

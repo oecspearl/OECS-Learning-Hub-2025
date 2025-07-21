@@ -109,7 +109,7 @@ export async function generateMetadata({ params }: LessonPlanViewPageProps): Pro
 
   return {
     title: lessonPlan.title,
-    description: lessonPlan.overview
+    description: lessonPlan.description
   }
 }
 
@@ -122,21 +122,21 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
   }
 
   // Parse the markdown content into sections
-  const sections = parseMarkdownContent(lessonPlan.content)
+  const sections = parseMarkdownContent(lessonPlan.lesson_content)
   
   // Parse objectives and materials from the content if not in database
-  const objectives = lessonPlan.objectives ? JSON.parse(lessonPlan.objectives) : 
+  const objectives = lessonPlan.learning_objectives ? lessonPlan.learning_objectives : 
     parseListItems(sections["LEARNING OBJECTIVES"] || "")
   
-  const materials = lessonPlan.materials ? JSON.parse(lessonPlan.materials) :
+  const materials = lessonPlan.materials_needed ? lessonPlan.materials_needed :
     parseListItems(sections["MATERIALS AND RESOURCES"] || "")
   
-  const vocabulary = lessonPlan.vocabulary ? JSON.parse(lessonPlan.vocabulary) :
+  const vocabulary = lessonPlan.vocabulary_terms ? lessonPlan.vocabulary_terms :
     parseVocabulary(sections["VOCABULARY"] || "")
 
   // Combine standards from both the database field and content sections
   const standardsContent = [
-    lessonPlan.standards,
+    lessonPlan.curriculum_standards ? lessonPlan.curriculum_standards.join('\n') : '',
     sections["CURRICULUM STANDARDS"],
     sections["STANDARDS"]
   ].filter(Boolean).join("\n\n")
@@ -148,7 +148,7 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{lessonPlan.title}</h1>
             <p className="text-gray-600 mt-2">
-              {lessonPlan.subject} • Grade {lessonPlan.grade} • {lessonPlan.duration} minutes
+              {lessonPlan.subject} • Grade {lessonPlan.grade_level} • {lessonPlan.duration_minutes} minutes
             </p>
           </div>
           <a
@@ -159,10 +159,10 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
           </a>
         </div>
 
-        {lessonPlan.overview && (
+        {lessonPlan.description && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Overview</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{stripMarkdown(lessonPlan.overview)}</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{stripMarkdown(lessonPlan.description)}</p>
           </div>
         )}
 
@@ -175,11 +175,11 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
           </div>
         )}
 
-        {Array.isArray(lessonPlan.vocabulary) && lessonPlan.vocabulary.length > 0 && (
+        {Array.isArray(lessonPlan.vocabulary_terms) && lessonPlan.vocabulary_terms.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Key Vocabulary</h2>
             <div className="grid gap-4">
-              {lessonPlan.vocabulary.map((item, index) => (
+              {lessonPlan.vocabulary_terms.map((item, index) => (
                 <div key={index} className="border rounded-md p-4">
                   <h3 className="font-medium text-gray-900">{item.term}</h3>
                   <p className="text-gray-700 mt-1">{item.definition}</p>
@@ -204,17 +204,21 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
           </div>
         </div>
 
-        {lessonPlan.homework && (
+        {lessonPlan.homework_assignment && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Homework</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{stripMarkdown(lessonPlan.homework)}</p>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Homework Assignment</h2>
+            <p className="text-gray-700 whitespace-pre-wrap">{stripMarkdown(lessonPlan.homework_assignment)}</p>
           </div>
         )}
 
-        {lessonPlan.extensions && (
+        {lessonPlan.extension_activities && lessonPlan.extension_activities.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Extension Activities</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{stripMarkdown(lessonPlan.extensions)}</p>
+            <ul className="list-disc pl-5 space-y-1">
+              {lessonPlan.extension_activities.map((activity: string, index: number) => (
+                <li key={index} className="text-gray-700">{activity}</li>
+              ))}
+            </ul>
           </div>
         )}
       </div>

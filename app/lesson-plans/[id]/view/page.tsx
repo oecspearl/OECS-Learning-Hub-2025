@@ -13,22 +13,22 @@ interface LessonPlan {
   id: string;
   title: string;
   subject: string;
-  grade: string;
+  grade_level: string;
   topic: string | null;
-  content: string;
-  duration: string | null;
-  materials: string | null;
-  pedagogical_strategy: string | null;
-  differentiation_strategies: string | null;
+  lesson_content: string;
+  duration_minutes: number | null;
+  materials_needed: string[] | null;
+  pedagogical_approach: string | null;
+  differentiation_strategies: string[] | null;
   grouping_strategy: string | null;
-  assessment_approach: string | null;
-  curriculum_standards: string | null;
-  overview: string | null;
-  objectives: string | null;
-  vocabulary: string | null;
-  homework: string | null;
-  extensions: string | null;
-  standards: string | null;
+  assessment_strategy: string | null;
+  curriculum_standards: string[] | null;
+  description: string | null;
+  learning_objectives: string[] | null;
+  vocabulary_terms: any | null;
+  homework_assignment: string | null;
+  extension_activities: string[] | null;
+  created_by: string;
   created_at: string;
   updated_at: string;
 }
@@ -54,7 +54,7 @@ export default async function ViewLessonPlanPage({ params }: { params: Promise<{
               {plan.title}
             </h1>
             <p className="text-muted-foreground">
-              {plan.subject} • Grade {plan.grade} • {plan.topic}
+              {plan.subject} • Grade {plan.grade_level} • {plan.topic}
             </p>
           </div>
 
@@ -75,10 +75,10 @@ export default async function ViewLessonPlanPage({ params }: { params: Promise<{
             </TabsList>
 
             <TabsContent value="lesson" className="space-y-6">
-              <LessonPlanViewComponent plan={plan} />
+              {/* <LessonPlanViewComponent plan={plan} /> */}
               
               {/* Curriculum Standards */}
-              {plan.curriculum_standards && (
+              {plan.curriculum_standards && plan.curriculum_standards.length > 0 && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -87,7 +87,11 @@ export default async function ViewLessonPlanPage({ params }: { params: Promise<{
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="whitespace-pre-wrap">{plan.curriculum_standards}</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                      {plan.curriculum_standards.map((standard: string, index: number) => (
+                        <li key={index} className="text-gray-700">{standard}</li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
               )}

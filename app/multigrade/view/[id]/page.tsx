@@ -23,8 +23,7 @@ interface MultigradePlan {
 export default async function ViewMultigradePlanPage({ params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const planId = parseInt(id, 10);
-    const plan = await getMultigradePlanById(planId)
+    const plan = await getMultigradePlanById(id)
 
     if (!plan) {
       return notFound()

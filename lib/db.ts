@@ -338,6 +338,20 @@ export const db = {
 
   // Strands
   strands: {
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('strands').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.subject) query = query.eq('subject', where.subject)
+      if (where.grade_level) query = query.eq('grade_level', where.grade_level)
+      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
     async findMany(where?: any) {
       let query = supabaseAdmin.from('strands').select('*')
       
@@ -354,6 +368,19 @@ export const db = {
 
   // Essential Learning Outcomes
   essentialLearningOutcomes: {
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('essential_learning_outcomes').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.strand_id) query = query.eq('strand_id', where.strand_id)
+      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
     async findMany(where?: any) {
       let query = supabaseAdmin.from('essential_learning_outcomes').select('*')
       
@@ -369,6 +396,19 @@ export const db = {
 
   // Specific Curriculum Outcomes
   specificCurriculumOutcomes: {
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('specific_curriculum_outcomes').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.elo_id) query = query.eq('elo_id', where.elo_id)
+      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
     async findMany(where?: any) {
       let query = supabaseAdmin.from('specific_curriculum_outcomes').select('*')
       
@@ -507,6 +547,75 @@ export const db = {
       
       if (error) throw error
       return data || []
+    }
+  },
+
+  // Learning Strategies
+  learningStrategies: {
+    async findMany(where?: any) {
+      let query = supabaseAdmin.from('learning_strategies').select('*')
+      
+      if (where?.sco_id) query = query.eq('sco_id', where.sco_id)
+      if (where?.elo_id) query = query.eq('elo_id', where.elo_id)
+      if (where?.strategy_type) query = query.eq('strategy_type', where.strategy_type)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    },
+
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('learning_strategies').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.sco_id) query = query.eq('sco_id', where.sco_id)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    }
+  },
+
+  // PDF Documents
+  pdfDocuments: {
+    async findMany(where?: any) {
+      let query = supabaseAdmin.from('pdf_documents').select('*')
+      
+      if (where?.status) query = query.eq('status', where.status)
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
+      if (where?.uploaded_at) query = query.eq('uploaded_at', where.uploaded_at)
+      
+      const { data, error } = await query.order('uploaded_at', { ascending: true })
+      
+      if (error) throw error
+      return data || []
+    },
+
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('pdf_documents').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.status) query = query.eq('status', where.status)
+      if (where.user_id) query = query.eq('user_id', where.user_id)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
+    async update(id: string, data: any) {
+      const { data: result, error } = await supabaseAdmin
+        .from('pdf_documents')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
     }
   }
 }

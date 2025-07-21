@@ -1,16 +1,12 @@
 import { PlannerViewComponent } from "@/components/planner-view"
-import { sql } from "@/lib/db"
-import { executeQuery } from "@/lib/db"
+import { db } from "@/lib/db"
 
 export default async function PlannerViewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
   // Fetch the lesson plan from the database
   try {
-    const result = await executeQuery("SELECT * FROM lesson_plans WHERE id = $1 LIMIT 1", [id]) as any[]
-
-    // The sql result is an array of rows, not an object with a rows property
-    const lessonPlan = result[0]
+    const lessonPlan = await db.lessonPlans.findFirst({ id })
 
     if (!lessonPlan) {
       return (

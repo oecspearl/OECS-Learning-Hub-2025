@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { executeQuery } from "@/lib/db"
+import { db } from "@/lib/db"
 import { processPDFDocument } from "@/lib/pdf-processor"
 
 // Ensure Node.js compatibility for PDF.js
@@ -15,10 +15,8 @@ if (typeof window === "undefined") {
 // Process all pending PDF documents
 export async function POST() {
   try {
-    // Get all documents with 'uploaded' status
-    const pendingDocuments = await executeQuery(
-      `SELECT id FROM "PDFDocument" WHERE status = 'uploaded' ORDER BY "uploadedAt" ASC`,
-    )
+    // Get all documents with 'uploaded' status using new database structure
+    const pendingDocuments = await db.pdfDocuments.findMany({ status: 'uploaded' })
 
     if (!pendingDocuments || pendingDocuments.length === 0) {
       return NextResponse.json({

@@ -3,7 +3,6 @@ import { settings } from "@/lib/schema"
 import { InferSelectModel } from "drizzle-orm"
 import { eq } from "drizzle-orm"
 import type { SQL } from "drizzle-orm"
-import { findSettingByKey } from "@/lib/db"
 
 const defaultSettings = [
   // General Settings
@@ -119,15 +118,10 @@ export async function initializeSettings() {
   try {
     console.log("Initializing settings...")
     
-    for (const setting of defaultSettings) {
-      const existingSetting = await findSettingByKey(setting.key)
-
-      if (!existingSetting) {
-        // await db.insert(settings).values(setting)
-        // console.log(`Created setting: ${setting.key}`)
-      }
-    }
-
+    // For now, skip settings initialization since we're using Supabase
+    // This would need to be updated to work with the new database structure
+    console.log("Settings initialization skipped - Supabase settings not implemented")
+    
     console.log("Settings initialization completed")
   } catch (error) {
     console.error("Error initializing settings:", error)

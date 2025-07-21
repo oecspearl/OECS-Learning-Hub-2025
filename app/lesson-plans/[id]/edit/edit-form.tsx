@@ -55,18 +55,18 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
   const [formData, setFormData] = useState<FormData>({
     title: lessonPlan.title || "",
     subject: lessonPlan.subject || "",
-    grade: lessonPlan.grade || "",
+    grade: lessonPlan.grade_level || "",
     topic: lessonPlan.topic || "",
-    duration: typeof lessonPlan.duration === 'string' ? parseInt(lessonPlan.duration) || 0 : lessonPlan.duration || 0,
-    content: lessonPlan.content || "",
-    overview: lessonPlan.overview || "",
-    standards: lessonPlan.standards || "",
-    materials: lessonPlan.materials || "",
-    vocabulary: Array.isArray(lessonPlan.vocabulary) 
-      ? JSON.stringify(lessonPlan.vocabulary, null, 2)
+    duration: typeof lessonPlan.duration_minutes === 'string' ? parseInt(lessonPlan.duration_minutes) || 0 : lessonPlan.duration_minutes || 0,
+    content: lessonPlan.lesson_content || "",
+    overview: lessonPlan.description || "",
+    standards: lessonPlan.curriculum_standards ? lessonPlan.curriculum_standards.join('\n') : "",
+    materials: lessonPlan.materials_needed ? lessonPlan.materials_needed.join('\n') : "",
+    vocabulary: Array.isArray(lessonPlan.vocabulary_terms) 
+      ? JSON.stringify(lessonPlan.vocabulary_terms, null, 2)
       : JSON.stringify([], null, 2),
-    homework: lessonPlan.homework || "",
-    extensions: lessonPlan.extensions || "",
+    homework: lessonPlan.homework_assignment || "",
+    extensions: lessonPlan.extension_activities ? lessonPlan.extension_activities.join('\n') : "",
   })
   const [standards, setStandards] = useState<CurriculumStandard[]>([])
   const [filteredStandards, setFilteredStandards] = useState<CurriculumStandard[]>([])
@@ -81,13 +81,13 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
   // Fetch standards when component mounts
   useEffect(() => {
     const fetchStandards = async () => {
-      if (!lessonPlan.subject || !lessonPlan.grade) {
+      if (!lessonPlan.subject || !lessonPlan.grade_level) {
         console.log("Missing subject or grade for standards fetch")
         return
       }
 
       try {
-        const fetchedStandards = await getCurriculumStandards(lessonPlan.subject, lessonPlan.grade)
+        const fetchedStandards = await getCurriculumStandards(lessonPlan.subject, lessonPlan.grade_level)
         if (fetchedStandards && fetchedStandards.length > 0) {
           setStandards(fetchedStandards)
           setFilteredStandards(fetchedStandards)
@@ -101,14 +101,14 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
       }
     }
     fetchStandards()
-  }, [lessonPlan.subject, lessonPlan.grade])
+  }, [lessonPlan.subject, lessonPlan.grade_level])
 
   // Filter standards based on search term
   useEffect(() => {
     const filtered = standards.filter(standard => 
       standard.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (standard.code && standard.code.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (standard.strand && standard.strand.toLowerCase().includes(searchTerm.toLowerCase()))
+      (standard.strand_name && standard.strand_name.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     setFilteredStandards(filtered)
   }, [searchTerm, standards])
@@ -167,18 +167,18 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
       await updateLessonPlan(lessonPlan.id, {
         title: formData.title,
         subject: formData.subject,
-        grade: formData.grade,
+        grade_level: formData.grade,
         topic: formData.topic,
-        content: formData.content,
-        duration: formData.duration,
-        objectives,
-        materials,
-        overview: formData.overview || undefined,
-        standards: formData.standards || undefined,
-        vocabulary: parsedVocabulary,
-        homework: formData.homework || undefined,
-        extensions: formData.extensions || undefined,
-        userId: lessonPlan.userId
+        lesson_content: formData.content,
+        duration_minutes: formData.duration,
+        learning_objectives: objectives,
+        materials_needed: materials,
+        description: formData.overview || undefined,
+        curriculum_standards: formData.standards ? formData.standards.split('\n').filter((line: string) => line.trim().length > 0) : undefined,
+        vocabulary_terms: parsedVocabulary,
+        homework_assignment: formData.homework || undefined,
+        extension_activities: formData.extensions ? formData.extensions.split('\n').filter((line: string) => line.trim().length > 0) : undefined,
+        created_by: lessonPlan.created_by
       })
 
       toast.success("Lesson plan updated successfully")
