@@ -100,6 +100,17 @@ export function PlannerOutput() {
           setLessonPlan(editableLessonPlan)
           setIsEditing(false)
         }
+
+        // Dispatch event to notify dashboard to refresh
+        window.dispatchEvent(new CustomEvent("lessonPlanCreated", {
+          detail: {
+            lessonPlanId: result.data?.id,
+            title: title,
+            subject: subject,
+            gradeLevel: gradeLevel,
+            topic: topic
+          }
+        }))
       } else {
         throw new Error("Failed to save lesson plan")
       }

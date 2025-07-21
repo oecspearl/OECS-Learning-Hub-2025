@@ -11,11 +11,14 @@ export type ChatWithPearlParams = {
   messages: ChatMessage[]
   lessonPlan?: string
   specialNeeds?: string[]
+  multigradeFocus?: boolean
+  gradeRange?: string
+  differentiationStrategies?: string[]
 }
 
 export async function chatWithPearl(params: ChatWithPearlParams): Promise<ChatMessage> {
   try {
-    const { messages, lessonPlan, specialNeeds } = params
+    const { messages, lessonPlan, specialNeeds, multigradeFocus, gradeRange, differentiationStrategies } = params
 
     // Format the conversation history
     const formattedHistory = messages
@@ -24,38 +27,74 @@ export async function chatWithPearl(params: ChatWithPearlParams): Promise<ChatMe
       })
       .join("\n\n")
 
-    // Create the prompt for Pearl
-    const prompt = `
-You are Pearl, an AI teaching assistant for OECS (Organization of Eastern Caribbean States) teachers.
+    // Create context-aware prompt for Pearl
+    let contextPrompt = ""
+    
+    if (lessonPlan) {
+      contextPrompt += `\n\nCURRENT LESSON PLAN CONTEXT:\n${lessonPlan.substring(0, 2000)}${lessonPlan.length > 2000 ? "..." : ""}`
+    }
+    
+    if (multigradeFocus) {
+      contextPrompt += `\n\nMULTIGRADE TEACHING CONTEXT:
+- Grade Range: ${gradeRange || "Multiple grades"}
+- Differentiation Strategies: ${differentiationStrategies?.join(", ") || "Standard differentiation"}
+- Focus: Teaching multiple grade levels simultaneously`
+    }
+    
+    if (specialNeeds && specialNeeds.length > 0) {
+      contextPrompt += `\n\nSPECIAL NEEDS CONSIDERATIONS: ${specialNeeds.join(", ")}`
+    }
+
+    const systemPrompt = `You are Pearl, an AI teaching assistant for OECS (Organization of Eastern Caribbean States) teachers.
 You help teachers create lesson plans, find resources, and answer questions about teaching methodologies.
 
-Here is the conversation history:
+Your expertise includes:
+- OECS curriculum standards and best practices
+- Lesson planning and assessment strategies
+- Cross-curricular integration
+- Differentiation and inclusive teaching
+- Technology integration in education
+- Professional development guidance
+
+${contextPrompt}
+
+CONVERSATION HISTORY:
 ${formattedHistory}
-
-${lessonPlan ? `Current lesson plan context:\n${lessonPlan.substring(0, 1000)}${lessonPlan.length > 1000 ? "..." : ""}` : "No lesson plan provided yet."}
-
-${specialNeeds && specialNeeds.length > 0 ? `Special needs to consider: ${specialNeeds.join(", ")}` : "No special needs specified."}
 
 Respond as Pearl, providing helpful, accurate, and supportive information for teachers.
 Focus on OECS curriculum standards and best teaching practices.
 If asked to create a lesson plan, provide a structured outline that the teacher can use.
-`
+Be specific and actionable in your advice.`
 
-    // Temporary mock response until AI SDK is properly configured
-    const mockResponse = `Hello! I'm Pearl, your AI teaching assistant. I'm here to help you with lesson planning, finding resources, and answering questions about teaching methodologies. 
+    // Call OpenAI API
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: messages[messages.length - 1].content }
+        ],
+        max_tokens: 800,
+        temperature: 0.7,
+      }),
+    })
 
-Based on our conversation, I can see you're working on creating engaging lessons. Would you like me to help you with:
-- Lesson plan structure and objectives
-- Finding relevant resources and activities
-- Assessment strategies
-- Cross-curricular connections
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`)
+    }
 
-Please let me know what specific assistance you need!`
+    const data = await response.json()
+    const assistantResponse = data.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response at this time."
 
     const assistantMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "assistant",
-      content: mockResponse,
+      content: assistantResponse,
       timestamp: new Date(),
     }
 

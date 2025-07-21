@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { FileText, ClipboardCheck, Users, BookOpen, Plus, Eye, Edit, Download, MoreHorizontal } from "lucide-react"
+import { FileText, ClipboardCheck, Users, BookOpen, Plus, Eye, Edit, Download, MoreHorizontal, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -31,30 +31,60 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
   const { user } = useAuth()
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await fetch(`/api/dashboard/resources?type=${type}&userId=${user?.id}`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch resources')
-        }
-        const data = await response.json()
-        setResources(data.resources || [])
-      } catch (error) {
-        console.error("Error fetching resources:", error)
-        // Only show empty state, no fallback sample data
-        setResources([])
-      } finally {
-        setLoading(false)
+  const fetchResources = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/dashboard/resources?type=${type}&userId=${user?.id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch resources')
       }
+      const data = await response.json()
+      console.log(`Fetched ${data.resources?.length || 0} ${type} resources for user ${user?.id}`)
+      setResources(data.resources || [])
+    } catch (error) {
+      console.error("Error fetching resources:", error)
+      // Only show empty state, no fallback sample data
+      setResources([])
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     if (user?.id) {
       fetchResources()
     }
   }, [type, user?.id])
+
+  // Listen for lesson plan creation events
+  useEffect(() => {
+    const handleLessonPlanCreated = () => {
+      console.log("Lesson plan created, refreshing resources...")
+      fetchResources()
+    }
+
+    const handleQuizCreated = () => {
+      console.log("Quiz created, refreshing resources...")
+      fetchResources()
+    }
+
+    window.addEventListener("lessonPlanCreated", handleLessonPlanCreated)
+    window.addEventListener("quizCreated", handleQuizCreated)
+
+    return () => {
+      window.removeEventListener("lessonPlanCreated", handleLessonPlanCreated)
+      window.removeEventListener("quizCreated", handleQuizCreated)
+    }
+  }, [user?.id])
+
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await fetchResources()
+    setRefreshing(false)
+  }
 
   const subjects = ["All", "Mathematics", "Language Arts", "Science", "Social Studies"]
   const [selectedSubject, setSelectedSubject] = useState("All")
@@ -127,208 +157,175 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
       
       const response = await fetch(`/api/download/${type}/${resourceId}?format=${format}`)
       
-      if (!response.ok) {
-        throw new Error('Download failed')
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.style.display = 'none'
+        a.href = url
+        a.download = `${type}-${resourceId}.${format}`
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
       }
-      
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${type}-${resourceId}.${format}`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
     } catch (error) {
-      console.error('Download error:', error)
-      alert('Failed to download file')
+      console.error('Download failed:', error)
     } finally {
       setDownloading(null)
     }
   }
 
-  const IconComponent = getTypeIcon(type)
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString()
+  }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading resources...</p>
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{title}</CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" disabled>
+              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+              Loading...
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg animate-pulse">
+                <div className="w-12 h-12 bg-gray-200 rounded"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-gray-600">{description}</p>
-        </div>
-        <Button asChild size="sm">
-          <Link href={createLink}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create New
-          </Link>
-        </Button>
-      </div>
-
-      {resources.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <IconComponent className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No resources yet</h3>
-            <p className="text-gray-600 text-center mb-4">{emptyMessage}</p>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? 'Refreshing...' : 'Refresh'}
+            </Button>
             <Button asChild>
               <Link href={createLink}>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Your First {title}
+                Create New
               </Link>
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            {subjects.map((subject) => (
-              <TabsTrigger 
-                key={subject} 
-                value={subject.toLowerCase().replace(" ", "-")}
-                onClick={() => setSelectedSubject(subject)}
-              >
-                {subject}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {resources.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="text-4xl mb-4 text-muted-foreground">📝</div>
+            <h3 className="text-lg font-medium mb-2">No {title} Yet</h3>
+            <p className="text-muted-foreground mb-4">{emptyMessage}</p>
+            <Button asChild>
+              <Link href={createLink}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Your First {title.slice(0, -1)}
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Filter by subject:</span>
+                <select
+                  value={selectedSubject}
+                  onChange={(e) => setSelectedSubject(e.target.value)}
+                  className="text-sm border rounded px-2 py-1"
+                >
+                  {subjects.map((subject) => (
+                    <option key={subject} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <span className="text-sm text-muted-foreground">
+                {filteredResources.length} of {resources.length} items
+              </span>
+            </div>
 
-          <TabsContent value="all" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredResources.map((resource) => (
-                <Card key={resource.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-medium line-clamp-2">{resource.title}</CardTitle>
-                      <Badge variant="secondary" className={getStatusColor(resource.status)}>
-                        {resource.status}
-                      </Badge>
-                    </div>
-                    <CardDescription className="text-xs">
-                      {resource.subject} • {resource.grade}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                      <span>Created: {resource.createdAt}</span>
+            <div className="space-y-4">
+              {filteredResources.map((resource) => {
+                const IconComponent = getTypeIcon(type)
+                return (
+                  <div key={resource.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <IconComponent className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium">{resource.title}</h3>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                          <span>{resource.subject}</span>
+                          <span>•</span>
+                          <span>Grade {resource.grade}</span>
+                          <span>•</span>
+                          <span>{formatDate(resource.createdAt)}</span>
+                        </div>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" asChild className="flex-1">
-                        <Link href={getViewLink(resource.id, type)}>
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Link>
-                      </Button>
-                      <Button variant="outline" size="sm" asChild className="flex-1">
-                        <Link href={getEditLink(resource.id, type)}>
-                          <Edit className="h-3 w-3 mr-1" />
-                          Edit
-                        </Link>
-                      </Button>
+                      <Badge className={getStatusColor(resource.status)}>
+                        {resource.status}
+                      </Badge>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm" disabled={downloading === resource.id}>
-                            {downloading === resource.id ? (
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-900" />
-                            ) : (
-                              <Download className="h-3 w-3" />
-                            )}
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link href={getViewLink(resource.id, type)}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={getEditLink(resource.id, type)}>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDownload(resource.id, 'pdf')}>
-                            Download as PDF
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'docx')}>
-                            Download as Word
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'json')}>
-                            Download as JSON
+                            <Download className="h-4 w-4 mr-2" />
+                            Download PDF
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                )
+              })}
             </div>
-          </TabsContent>
-
-          {subjects.slice(1).map((subject) => (
-            <TabsContent key={subject} value={subject.toLowerCase().replace(" ", "-")} className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredResources.map((resource) => (
-                  <Card key={resource.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium line-clamp-2">{resource.title}</CardTitle>
-                        <Badge variant="secondary" className={getStatusColor(resource.status)}>
-                          {resource.status}
-                        </Badge>
-                      </div>
-                      <CardDescription className="text-xs">
-                        {resource.subject} • {resource.grade}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                        <span>Created: {resource.createdAt}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" asChild className="flex-1">
-                          <Link href={getViewLink(resource.id, type)}>
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Link>
-                        </Button>
-                        <Button variant="outline" size="sm" asChild className="flex-1">
-                          <Link href={getEditLink(resource.id, type)}>
-                            <Edit className="h-3 w-3 mr-1" />
-                            Edit
-                          </Link>
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" disabled={downloading === resource.id}>
-                              {downloading === resource.id ? (
-                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-900" />
-                              ) : (
-                                <Download className="h-3 w-3" />
-                              )}
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'pdf')}>
-                              Download as PDF
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'docx')}>
-                              Download as Word
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDownload(resource.id, 'json')}>
-                              Download as JSON
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
-      )}
-    </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
