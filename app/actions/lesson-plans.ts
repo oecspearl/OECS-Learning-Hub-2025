@@ -323,7 +323,7 @@ export async function saveLessonPlan(formData: any) {
         
         // Try to add content field if it exists
         try {
-          updateData.content = lesson_content
+          updateData.lesson_content = lesson_content
         } catch (e) {
           console.log("Could not add content field, trying without it")
         }
@@ -341,16 +341,10 @@ export async function saveLessonPlan(formData: any) {
           subject,
           grade_level: grade_level,
           topic,
+          lesson_content: lesson_content,
           user_id,
           created_at: now,
           updated_at: now,
-        }
-        
-        // Try to add content field if it exists
-        try {
-          lessonPlanData.content = lesson_content
-        } catch (e) {
-          console.log("Could not add content field, trying without it")
         }
         
         console.log("Lesson plan data being sent to database:", lessonPlanData)
@@ -371,6 +365,7 @@ export async function saveLessonPlan(formData: any) {
           title,
           subject,
           grade_level: grade_level,
+          lesson_content: lesson_content,
           user_id,
           created_at: now,
           updated_at: now,
