@@ -73,16 +73,35 @@ export function PlannerOutput() {
     try {
       const contentToSave = isEditing ? editableLessonPlan : lessonPlan
 
-      // Validate required fields
-      if (!subject || !gradeLevel || !topic) {
-        throw new Error('Missing required fields: subject, gradeLevel, and topic are required')
+      // Debug: Log the current state
+      console.log("Save attempt - Current state:", {
+        subject,
+        gradeLevel,
+        topic,
+        metadata: metadata,
+        hasLessonPlan: !!lessonPlan
+      })
+
+      // Try to get values from metadata if state variables are empty
+      const subjectToUse = subject || metadata?.subject || ""
+      const gradeLevelToUse = gradeLevel || metadata?.gradeLevel || ""
+      const topicToUse = topic || metadata?.topic || ""
+
+      // Validate required fields with better error messages
+      const missingFields = []
+      if (!subjectToUse) missingFields.push("subject")
+      if (!gradeLevelToUse) missingFields.push("grade level")
+      if (!topicToUse) missingFields.push("topic")
+
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(", ")} are required`)
       }
 
       const formData = new FormData()
       formData.append("title", title || 'Lesson Plan')
-      formData.append("subject", subject)
-      formData.append("grade_level", gradeLevel) // Changed from gradeLevel to grade_level
-      formData.append("topic", topic)
+      formData.append("subject", subjectToUse)
+      formData.append("grade_level", gradeLevelToUse) // Changed from gradeLevel to grade_level
+      formData.append("topic", topicToUse)
       formData.append("content", contentToSave || '')
       formData.append("lesson_content", contentToSave || '')
       formData.append("duration_minutes", "50") // Changed from duration to duration_minutes
@@ -106,9 +125,9 @@ export function PlannerOutput() {
           detail: {
             lessonPlanId: result.data?.id,
             title: title,
-            subject: subject,
-            gradeLevel: gradeLevel,
-            topic: topic
+            subject: subjectToUse,
+            gradeLevel: gradeLevelToUse,
+            topic: topicToUse
           }
         }))
       } else {
