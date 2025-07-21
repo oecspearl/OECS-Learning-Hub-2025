@@ -106,12 +106,31 @@ export default function EditQuizPage() {
         title: quizData.title || "",
         description: quizData.description || "",
         subject: quizData.subject || "",
-        grade: quizData.grade || "",
+        grade: quizData.grade || quizData.grade_level || "",
         topic: quizData.topic || "",
         difficulty: quizData.difficulty || "Medium",
         timeLimit: quizData.time_limit || 30,
         instructions: quizData.instructions || "",
-        tags: quizData.tags ? JSON.parse(quizData.tags) : [],
+        tags: (() => {
+          try {
+            if (quizData.tags) {
+              // Handle both JSON strings and PostgreSQL arrays
+              if (typeof quizData.tags === 'string') {
+                if (quizData.tags.startsWith('{') && quizData.tags.endsWith('}')) {
+                  // PostgreSQL array format
+                  return quizData.tags.slice(1, -1).split(',').map((tag: string) => tag.trim().replace(/"/g, '')).filter((tag: string) => tag)
+                } else {
+                  // JSON string format
+                  return JSON.parse(quizData.tags)
+                }
+              }
+              return quizData.tags
+            }
+            return []
+          } catch {
+            return []
+          }
+        })(),
         content: quizData.content || ""
       })
 
@@ -173,12 +192,12 @@ export default function EditQuizPage() {
         title: formData.title,
         description: formData.description,
         subject: formData.subject,
-        grade: formData.grade,
+        grade_level: formData.grade, // Map to grade_level for database
         topic: formData.topic,
         difficulty: formData.difficulty,
         time_limit: formData.timeLimit,
         instructions: formData.instructions,
-        tags: JSON.stringify(formData.tags),
+        tags: formData.tags.length > 0 ? `{${formData.tags.map((tag: string) => `"${tag}"`).join(',')}}` : '{}', // PostgreSQL array format
         content: formData.content,
         updated_at: new Date().toISOString()
       }

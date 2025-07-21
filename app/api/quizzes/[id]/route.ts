@@ -32,7 +32,7 @@ export async function PUT(
       title: body.title,
       description: body.description,
       subject: body.subject,
-      grade: body.grade,
+      grade_level: body.grade_level || body.grade, // Handle both grade and grade_level
       topic: body.topic,
       content: body.content,
       question_count: body.question_count,
