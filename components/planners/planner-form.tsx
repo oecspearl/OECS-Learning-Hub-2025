@@ -11,10 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
-import { generateLessonPlan } from "@/app/actions/generate-lesson-plan"
+import { generateLessonPlan } from "@/app/actions/lesson-plans"
 import { SpecialNeedsModalController } from "./special-needs-modal-controller"
 import { PedagogicalStrategyInfo } from "./pedagogical-strategy-info"
-import { saveLessonPlan } from "@/app/actions/save-lesson-plan"
+import { saveLessonPlan } from "@/app/actions/lesson-plans"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, BookOpen, Users, Clock, Lightbulb, Palette, Package, BookMarked, Info } from "lucide-react"
@@ -94,11 +94,13 @@ export function PlannerForm() {
       setIsLoading(true)
 
       // Generate the lesson plan
-      const lessonPlan = await generateLessonPlan(values)
+      const result = await generateLessonPlan(values)
 
-      if (!lessonPlan) {
-        throw new Error("Failed to generate lesson plan")
+      if (!result.success || !result.lessonPlan) {
+        throw new Error(result.error || "Failed to generate lesson plan")
       }
+
+      const lessonPlan = result.lessonPlan
 
       // Create FormData for saving
       const formData = new FormData()
@@ -112,10 +114,10 @@ export function PlannerForm() {
       formData.append("specialNeedsDetails", values.specialNeedsDetails || "")
 
       // Save to database
-      const result = await saveLessonPlan(formData)
+      const saveResult = await saveLessonPlan(formData)
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to save lesson plan")
+      if (!saveResult.success) {
+        throw new Error(saveResult.error || "Failed to save lesson plan")
       }
 
       // Manually dispatch the event to update the UI
