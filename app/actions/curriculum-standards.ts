@@ -21,7 +21,7 @@ export async function getCurriculumStandards(subject: string, gradeLevel: string
     // Return a default standard to prevent UI errors
     return [{
       subject,
-      gradeLevel,
+      grade_level: gradeLevel,
       description: `Students will demonstrate understanding of key concepts in Grade ${gradeLevel} ${subject}.`
     }]
   }
