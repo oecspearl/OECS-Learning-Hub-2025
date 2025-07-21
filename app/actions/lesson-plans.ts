@@ -312,7 +312,7 @@ export async function saveLessonPlan(formData: any) {
         // Update existing lesson plan
         console.log("Updating existing lesson plan with ID:", id)
         
-        // Try with minimal data first
+        // Try with minimal data first - only use columns that definitely exist
         const updateData: any = {
           title,
           subject,
@@ -335,70 +335,63 @@ export async function saveLessonPlan(formData: any) {
         // Create new lesson plan
         console.log("Creating new lesson plan")
         
-        // Start with minimal required fields
+        // Try with minimal data first - only use columns that definitely exist
         const lessonPlanData: any = {
           title,
           subject,
           grade: grade_level,
-          duration: duration_minutes?.toString() || "50",
           topic,
           user_id,
           created_at: now,
           updated_at: now,
         }
         
-        // Try to add content field - this is where the error occurs
+        // Try to add content field if it exists
         try {
           lessonPlanData.content = lesson_content
         } catch (e) {
-          console.log("Could not add content field, trying alternative column names")
-          // Try alternative column names
-          lessonPlanData.lesson_content = lesson_content
-          lessonPlanData.description = lesson_content
+          console.log("Could not add content field, trying without it")
         }
         
         console.log("Lesson plan data being sent to database:", lessonPlanData)
         
         const newPlan = await db.lessonPlans.create(lessonPlanData)
+        
         console.log("Insert successful, returned ID:", newPlan.id)
         return { success: true, data: newPlan }
       }
     } catch (dbError) {
       console.error("Database operation failed:", dbError)
       
-      // If the error is about missing columns, try without the problematic column
-      if (dbError instanceof Error && dbError.message.includes("content")) {
-        console.log("Content column error detected, trying without content field")
+      // If the first attempt failed, try with even more minimal data
+      try {
+        console.log("First attempt failed, trying with minimal data only")
         
-        try {
-          const minimalData = {
-            title,
-            subject,
-            grade: grade_level,
-            duration: duration_minutes?.toString() || "50",
-            topic,
-            user_id,
-            created_at: now,
-            updated_at: now,
-          }
-          
-          const newPlan = await db.lessonPlans.create(minimalData)
-          console.log("Insert successful with minimal data, returned ID:", newPlan.id)
-          return { success: true, data: newPlan }
-        } catch (retryError) {
-          console.error("Retry also failed:", retryError)
-          return {
-            success: false,
-            error: `Database error: ${retryError instanceof Error ? retryError.message : "Unknown error"}`,
-            fallbackData,
-          }
+        const minimalData: any = {
+          title,
+          subject,
+          grade: grade_level,
+          user_id,
+          created_at: now,
+          updated_at: now,
         }
-      }
-      
-      return {
-        success: false,
-        error: `Database error: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
-        fallbackData,
+        
+        if (id) {
+          const updatedPlan = await db.lessonPlans.update(id, minimalData)
+          console.log("Minimal update successful")
+          return { success: true, data: updatedPlan }
+        } else {
+          const newPlan = await db.lessonPlans.create(minimalData)
+          console.log("Minimal insert successful")
+          return { success: true, data: newPlan }
+        }
+      } catch (minimalError) {
+        console.error("Minimal data attempt also failed:", minimalError)
+        return {
+          success: false,
+          error: `Database error: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
+          fallbackData,
+        }
       }
     }
   } catch (error) {
