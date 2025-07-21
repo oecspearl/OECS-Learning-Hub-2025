@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 
+interface Resource {
+  id: string
+  title: string
+  subject: string
+  grade: string
+  topic: string
+  createdAt: string
+  status: string
+  type: string
+}
+
 export async function GET(request: NextRequest) {
   try {
     console.log("Dashboard resources API called")
@@ -49,7 +60,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Format the response based on type
-    let resources = []
+    let resources: Array<Resource> = []
     
     if (!type || type === "all") {
       // Return all resources
