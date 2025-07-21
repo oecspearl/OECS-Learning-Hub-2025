@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { executeQuery } from "@/lib/db"
+import { db } from "@/lib/db"
 
 // Mock outcomes data
 const mockOutcomesData = [
@@ -34,20 +34,28 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "eloId parameter is required" }, { status: 400 })
     }
 
-    const query = `
-      SELECT id, code, description
-      FROM specific_curriculum_outcomes
-      WHERE elo_id = $1
-      ORDER BY code
-    `
-
     // Define the type for outcomes
     type Outcome = { id: number; code: string; description: string; }
     
-    let outcomes: Outcome[] = await executeQuery(query, [eloId]) as Outcome[]
+    let outcomes: Outcome[] = []
+
+    try {
+      // Try to get outcomes from the new database structure
+      const specificOutcomes = await db.specificCurriculumOutcomes.findMany({ elo_id: eloId })
+      
+      if (specificOutcomes && specificOutcomes.length > 0) {
+        outcomes = specificOutcomes.map(outcome => ({
+          id: parseInt(outcome.id),
+          code: outcome.code,
+          description: outcome.description
+        }))
+      }
+    } catch (dbError) {
+      console.error("Database error, using mock data:", dbError)
+    }
 
     // If no results from database, use mock data
-    if (!outcomes || (Array.isArray(outcomes) && outcomes.length === 0)) {
+    if (!outcomes || outcomes.length === 0) {
       console.log("Using mock outcomes data")
       outcomes = mockOutcomesData
     }
