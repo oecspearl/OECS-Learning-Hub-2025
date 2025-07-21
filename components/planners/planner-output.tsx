@@ -81,12 +81,12 @@ export function PlannerOutput() {
       const formData = new FormData()
       formData.append("title", title || 'Lesson Plan')
       formData.append("subject", subject)
-      formData.append("gradeLevel", gradeLevel)
+      formData.append("grade_level", gradeLevel) // Changed from gradeLevel to grade_level
       formData.append("topic", topic)
       formData.append("content", contentToSave || '')
       formData.append("lesson_content", contentToSave || '')
-      formData.append("duration", "50")
-      formData.append("userId", user.id) // Use actual user ID
+      formData.append("duration_minutes", "50") // Changed from duration to duration_minutes
+      formData.append("user_id", user.id) // Changed from userId to user_id
 
       const result = await saveLessonPlan(formData)
 

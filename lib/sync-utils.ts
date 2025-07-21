@@ -38,9 +38,11 @@ export async function syncFallbackLessonPlans() {
         const formData = new FormData()
         formData.append("title", plan.title)
         formData.append("subject", plan.subject)
-        formData.append("gradeLevel", plan.grade_level || "")
+        formData.append("grade_level", plan.grade_level || "") // Changed from gradeLevel to grade_level
         formData.append("topic", plan.topic || "")
-        formData.append("content", plan.content)
+        formData.append("lesson_content", plan.content) // Changed from content to lesson_content
+        formData.append("duration_minutes", "50") // Add duration_minutes field
+        formData.append("user_id", "1") // Add user_id field
         formData.append("pedagogicalStrategy", plan.pedagogical_strategy || "")
         formData.append("specialNeeds", String(plan.special_needs))
         formData.append("specialNeedsDetails", plan.special_needs_details || "")

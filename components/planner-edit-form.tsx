@@ -82,9 +82,11 @@ export function PlannerEditForm({ lessonPlan }: { lessonPlan: LessonPlan }) {
       submitData.append("id", formData.id)
       submitData.append("title", formData.title)
       submitData.append("subject", formData.subject)
-      submitData.append("gradeLevel", formData.gradeLevel)
+      submitData.append("grade_level", formData.gradeLevel) // Changed from gradeLevel to grade_level
       submitData.append("topic", formData.topic)
-      submitData.append("content", formData.content)
+      submitData.append("lesson_content", formData.content) // Changed from content to lesson_content
+      submitData.append("duration_minutes", "50") // Add duration_minutes field
+      submitData.append("user_id", formData.user_id || "1") // Add user_id field
 
       if (formData.pedagogicalStrategy) {
         submitData.append("pedagogicalStrategy", formData.pedagogicalStrategy)

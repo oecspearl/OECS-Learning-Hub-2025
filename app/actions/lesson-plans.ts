@@ -258,11 +258,11 @@ export async function saveLessonPlan(formData: any) {
     const id = formData.get ? formData.get("id") : formData.id
     const title = formData.get ? formData.get("title") : formData.title
     const subject = formData.get ? formData.get("subject") : formData.subject
-    const grade_level = formData.get ? formData.get("gradeLevel") : formData.gradeLevel
+    const grade_level = formData.get ? formData.get("grade_level") : formData.grade_level // Changed from gradeLevel to grade_level
     const topic = formData.get ? formData.get("topic") : formData.topic
-    const lesson_content = formData.get ? formData.get("content") : formData.content
-    const duration_minutes = formData.get ? parseInt(formData.get("duration") || "50") : parseInt(formData.duration || "50")
-    const user_id = formData.get ? formData.get("userId") : formData.userId || "1" // Use user_id to match schema
+    const lesson_content = formData.get ? formData.get("lesson_content") : formData.lesson_content // Changed from content to lesson_content
+    const duration_minutes = formData.get ? parseInt(formData.get("duration_minutes") || "50") : parseInt(formData.duration_minutes || "50") // Changed from duration to duration_minutes
+    const user_id = formData.get ? formData.get("user_id") : formData.user_id || "1" // Changed from userId to user_id
 
     console.log("Extracted form data:", {
       title,
@@ -325,7 +325,7 @@ export async function saveLessonPlan(formData: any) {
       } else {
         // Create new lesson plan
         console.log("Creating new lesson plan")
-        const newPlan = await db.lessonPlans.create({
+        const lessonPlanData = {
           title,
           subject,
           grade: grade_level, // Use 'grade' to match schema
@@ -335,7 +335,11 @@ export async function saveLessonPlan(formData: any) {
           user_id, // Use user_id to match database schema
           created_at: now,
           updated_at: now,
-        })
+        }
+        
+        console.log("Lesson plan data being sent to database:", lessonPlanData)
+        
+        const newPlan = await db.lessonPlans.create(lessonPlanData)
 
         console.log("Insert successful, returned ID:", newPlan.id)
         return { success: true, data: newPlan }

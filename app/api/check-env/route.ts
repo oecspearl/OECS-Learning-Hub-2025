@@ -1,28 +1,19 @@
-import { NextResponse } from "next/server"
-import { testDatabaseConnection } from "@/lib/db"
+import { NextRequest, NextResponse } from "next/server"
 
-export async function GET() {
-  const openaiKey = process.env.OPENAI_API_KEY
+export async function GET(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  // Check database connection
-  const dbTest = await testDatabaseConnection()
-
-  const checks = {
-    openai: !!openaiKey,
-    supabase: !!supabaseUrl && !!supabaseKey,
-    database: dbTest.success
-  }
-
-  const allConfigured = checks.openai && checks.supabase && checks.database
-
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  console.log("Environment variables check:")
+  console.log("NEXT_PUBLIC_SUPABASE_URL:", supabaseUrl ? "Set" : "Missing")
+  console.log("NEXT_PUBLIC_SUPABASE_ANON_KEY:", supabaseAnonKey ? "Set" : "Missing")
+  console.log("SUPABASE_SERVICE_ROLE_KEY:", supabaseServiceKey ? "Set" : "Missing")
+  
   return NextResponse.json({
-    configured: allConfigured,
-    checks,
-    message: allConfigured 
-      ? "Environment is properly configured." 
-      : "Some environment variables or database connection are not configured properly.",
-    databaseError: dbTest.success ? null : dbTest.error
+    supabaseUrl: supabaseUrl ? "Set" : "Missing",
+    supabaseAnonKey: supabaseAnonKey ? "Set" : "Missing", 
+    supabaseServiceKey: supabaseServiceKey ? "Set" : "Missing",
+    allSet: !!(supabaseUrl && supabaseAnonKey && supabaseServiceKey)
   })
 }

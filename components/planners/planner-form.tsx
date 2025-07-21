@@ -106,9 +106,11 @@ export function PlannerForm() {
       const formData = new FormData()
       formData.append("title", `${values.subject} Lesson: ${values.topic}`)
       formData.append("subject", values.subject)
-      formData.append("gradeLevel", values.gradeLevel)
+      formData.append("grade_level", values.gradeLevel) // Changed from gradeLevel to grade_level
       formData.append("topic", values.topic)
       formData.append("content", lessonPlan)
+      formData.append("lesson_content", lessonPlan) // Add lesson_content field
+      formData.append("duration_minutes", "50") // Add duration_minutes field
       formData.append("pedagogicalStrategy", values.pedagogicalStrategy)
       formData.append("specialNeeds", values.specialNeeds.toString())
       formData.append("specialNeedsDetails", values.specialNeedsDetails || "")
