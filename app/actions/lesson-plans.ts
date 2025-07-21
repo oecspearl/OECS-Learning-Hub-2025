@@ -300,6 +300,7 @@ export async function saveLessonPlan(formData: any) {
       topic: topic || null,
       lesson_content,
       user_id,
+      created_by: user_id, // Add created_by field
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
@@ -343,6 +344,7 @@ export async function saveLessonPlan(formData: any) {
           topic,
           lesson_content: lesson_content,
           user_id,
+          created_by: user_id, // Add created_by field
           created_at: now,
           updated_at: now,
         }
@@ -367,6 +369,7 @@ export async function saveLessonPlan(formData: any) {
           grade_level: grade_level,
           lesson_content: lesson_content,
           user_id,
+          created_by: user_id, // Add created_by field
           created_at: now,
           updated_at: now,
         }
