@@ -105,59 +105,86 @@ export function PlannerForm() {
 
   // Function to handle form submission - ONLY called when the Generate button is clicked
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Only proceed if this is an actual submission, not a tab change
-    if (!isSubmitting) {
-      return
-    }
+    setIsSubmitting(true)
+    setGenerationError(null)
+    setIsLoading(true)
 
     try {
-      setIsLoading(true)
-      setUsedFallback(false)
-      setGenerationError(null)
+      console.log("Form submitted with values:", values)
 
-      // Generate the lesson plan using the direct implementation
-      console.log("Sending to direct generateLessonPlan:", JSON.stringify(values, null, 2))
-      const lessonPlan = await generateLessonPlan(values)
-      console.log("Received lesson plan of length:", lessonPlan?.length || 0)
-
-      if (!lessonPlan) {
-        throw new Error("Failed to generate lesson plan - no content returned")
+      // Prepare the data for the lesson plan generation
+      const lessonPlanData = {
+        ...values,
+        specialNeeds: selectedNeeds,
+        specialNeedsDetails: values.specialNeedsDetails || "",
       }
 
-      // Store the lesson plan in localStorage
-      storeCurrentLessonPlan(lessonPlan)
+      console.log("Calling generateLessonPlan with data:", lessonPlanData)
 
-      // Manually dispatch the event to update the UI
-      const event = new CustomEvent("lessonPlanGenerated", {
-        detail: {
-          lessonPlan,
-          specialNeeds: values.specialNeeds
-            ? values.specialNeedsDetails?.split(",").map((need) => need.trim()) || []
-            : [],
+      // Generate the lesson plan
+      const result = await generateLessonPlan(lessonPlanData)
+
+      console.log("generateLessonPlan result:", result)
+
+      if (result.success && result.lessonPlan) {
+        console.log("Lesson plan generated successfully, length:", result.lessonPlan.length)
+
+        // Store the lesson plan in client storage
+        await storeCurrentLessonPlan({
+          content: result.lessonPlan,
           subject: values.subject,
           gradeLevel: values.gradeLevel,
           topic: values.topic,
-          duration: values.duration,
-        },
-      })
-      window.dispatchEvent(event)
+          specialNeeds: selectedNeeds,
+        })
 
-      toast({
-        title: "Lesson plan generated",
-        description: "Your lesson plan has been generated successfully. Click 'Save' to save it to the database.",
-      })
+        // Dispatch the event with the lesson plan data
+        const eventData = {
+          lessonPlan: result.lessonPlan,
+          subject: values.subject,
+          gradeLevel: values.gradeLevel,
+          topic: values.topic,
+          specialNeeds: selectedNeeds,
+        }
+
+        console.log("Dispatching lessonPlanGenerated event with data:", eventData)
+
+        // Dispatch the event
+        window.dispatchEvent(
+          new CustomEvent("lessonPlanGenerated", {
+            detail: eventData,
+          })
+        )
+
+        // Show success message
+        toast({
+          title: "Lesson Plan Generated!",
+          description: "Your lesson plan has been created successfully.",
+        })
+
+        setUsedFallback(false)
+      } else {
+        console.error("Lesson plan generation failed:", result.error)
+        setGenerationError(result.error || "Failed to generate lesson plan")
+        
+        toast({
+          title: "Generation Failed",
+          description: result.error || "Failed to generate lesson plan. Please try again.",
+          variant: "destructive",
+        })
+      }
     } catch (error) {
-      console.error("Error in lesson plan generation:", error)
-      setGenerationError(error instanceof Error ? error.message : "Unknown error occurred")
+      console.error("Error in onSubmit:", error)
+      setGenerationError(error instanceof Error ? error.message : "An unexpected error occurred")
+      
       toast({
-        title: "Error generating lesson plan",
-        description:
-          error instanceof Error ? error.message : "There was an error generating your lesson plan. Please try again.",
+        title: "Error",
+        description: "An unexpected error occurred while generating the lesson plan.",
         variant: "destructive",
       })
     } finally {
       setIsLoading(false)
-      setIsSubmitting(false) // Reset the submission flag
+      setIsSubmitting(false)
     }
   }
 

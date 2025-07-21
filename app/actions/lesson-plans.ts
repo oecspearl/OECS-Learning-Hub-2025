@@ -5,8 +5,6 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
 import { db } from "@/lib/db"
-import { lessonPlans as lessonPlansTable } from "../../db/schema"
-import { eq, desc } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 type Message = {
@@ -17,41 +15,40 @@ type Message = {
 const lessonPlanSchema = z.object({
   title: z.string().min(1, "Title is required"),
   subject: z.string().min(1, "Subject is required"),
-  grade: z.string().min(1, "Grade is required"),
+  grade_level: z.string().min(1, "Grade is required"),
   topic: z.string().optional(),
-  content: z.string().min(1, "Content is required"),
-  objectives: z.array(z.string()),
-  materials: z.array(z.string()),
-  duration: z.number().min(1, "Duration must be at least 1 minute"),
-  overview: z.string().optional(),
-  standards: z.string().optional(),
-  vocabulary: z.array(z.object({ term: z.string(), definition: z.string(), example: z.string() })).optional(),
-  homework: z.string().optional(),
-  extensions: z.string().optional(),
-  userId: z.string(),
+  lesson_content: z.string().min(1, "Content is required"),
+  learning_objectives: z.array(z.string()),
+  materials_needed: z.array(z.string()),
+  duration_minutes: z.number().min(1, "Duration must be at least 1 minute"),
+  description: z.string().optional(),
+  curriculum_standards: z.array(z.string()).optional(),
+  vocabulary_terms: z.array(z.object({ term: z.string(), definition: z.string(), example: z.string() })).optional(),
+  homework_assignment: z.string().optional(),
+  extension_activities: z.array(z.string()).optional(),
+  created_by: z.string(),
 })
 
 export interface LessonPlan {
   id: string
   title: string
   subject: string
-  grade: string
+  grade_level: string
   topic: string | null
-  content: string
-  duration: string | null
-  materials: string | null
-  pedagogical_strategy: string | null
-  differentiation_strategies: string | null
+  lesson_content: string
+  duration_minutes: number | null
+  materials_needed: string[] | null
+  pedagogical_approach: string | null
+  differentiation_strategies: string[] | null
   grouping_strategy: string | null
-  assessment_approach: string | null
-  curriculum_standards: string | null
-  overview: string | null
-  objectives: string | null
-  vocabulary: string | null
-  homework: string | null
-  extensions: string | null
-  standards: string | null
-  userId: string
+  assessment_strategy: string | null
+  curriculum_standards: string[] | null
+  description: string | null
+  learning_objectives: string[] | null
+  vocabulary_terms: any | null
+  homework_assignment: string | null
+  extension_activities: string[] | null
+  created_by: string
   created_at: string
   updated_at: string
 }
@@ -100,358 +97,155 @@ export async function generateLessonPlan(formData: any) {
         return `\nSpecial Needs Accommodations: Specific accommodations required`
       }
 
-      // No special needs
+      // Case 3: specialNeeds is false or not provided
       return ""
     })()
 
-    // Fetch curriculum standards based on subject and grade level
-    const standards = await getCurriculumStandards(formData.subject || "", formData.gradeLevel || "")
-    const formattedStandards = formatStandardsForPrompt(standards)
-
-    // Validate that we have standards
-    if (!standards || standards.length === 0) {
-      console.warn(`No standards found for ${formData.subject} grade ${formData.gradeLevel}`)
-      throw new Error("Unable to generate lesson plan: No curriculum standards found for the specified subject and grade level.")
+    // Get curriculum standards for the subject and grade
+    let curriculumStandards = ""
+    try {
+      const standards = await getCurriculumStandards(formData.subject, formData.gradeLevel)
+      curriculumStandards = formatStandardsForPrompt(standards)
+      console.log("Curriculum standards retrieved successfully")
+    } catch (error) {
+      console.warn("Failed to retrieve curriculum standards:", error)
+      curriculumStandards = "Curriculum standards not available for this subject/grade combination."
     }
 
-    console.log(
-      `Retrieved ${standards.length} curriculum standards for ${formData.subject} grade ${formData.gradeLevel}`,
-    )
+    // Build the comprehensive prompt
+    const prompt = `Create a comprehensive lesson plan for the following specifications:
 
-    // Extract learning objectives for standards alignment
-    const learningObjectives = formData.learningOutcomes || ""
-    const objectivesList = learningObjectives.split(/[.,]/).filter((obj: string) => obj.trim().length > 0)
+Subject: ${formData.subject}
+Grade Level: ${formData.gradeLevel}
+Topic: ${formData.topic}
+Learning Outcomes: ${formData.learningOutcomes}
+Number of Students: ${formData.studentCount}
+Duration: ${formData.duration} minutes
+Learning Styles: ${formData.learningStyles}
+Materials: ${formData.materials}
+Pedagogical Strategy: ${formData.pedagogicalStrategy}
+Prerequisite Skills: ${formData.prerequisiteSkills}${specialNeedsText}
+Additional Instructions: ${formData.additionalInstructions || "None"}
+Reference URL: ${formData.referenceUrl || "None"}
 
-    // Create a more specific prompt for standards selection
-    const standardsSelectionPrompt = `
-When selecting standards for this lesson plan:
-1. Choose standards that directly align with the learning objectives
-2. Prioritize standards that cover the main concepts and skills
-3. Include at least 2-3 standards that support the lesson's core content
-4. Ensure the selected standards are appropriate for the grade level
-5. Consider both content and skill-based standards
+Curriculum Standards:
+${curriculumStandards}
 
-Learning Objectives to align with:
-${objectivesList.map((obj: string) => `- ${obj.trim()}`).join('\n')}
+Please create a detailed lesson plan that includes:
 
-Available Standards:
-${formattedStandards}
-`
+1. **Lesson Title and Overview**
+2. **Learning Objectives** (specific, measurable, achievable, relevant, time-bound)
+3. **Materials and Resources**
+4. **Lesson Structure** (with timing for each activity)
+5. **Teaching Strategies** (based on the pedagogical strategy specified)
+6. **Student Activities** (engaging and appropriate for the grade level)
+7. **Assessment Methods** (formative and summative)
+8. **Differentiation Strategies** (for diverse learners)
+9. **Closure and Reflection**
+10. **Homework/Extension Activities** (if applicable)
 
-    const prompt = `
-Create a comprehensive, detailed lesson plan for OECS (Organization of Eastern Caribbean States) teachers with the following information:
+Make sure the lesson plan is:
+- Age-appropriate for the specified grade level
+- Aligned with the curriculum standards
+- Engaging and interactive
+- Inclusive of all learning styles mentioned
+- Practical and implementable
+- Well-structured with clear timing
 
-Subject: ${formData.subject || ""}
-Grade Level: ${formData.gradeLevel || ""}
-Topic: ${formData.topic || ""}
-Duration: ${formData.duration || ""} minutes
-Learning Objectives: ${formData.learningOutcomes || ""}
-Learning Styles: ${formData.learningStyles || ""}
-Materials Needed: ${formData.materials || ""}
-Prerequisite Skills: ${formData.prerequisiteSkills || ""}
-Pedagogical Strategy: ${formData.pedagogicalStrategy || ""}
-Additional Notes: ${formData.additionalInstructions || "None"}${specialNeedsText}
+Format the response as a complete, ready-to-use lesson plan.`
 
-Format the lesson plan with the following detailed sections using Markdown formatting:
+    console.log("Sending to direct generateLessonPlan:", formData)
 
-# ${(formData.topic || "LESSON TITLE").toUpperCase()}
-
-## OVERVIEW
-Provide a thorough description of the lesson and its importance in the curriculum. Explain how this lesson connects to previous and future learning. Include the pedagogical approach being used and why it's appropriate for this content.
-
-## LEARNING OBJECTIVES
-List 3-5 specific, measurable learning objectives that clearly state what students will know or be able to do by the end of the lesson. Format as:
-- Students will be able to [action verb] [specific knowledge/skill] by [measurement criteria].
-- Students will understand [concept] as demonstrated by [observable behavior].
-- Students will develop [skill] through [specific activity].
-
-## CURRICULUM STANDARDS
-${standardsSelectionPrompt}
-
-## MATERIALS AND RESOURCES
-Provide a detailed list of all materials needed, including:
-- Teacher resources (presentations, reference materials, technology)
-- Student materials (worksheets, manipulatives, technology)
-- Preparation instructions (what needs to be set up before class)
-- Links to any digital resources or references (if applicable)
-
-## VOCABULARY
-List and define 5-8 key terms that students need to understand for this lesson.
-
-## DETAILED PROCEDURE
-
-### Before the Lesson (Preparation)
-Detailed instructions for teacher preparation, including:
-1. Room arrangement
-2. Materials organization
-3. Technology setup
-4. Anticipation of potential challenges
-
-### Introduction (${Math.round(formData.duration * 0.15) || 10} minutes)
-Step-by-step instructions for how to:
-1. Hook students' interest and activate prior knowledge
-2. Connect to previous learning
-3. Introduce the lesson objectives in student-friendly language
-4. Preview the activities
-5. Address potential misconceptions
-
-### Development (${Math.round(formData.duration * 0.6) || 30} minutes)
-Detailed, sequential instructions for the main teaching and learning activities:
-1. Teacher modeling/demonstration with specific examples
-2. Guided practice with step-by-step directions
-3. Independent or collaborative work with clear instructions
-4. Differentiation strategies for various learning needs
-5. Formative assessment checkpoints
-6. Specific questions to ask students at each stage
-7. Anticipated student responses and how to address them
-
-### Closure (${Math.round(formData.duration * 0.15) || 10} minutes)
-Specific steps for concluding the lesson:
-1. Summarizing key points (include specific summarizing strategies)
-2. Checking for understanding with concrete examples
-3. Connecting to future learning
-4. Exit ticket or final assessment details
-
-## ASSESSMENT
-Detailed description of both formative and summative assessment strategies:
-- Formative: Specific questions, observation criteria, and check-in points during the lesson
-- Summative: Detailed description of final assessment with scoring criteria or rubric
-- Sample answers or exemplars to guide evaluation
-
-## DIFFERENTIATION STRATEGIES
-Specific modifications for different learning needs:
-- For advanced learners: Extension activities with detailed instructions
-- For struggling learners: Scaffolding techniques and simplified approaches
-- For different learning styles: Alternative approaches based on the learning styles mentioned
-
-## PEDAGOGICAL RATIONALE
-Explanation of why specific teaching strategies were chosen and how they support the learning objectives. Include research-based justifications where appropriate.
-
-${
-  specialNeedsText
-    ? `
-## SPECIAL NEEDS ACCOMMODATIONS
-Detailed accommodations for students with special needs, including:
-- Specific modifications to materials
-- Adjusted expectations or assessment criteria
-- Alternative presentation methods
-- Support strategies for each identified need (${
-        Array.isArray(formData.specialNeeds)
-          ? formData.specialNeeds.join(", ")
-          : formData.specialNeedsDetails || "various needs"
-      })
-- Implementation tips for inclusive teaching`
-    : ""
-}
-
-## REFLECTION QUESTIONS
-Questions for the teacher to consider after teaching the lesson:
-1. What went well in this lesson?
-2. What challenges did students face?
-3. How effective were the teaching strategies?
-4. What adjustments would improve this lesson next time?
-
-## HOMEWORK/EXTENSION
-Detailed description of follow-up activities:
-- Specific homework assignment with clear instructions
-- Extension activities for continued learning
-- Family engagement opportunities
-
-## RESOURCES AND REFERENCES
-List of additional resources for both teachers and students:
-- Books, websites, videos
-- Additional practice materials
-- Background information sources
-
-Ensure the lesson plan follows OECS curriculum standards and best teaching practices. Make the plan practical, detailed, and immediately usable by teachers with minimal additional preparation.
-`
-
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
+    // Generate the lesson plan using AI
+    const result = await generateText({
+      model: openai("gpt-4"),
       prompt,
       temperature: 0.7,
-      maxTokens: 4000, // Increased token limit for more detailed plans
+      maxTokens: 4000,
     })
 
-    // At the end of the function, before returning:
-    console.log("Generated lesson plan length:", text.length)
-    console.log("First 200 characters:", text.substring(0, 200))
+    if (!result.text) {
+      throw new Error("Failed to generate lesson plan content")
+    }
 
-    return text
+    console.log("Received lesson plan of length:", result.text.length)
+
+    // Return the generated lesson plan
+    return {
+      success: true,
+      lessonPlan: result.text,
+      specialNeeds: formData.specialNeeds || [],
+      subject: formData.subject,
+      gradeLevel: formData.gradeLevel,
+      topic: formData.topic,
+    }
+
   } catch (error) {
-    console.error("Error generating lesson plan:", error)
-    throw new Error("Failed to generate lesson plan")
+    console.error("Error in generateLessonPlan:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+    }
   }
 }
 
 export async function generateLessonPlanFromChat(messages: Message[]) {
   try {
-    const formattedHistory = messages
-      .map((msg) => {
-        return `${msg.role === "user" ? "User" : "Pearl"}: ${msg.content}`
-      })
-      .join("\n\n")
+    console.log("generateLessonPlanFromChat called with messages:", messages)
 
-    // Extract potential subject and grade level from the conversation
-    let subject = ""
-    let gradeLevel = ""
-
-    // Simple extraction logic - can be improved
-    for (const msg of messages) {
-      const content = msg.content.toLowerCase()
-
-      // Try to extract subject
-      if (content.includes("mathematics") || content.includes("math")) {
-        subject = "mathematics"
-      } else if (content.includes("science")) {
-        subject = "science"
-      } else if (content.includes("language arts") || content.includes("english")) {
-        subject = "english"
-      } else if (content.includes("social studies")) {
-        subject = "socialstudies"
-      }
-
-      // Try to extract grade level
-      const gradeMatch = content.match(/grade (\d+)/i) || content.match(/grade(\d+)/i)
-      if (gradeMatch && gradeMatch[1]) {
-        gradeLevel = gradeMatch[1]
-      }
+    // Get curriculum standards for the subject and grade
+    let curriculumStandards = ""
+    try {
+      const standards = await getCurriculumStandards("general", "all")
+      curriculumStandards = formatStandardsForPrompt(standards)
+      console.log("Curriculum standards retrieved successfully for chat")
+    } catch (error) {
+      console.warn("Failed to retrieve curriculum standards for chat:", error)
+      curriculumStandards = "Curriculum standards not available."
     }
 
-    // Fetch curriculum standards if we have enough information
-    let formattedStandards = "Use general educational standards appropriate for the subject and grade level."
-    if (subject && gradeLevel) {
-      const standards = await getCurriculumStandards(subject, gradeLevel)
-      formattedStandards = formatStandardsForPrompt(standards)
-    }
+    // Build the comprehensive prompt
+    const prompt = `You are an expert educational consultant for the OECS (Organization of Eastern Caribbean States) curriculum. 
 
-    const prompt = `
-You are Pearl, an AI teaching assistant for OECS (Organization of Eastern Caribbean States) teachers.
-You will generate a detailed, pedagogically sound lesson plan based on the conversation history.
+Curriculum Standards Context:
+${curriculumStandards}
 
-Here is the conversation history:
-${formattedHistory}
+Based on the conversation history, create a comprehensive lesson plan that follows OECS curriculum standards and best teaching practices. The lesson plan should be:
 
-Based on the conversation, create a comprehensive lesson plan with the following detailed sections using Markdown formatting:
+1. **Well-structured** with clear learning objectives
+2. **Age-appropriate** for the specified grade level
+3. **Engaging and interactive** with varied activities
+4. **Inclusive** of different learning styles and needs
+5. **Practical and implementable** with clear instructions
+6. **Aligned with curriculum standards** where applicable
 
-# LESSON TITLE
+Format the response as a complete, ready-to-use lesson plan with all necessary sections.
 
-## OVERVIEW
-Provide a thorough description of the lesson and its importance in the curriculum. Explain how this lesson connects to previous and future learning. Include the pedagogical approach being used and why it's appropriate for this content.
+Conversation History:
+${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n\n')}
 
-## LEARNING OBJECTIVES
-List 3-5 specific, measurable learning objectives that clearly state what students will know or be able to do by the end of the lesson. Format as:
-- Students will be able to [action verb] [specific knowledge/skill] by [measurement criteria].
-- Students will understand [concept] as demonstrated by [observable behavior].
-- Students will develop [skill] through [specific activity].
+Please create a comprehensive lesson plan based on this conversation.`
 
-## CURRICULUM STANDARDS
-${formattedStandards}
+    console.log("Generating lesson plan from chat with prompt length:", prompt.length)
 
-Select the most relevant standards from the list above that align with this lesson's objectives and content. If additional standards are needed, you may include general educational standards appropriate for the subject and grade level.
-
-## MATERIALS AND RESOURCES
-Provide a detailed list of all materials needed, including:
-- Teacher resources (presentations, reference materials, technology)
-- Student materials (worksheets, manipulatives, technology)
-- Preparation instructions (what needs to be set up before class)
-- Links to any digital resources or references (if applicable)
-
-## VOCABULARY
-List and define 5-8 key terms that students need to understand for this lesson.
-
-## DETAILED PROCEDURE
-
-### Before the Lesson (Preparation)
-Detailed instructions for teacher preparation, including:
-1. Room arrangement
-2. Materials organization
-3. Technology setup
-4. Anticipation of potential challenges
-
-### Introduction (10 minutes)
-Step-by-step instructions for how to:
-1. Hook students' interest and activate prior knowledge
-2. Connect to previous learning
-3. Introduce the lesson objectives in student-friendly language
-4. Preview the activities
-5. Address potential misconceptions
-
-### Development (30 minutes)
-Detailed, sequential instructions for the main teaching and learning activities:
-1. Teacher modeling/demonstration with specific examples
-2. Guided practice with step-by-step directions
-3. Independent or collaborative work with clear instructions
-4. Differentiation strategies for various learning needs
-5. Formative assessment checkpoints
-6. Specific questions to ask students at each stage
-7. Anticipated student responses and how to address them
-
-### Closure (10 minutes)
-Specific steps for concluding the lesson:
-1. Summarizing key points (include specific summarizing strategies)
-2. Checking for understanding with concrete examples
-3. Connecting to future learning
-4. Exit ticket or final assessment details
-
-## ASSESSMENT
-Detailed description of both formative and summative assessment strategies:
-- Formative: Specific questions, observation criteria, and check-in points during the lesson
-- Summative: Detailed description of final assessment with scoring criteria or rubric
-- Sample answers or exemplars to guide evaluation
-
-## DIFFERENTIATION STRATEGIES
-Specific modifications for different learning needs:
-- For advanced learners: Extension activities with detailed instructions
-- For struggling learners: Scaffolding techniques and simplified approaches
-- For different learning styles: Alternative approaches based on the learning styles mentioned
-
-## PEDAGOGICAL RATIONALE
-Explanation of why specific teaching strategies were chosen and how they support the learning objectives. Include research-based justifications where appropriate.
-
-## REFLECTION QUESTIONS
-Questions for the teacher to consider after teaching the lesson:
-1. What went well in this lesson?
-2. What challenges did students face?
-3. How effective were the teaching strategies?
-4. What adjustments would improve this lesson next time?
-
-## HOMEWORK/EXTENSION
-Detailed description of follow-up activities:
-- Specific homework assignment with clear instructions
-- Extension activities for continued learning
-- Family engagement opportunities
-
-## RESOURCES AND REFERENCES
-List of additional resources for both teachers and students:
-- Books, websites, videos
-- Additional practice materials
-- Background information sources
-
-Ensure the lesson plan follows OECS curriculum standards and best teaching practices. Make the plan practical, detailed, and immediately usable by teachers with minimal additional preparation.
-`
-
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
+    // Generate the lesson plan using AI
+    const result = await generateText({
+      model: openai("gpt-4"),
       prompt,
       temperature: 0.7,
-      maxTokens: 4000, // Increased token limit for more detailed plans
+      maxTokens: 4000,
     })
 
-    return {
-      title: "Generated Lesson Plan",
-      subject: "Various",
-      grade: "Various",
-      duration: "Various",
-      objectives: [],
-      materials: [],
-      procedure: [],
-      assessment: "",
-      extensions: "",
-      content: text,
+    if (!result.text) {
+      throw new Error("Failed to generate lesson plan content from chat")
     }
+
+    console.log("Generated lesson plan from chat, length:", result.text.length)
+
+    return result.text
+
   } catch (error) {
-    console.error("Error generating lesson plan from chat:", error)
+    console.error("Error in generateLessonPlanFromChat:", error)
     throw new Error("Failed to generate lesson plan from chat")
   }
 }
@@ -464,28 +258,28 @@ export async function saveLessonPlan(formData: any) {
     const id = formData.get ? formData.get("id") : formData.id
     const title = formData.get ? formData.get("title") : formData.title
     const subject = formData.get ? formData.get("subject") : formData.subject
-    const grade = formData.get ? formData.get("gradeLevel") : formData.gradeLevel
+    const grade_level = formData.get ? formData.get("gradeLevel") : formData.gradeLevel
     const topic = formData.get ? formData.get("topic") : formData.topic
-    const content = formData.get ? formData.get("content") : formData.content
-    const duration = formData.get ? formData.get("duration") || "50 minutes" : formData.duration || "50 minutes"
-    const userId = formData.get ? formData.get("userId") : formData.userId || "1" // Default to "1" if not provided
+    const lesson_content = formData.get ? formData.get("content") : formData.content
+    const duration_minutes = formData.get ? parseInt(formData.get("duration") || "50") : parseInt(formData.duration || "50")
+    const created_by = formData.get ? formData.get("userId") : formData.userId || "1" // Default to "1" if not provided
 
     console.log("Extracted form data:", {
       title,
       subject,
-      grade,
+      grade_level,
       topic,
-      duration,
-      contentLength: content ? content.length : 0,
-      userId,
+      duration_minutes,
+      contentLength: lesson_content ? lesson_content.length : 0,
+      created_by,
     })
 
     // Validate required fields
     const missingFields = []
     if (!title) missingFields.push("title")
     if (!subject) missingFields.push("subject")
-    if (!content) missingFields.push("content")
-    if (!grade) missingFields.push("grade level")
+    if (!lesson_content) missingFields.push("content")
+    if (!grade_level) missingFields.push("grade level")
 
     if (missingFields.length > 0) {
       console.error("Missing required fields:", missingFields)
@@ -501,11 +295,11 @@ export async function saveLessonPlan(formData: any) {
       id: fallbackId,
       title,
       subject,
-      grade: grade || "Not specified",
-      duration: duration,
+      grade_level: grade_level || "Not specified",
+      duration_minutes,
       topic: topic || null,
-      content,
-      user_id: userId,
+      lesson_content,
+      created_by,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
@@ -520,11 +314,10 @@ export async function saveLessonPlan(formData: any) {
         const updatedPlan = await db.lessonPlans.update(id, {
           title,
           subject,
-          grade,
-          duration,
+          grade_level,
+          duration_minutes,
           topic,
-          content,
-          user_id: userId,
+          lesson_content,
           updated_at: now,
         })
 
@@ -534,14 +327,13 @@ export async function saveLessonPlan(formData: any) {
         // Create new lesson plan
         console.log("Creating new lesson plan")
         const newPlan = await db.lessonPlans.create({
-          id: fallbackId, // Generate a unique ID
           title,
           subject,
-          grade,
-          duration,
+          grade_level,
+          duration_minutes,
           topic,
-          content,
-          user_id: userId,
+          lesson_content,
+          created_by,
           created_at: now,
           updated_at: now,
         })
@@ -578,17 +370,17 @@ export async function updateLessonPlan(id: string, data: Partial<z.infer<typeof 
       const result = await db.lessonPlans.update(id, {
         title: data.title,
         subject: data.subject,
-        grade: data.grade,
+        grade_level: data.grade_level,
         topic: data.topic || null,
-        content: data.content,
-        duration: data.duration?.toString() || "50",
-        objectives: data.objectives ? JSON.stringify(data.objectives) : null,
-        materials: data.materials ? JSON.stringify(data.materials) : null,
-        overview: data.overview || null,
-        standards: data.standards || null,
-        vocabulary: data.vocabulary ? JSON.stringify(data.vocabulary) : null,
-        homework: data.homework || null,
-        extensions: data.extensions || null,
+        lesson_content: data.lesson_content,
+        duration_minutes: data.duration_minutes?.toString() || "50",
+        learning_objectives: data.learning_objectives ? JSON.stringify(data.learning_objectives) : null,
+        materials_needed: data.materials_needed ? JSON.stringify(data.materials_needed) : null,
+        description: data.description || null,
+        curriculum_standards: data.curriculum_standards ? JSON.stringify(data.curriculum_standards) : null,
+        vocabulary_terms: data.vocabulary_terms ? JSON.stringify(data.vocabulary_terms) : null,
+        homework_assignment: data.homework_assignment || null,
+        extension_activities: data.extension_activities ? JSON.stringify(data.extension_activities) : null,
         updated_at: new Date().toISOString(),
       })
 
@@ -646,127 +438,94 @@ export async function getLessonPlanById(id: string) {
       id: plan.id,
       title: plan.title,
       subject: plan.subject,
-      grade: plan.grade,
+      grade_level: plan.grade_level,
       topic: plan.topic ?? null,
-      content: plan.content,
-      duration: plan.duration ?? null,
-      materials: plan.materials ?? null,
-      pedagogical_strategy: plan.pedagogical_strategy ?? null,
+      lesson_content: plan.lesson_content,
+      duration_minutes: plan.duration_minutes,
+      materials_needed: plan.materials_needed,
+      pedagogical_approach: plan.pedagogical_approach ?? null,
       differentiation_strategies: plan.differentiation_strategies ?? null,
       grouping_strategy: plan.grouping_strategy ?? null,
-      assessment_approach: plan.assessment_approach ?? null,
+      assessment_strategy: plan.assessment_strategy ?? null,
       curriculum_standards: plan.curriculum_standards ?? null,
-      overview: plan.overview ?? null,
-      objectives: plan.objectives ?? null,
-      vocabulary: plan.vocabulary ?? null,
-      homework: plan.homework ?? null,
-      extensions: plan.extensions ?? null,
-      standards: plan.standards ?? null,
+      description: plan.description ?? null,
+      learning_objectives: plan.learning_objectives ?? null,
+      vocabulary_terms: plan.vocabulary_terms ?? null,
+      homework_assignment: plan.homework_assignment ?? null,
+      extension_activities: plan.extension_activities ?? null,
+      created_by: plan.created_by,
       created_at: plan.created_at,
       updated_at: plan.updated_at,
     }
   } catch (error) {
-    console.error("Error fetching lesson plan:", error)
+    console.error("Error getting lesson plan by ID:", error)
     return null
   }
 }
 
 export async function getLessonPlans() {
   try {
-    console.log("GET LESSON PLANS: Starting to fetch lesson plans")
     const plans = await db.lessonPlans.findMany()
-
-    console.log("GET LESSON PLANS: Retrieved plans:", plans)
-
     return {
       success: true,
-      data: plans || [],
+      data: plans,
     }
   } catch (error) {
-    console.error("GET LESSON PLANS: Error fetching lesson plans:", error)
+    console.error("Error getting lesson plans:", error)
     return {
       success: false,
-      error: "Failed to fetch lesson plans",
+      data: [],
+      error: "Failed to get lesson plans",
     }
   }
 }
 
 export async function createLessonPlan(data: z.infer<typeof lessonPlanSchema>) {
   try {
-    // Validate input data
-    const validatedData = lessonPlanSchema.parse(data)
+    console.log("Creating lesson plan with data:", data)
 
-    // Create new lesson plan
-    const plan = await db.lessonPlans.create({
-      id: `lesson_plan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      title: validatedData.title,
-      subject: validatedData.subject,
-      grade: validatedData.grade,
-      content: validatedData.content,
-      objectives: JSON.stringify(validatedData.objectives),
-      materials: JSON.stringify(validatedData.materials),
-      duration: validatedData.duration.toString(),
-      user_id: validatedData.userId,
+    const result = await db.lessonPlans.create({
+      ...data,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
 
+    console.log("Lesson plan created successfully:", result.id)
+
+    // Revalidate relevant paths
+    revalidatePath("/dashboard")
+    revalidatePath("/lesson-plans")
+
     return {
       success: true,
-      data: plan,
+      data: result,
     }
   } catch (error) {
     console.error("Error creating lesson plan:", error)
-
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: error.errors[0].message,
-      }
-    }
-
     return {
       success: false,
-      error: "Failed to create lesson plan",
+      error: error instanceof Error ? error.message : "Failed to create lesson plan",
     }
   }
 }
 
 export async function createTestLessonPlan() {
   try {
-    console.log("Creating test lesson plan...")
     const testPlan = {
-      id: `lesson_plan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       title: "Test Lesson Plan",
       subject: "Mathematics",
-      grade: "Grade 5",
-      topic: "Basic Algebra",
-      content: "This is a test lesson plan",
-      duration: "45",
-      materials: null,
-      pedagogical_strategy: null,
-      differentiation_strategies: null,
-      grouping_strategy: null,
-      assessment_approach: null,
-      curriculum_standards: null,
-      overview: null,
-      objectives: null,
-      vocabulary: null,
-      homework: null,
-      extensions: null,
-      standards: null,
-      user_id: "1",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      grade_level: "Grade 1",
+      topic: "Basic Addition",
+      lesson_content: "This is a test lesson plan content.",
+      learning_objectives: ["Students will learn basic addition", "Students will practice counting"],
+      materials_needed: ["Counters", "Whiteboard"],
+      duration_minutes: 45,
+      created_by: "test-user-id",
     }
 
-    const result = await db.lessonPlans.create(testPlan)
-
+    const result = await createLessonPlan(testPlan)
     console.log("Test lesson plan created:", result)
-    return {
-      success: true,
-      data: result,
-    }
+    return result
   } catch (error) {
     console.error("Error creating test lesson plan:", error)
     return {
