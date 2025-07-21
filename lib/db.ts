@@ -375,5 +375,65 @@ export const db = {
       if (error) throw error
       return data || []
     }
+  },
+
+  // Schedules
+  schedules: {
+    async create(data: any) {
+      const { data: result, error } = await supabaseAdmin
+        .from('schedules')
+        .insert(data)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async update(id: string, data: any) {
+      const { data: result, error } = await supabaseAdmin
+        .from('schedules')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async delete(id: string) {
+      const { error } = await supabaseAdmin
+        .from('schedules')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
+    },
+
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('schedules').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.user_id) query = query.eq('user_id', where.user_id)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
+    async findMany(where?: any) {
+      let query = supabaseAdmin.from('schedules').select('*')
+      
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
+      if (where?.day_of_week !== undefined) query = query.eq('day_of_week', where.day_of_week)
+      
+      const { data, error } = await query.order('start_time', { ascending: true })
+      
+      if (error) throw error
+      return data || []
+    }
   }
 }
