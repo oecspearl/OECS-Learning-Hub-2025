@@ -172,7 +172,7 @@ export const db = {
       
       if (where?.created_by) query = query.eq('created_by', where.created_by)
       if (where?.subject) query = query.eq('subject', where.subject)
-      if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
+      if (where?.grade) query = query.eq('grade', where.grade)
       
       const { data, error } = await query.order('created_at', { ascending: false })
       

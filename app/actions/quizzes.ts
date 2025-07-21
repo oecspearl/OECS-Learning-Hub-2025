@@ -132,20 +132,39 @@ Make sure the quiz is:
       const quizData = JSON.parse(result.text)
       return {
         success: true,
-        quiz: quizData,
+        data: {
+          title: quizData.title || `Quiz on ${formData.topic}`,
+          description: quizData.description || "Generated quiz",
+          subject: formData.subject,
+          grade: formData.gradeLevel,
+          topic: formData.topic,
+          content: result.text, // Use the raw AI response as content
+          questionCount: formData.questionCount || 10,
+          questionTypes: formData.questionTypes || ["Multiple Choice"],
+          difficulty: formData.difficultyLevel || "medium",
+          timeLimit: 30,
+          tags: [],
+          instructions: quizData.instructions || "Answer all questions to the best of your ability.",
+        },
       }
     } catch (parseError) {
       console.error("Error parsing quiz JSON:", parseError)
       // Return the raw text if JSON parsing fails
       return {
         success: true,
-        quiz: {
+        data: {
           title: `Quiz on ${formData.topic}`,
           description: "Generated quiz",
+          subject: formData.subject,
+          grade: formData.gradeLevel,
+          topic: formData.topic,
+          content: result.text,
+          questionCount: formData.questionCount || 10,
+          questionTypes: formData.questionTypes || ["Multiple Choice"],
+          difficulty: formData.difficultyLevel || "medium",
+          timeLimit: 30,
+          tags: [],
           instructions: "Answer all questions to the best of your ability.",
-          questions: [],
-          answer_key: [],
-          rawContent: result.text,
         },
       }
     }
@@ -167,20 +186,21 @@ export async function saveQuiz(formData: any) {
     const title = formData.get ? formData.get("title") : formData.title
     const description = formData.get ? formData.get("description") : formData.description
     const subject = formData.get ? formData.get("subject") : formData.subject
-    const grade_level = formData.get ? formData.get("gradeLevel") : formData.gradeLevel
+    const grade_level = formData.get ? formData.get("gradeLevel") : formData.grade || formData.gradeLevel
     const topic = formData.get ? formData.get("topic") : formData.topic
-    const questions = formData.get ? JSON.parse(formData.get("questions")) : formData.questions
+    const content = formData.get ? formData.get("content") : formData.content
+    const questions = formData.get ? JSON.parse(formData.get("questions") || "[]") : formData.questions || []
     const instructions = formData.get ? formData.get("instructions") : formData.instructions
-    const answer_key = formData.get ? JSON.parse(formData.get("answer_key")) : formData.answer_key
+    const answer_key = formData.get ? JSON.parse(formData.get("answer_key") || "[]") : formData.answer_key || []
     const question_count = formData.get ? parseInt(formData.get("question_count") || "10") : parseInt(formData.question_count || "10")
-    const time_limit_minutes = formData.get ? parseInt(formData.get("time_limit_minutes") || "30") : parseInt(formData.time_limit_minutes || "30")
-    const difficulty_level = formData.get ? formData.get("difficulty_level") : formData.difficulty_level || "medium"
+    const time_limit_minutes = formData.get ? parseInt(formData.get("time_limit_minutes") || "30") : parseInt(formData.time_limit_minutes || formData.time_limit || "30")
+    const difficulty_level = formData.get ? formData.get("difficulty_level") : formData.difficulty_level || formData.difficulty || "medium"
     const randomize_questions = formData.get ? formData.get("randomize_questions") === "true" : formData.randomize_questions || false
     const show_correct_answers = formData.get ? formData.get("show_correct_answers") === "true" : formData.show_correct_answers !== false
     const allow_retakes = formData.get ? formData.get("allow_retakes") === "true" : formData.allow_retakes !== false
     const tags = formData.get ? JSON.parse(formData.get("tags") || "[]") : formData.tags || []
     const is_public = formData.get ? formData.get("is_public") === "true" : formData.is_public || false
-    const created_by = formData.get ? formData.get("userId") : formData.userId || "1"
+    const created_by = formData.get ? formData.get("userId") : formData.userId || formData.user_id || "1"
 
     console.log("Extracted quiz data:", {
       title,
@@ -190,14 +210,16 @@ export async function saveQuiz(formData: any) {
       question_count,
       difficulty_level,
       created_by,
+      content: content ? "present" : "missing",
+      questions: questions ? "present" : "missing",
     })
 
     // Validate required fields
     const missingFields = []
     if (!title) missingFields.push("title")
     if (!subject) missingFields.push("subject")
-    if (!questions) missingFields.push("questions")
     if (!grade_level) missingFields.push("grade level")
+    if (!content && !questions) missingFields.push("content or questions")
 
     if (missingFields.length > 0) {
       console.error("Missing required fields:", missingFields)
@@ -211,26 +233,30 @@ export async function saveQuiz(formData: any) {
     try {
       const now = new Date().toISOString()
       
+      // Prepare the quiz data for database
+      const quizData = {
+        title,
+        description,
+        subject,
+        grade: grade_level, // Map grade_level to grade for database
+        topic,
+        content: content || JSON.stringify(questions), // Use content if available, otherwise stringify questions
+        question_count,
+        question_types: JSON.stringify(questions.length > 0 ? ["Multiple Choice"] : []),
+        difficulty: difficulty_level,
+        time_limit: time_limit_minutes,
+        tags: JSON.stringify(tags),
+        instructions,
+        user_id: created_by,
+        created_at: now,
+        updated_at: now,
+      }
+      
       if (id) {
         // Update existing quiz
         console.log("Updating existing quiz with ID:", id)
         const updatedQuiz = await db.quizzes.update(id, {
-          title,
-          description,
-          subject,
-          grade_level,
-          topic,
-          questions,
-          instructions,
-          answer_key,
-          question_count,
-          time_limit_minutes,
-          difficulty_level,
-          randomize_questions,
-          show_correct_answers,
-          allow_retakes,
-          tags,
-          is_public,
+          ...quizData,
           updated_at: now,
         })
 
@@ -239,27 +265,7 @@ export async function saveQuiz(formData: any) {
       } else {
         // Create new quiz
         console.log("Creating new quiz")
-        const newQuiz = await db.quizzes.create({
-          title,
-          description,
-          subject,
-          grade_level,
-          topic,
-          questions,
-          instructions,
-          answer_key,
-          question_count,
-          time_limit_minutes,
-          difficulty_level,
-          randomize_questions,
-          show_correct_answers,
-          allow_retakes,
-          tags,
-          is_public,
-          created_by,
-          created_at: now,
-          updated_at: now,
-        })
+        const newQuiz = await db.quizzes.create(quizData)
 
         console.log("Insert successful, returned ID:", newQuiz.id)
         return { success: true, data: newQuiz }
