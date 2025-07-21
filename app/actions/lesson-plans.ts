@@ -305,15 +305,15 @@ export async function saveLessonPlan(formData: any) {
     }
 
     // Store the lesson plan in the database
+    const now = new Date().toISOString()
+    
     try {
-      const now = new Date().toISOString()
-
       if (id) {
         // Update existing lesson plan
         console.log("Updating existing lesson plan with ID:", id)
         
         // Try with minimal data first
-        const updateData = {
+        const updateData: any = {
           title,
           subject,
           grade: grade_level,
