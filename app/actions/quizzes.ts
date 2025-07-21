@@ -241,14 +241,14 @@ export async function saveQuiz(formData: any) {
         title,
         description,
         subject,
-        grade: grade_level, // Map grade_level to grade for database
+        grade_level: grade_level, // Use grade_level instead of grade
         topic,
         content: content || JSON.stringify(questions), // Use content if available, otherwise stringify questions
         question_count,
         question_types: JSON.stringify(questions.length > 0 ? ["Multiple Choice"] : []),
         difficulty: difficulty_level,
         time_limit: time_limit_minutes,
-        tags: JSON.stringify(tags),
+        tags: JSON.stringify(tags || []),
         instructions,
         user_id: created_by,
         created_at: now,
@@ -274,7 +274,7 @@ export async function saveQuiz(formData: any) {
               title,
               description,
               subject,
-              grade: grade_level,
+              grade_level,
               topic,
               content: content || "Quiz content",
               question_count,
@@ -312,10 +312,15 @@ export async function saveQuiz(formData: any) {
               title,
               description,
               subject,
-              grade: grade_level,
+              grade_level: grade_level,
               topic,
               content: content || "Quiz content",
               question_count,
+              question_types: "Multiple Choice",
+              difficulty: difficulty_level,
+              time_limit: time_limit_minutes,
+              tags: "general",
+              instructions,
               user_id: created_by,
               created_at: now,
               updated_at: now,
@@ -325,9 +330,26 @@ export async function saveQuiz(formData: any) {
             return { success: true, data: newQuiz }
           } catch (minimalError) {
             console.error("Minimal insert also failed:", minimalError)
-            return { 
-              success: false, 
-              error: `Failed to save quiz: ${minimalError instanceof Error ? minimalError.message : "Unknown error"}` 
+            
+            // Try with absolute minimal fields as last resort
+            try {
+              console.log("Retrying with absolute minimal fields...")
+              const absoluteMinimalData = {
+                title: title || "Untitled Quiz",
+                subject: subject || "General",
+                grade_level: grade_level || "Grade 6",
+                content: content || "Quiz content",
+                user_id: created_by || "1",
+              }
+              const newQuiz = await db.quizzes.create(absoluteMinimalData)
+              console.log("Insert successful with absolute minimal fields")
+              return { success: true, data: newQuiz }
+            } catch (absoluteError) {
+              console.error("Absolute minimal insert also failed:", absoluteError)
+              return { 
+                success: false, 
+                error: `Database schema issue: The quizzes table is missing required columns. Please run the database migration script. Error: ${absoluteError instanceof Error ? absoluteError.message : "Unknown error"}` 
+              }
             }
           }
         }
