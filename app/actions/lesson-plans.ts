@@ -316,7 +316,7 @@ export async function saveLessonPlan(formData: any) {
         const updateData: any = {
           title,
           subject,
-          grade: grade_level,
+          grade_level: grade_level,
           topic,
           updated_at: now,
         }
@@ -339,7 +339,7 @@ export async function saveLessonPlan(formData: any) {
         const lessonPlanData: any = {
           title,
           subject,
-          grade: grade_level,
+          grade_level: grade_level,
           topic,
           user_id,
           created_at: now,
@@ -370,7 +370,7 @@ export async function saveLessonPlan(formData: any) {
         const minimalData: any = {
           title,
           subject,
-          grade: grade_level,
+          grade_level: grade_level,
           user_id,
           created_at: now,
           updated_at: now,
