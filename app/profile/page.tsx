@@ -1,6 +1,6 @@
-export const dynamic = 'force-dynamic'
-
 "use client"
+
+export const dynamic = 'force-dynamic'
 
 import { useAuth } from "@/contexts/AuthContext"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
