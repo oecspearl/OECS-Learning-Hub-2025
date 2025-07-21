@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     // Fetch lesson plans
     let lessonPlans = []
     try {
-      lessonPlans = await db.lessonPlans.findMany({ created_by: userId })
+      lessonPlans = await db.lessonPlans.findMany({ user_id: userId }) // Use user_id to match schema
       console.log(`Found ${lessonPlans.length} lesson plans`)
     } catch (error) {
       console.error("Error fetching lesson plans:", error)
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     // Fetch quizzes
     let quizzes = []
     try {
-      quizzes = await db.quizzes.findMany({ created_by: userId })
+      quizzes = await db.quizzes.findMany({ user_id: userId }) // Use user_id to match schema
       console.log(`Found ${quizzes.length} quizzes`)
     } catch (error) {
       console.error("Error fetching quizzes:", error)
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     // Fetch cross-curricular plans
     let crossCurricularPlans = []
     try {
-      crossCurricularPlans = await db.crossCurricularPlans.findMany({ created_by: userId })
+      crossCurricularPlans = await db.crossCurricularPlans.findMany({ user_id: userId }) // Use user_id to match schema
       console.log(`Found ${crossCurricularPlans.length} cross-curricular plans`)
     } catch (error) {
       console.error("Error fetching cross-curricular plans:", error)
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // Fetch multigrade plans
     let multigradePlans = []
     try {
-      multigradePlans = await db.multigradePlans.findMany({ created_by: userId })
+      multigradePlans = await db.multigradePlans.findMany({ user_id: userId }) // Use user_id to match schema
       console.log(`Found ${multigradePlans.length} multigrade plans`)
     } catch (error) {
       console.error("Error fetching multigrade plans:", error)

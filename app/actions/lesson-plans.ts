@@ -262,7 +262,7 @@ export async function saveLessonPlan(formData: any) {
     const topic = formData.get ? formData.get("topic") : formData.topic
     const lesson_content = formData.get ? formData.get("content") : formData.content
     const duration_minutes = formData.get ? parseInt(formData.get("duration") || "50") : parseInt(formData.duration || "50")
-    const created_by = formData.get ? formData.get("userId") : formData.userId || "1" // Default to "1" if not provided
+    const user_id = formData.get ? formData.get("userId") : formData.userId || "1" // Use user_id to match schema
 
     console.log("Extracted form data:", {
       title,
@@ -271,7 +271,7 @@ export async function saveLessonPlan(formData: any) {
       topic,
       duration_minutes,
       contentLength: lesson_content ? lesson_content.length : 0,
-      created_by,
+      user_id,
     })
 
     // Validate required fields
@@ -299,7 +299,7 @@ export async function saveLessonPlan(formData: any) {
       duration_minutes,
       topic: topic || null,
       lesson_content,
-      created_by,
+      user_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
@@ -333,7 +333,7 @@ export async function saveLessonPlan(formData: any) {
           duration: duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
           topic,
           lesson_content,
-          created_by,
+          user_id, // Use user_id to match database schema
           created_at: now,
           updated_at: now,
         })

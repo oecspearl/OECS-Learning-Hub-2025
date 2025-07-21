@@ -98,7 +98,7 @@ export const db = {
       let query = supabaseAdmin.from('lesson_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.created_by) query = query.eq('created_by', where.created_by)
+      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       
       const { data, error } = await query.limit(1).single()
       
@@ -109,7 +109,7 @@ export const db = {
     async findMany(where?: any) {
       let query = supabaseAdmin.from('lesson_plans').select('*')
       
-      if (where?.created_by) query = query.eq('created_by', where.created_by)
+      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       if (where?.subject) query = query.eq('subject', where.subject)
       if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
       
@@ -159,7 +159,7 @@ export const db = {
       let query = supabaseAdmin.from('quizzes').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.created_by) query = query.eq('created_by', where.created_by)
+      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       
       const { data, error } = await query.limit(1).single()
       
@@ -170,9 +170,9 @@ export const db = {
     async findMany(where?: any) {
       let query = supabaseAdmin.from('quizzes').select('*')
       
-      if (where?.created_by) query = query.eq('created_by', where.created_by)
+      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       if (where?.subject) query = query.eq('subject', where.subject)
-      if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
+      if (where?.grade) query = query.eq('grade', where.grade)
       
       const { data, error } = await query.order('created_at', { ascending: false })
       
@@ -268,7 +268,7 @@ export const db = {
     async findMany(where?: any) {
       let query = supabaseAdmin.from('cross_curricular_plans').select('*')
       
-      if (where?.created_by) query = query.eq('created_by', where.created_by)
+      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       
       const { data, error } = await query.order('created_at', { ascending: false })
       
@@ -316,7 +316,7 @@ export const db = {
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.created_by) query = query.eq('created_by', where.created_by)
+      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       
       const { data, error } = await query.limit(1).single()
       
@@ -327,7 +327,7 @@ export const db = {
     async findMany(where?: any) {
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
-      if (where?.created_by) query = query.eq('created_by', where.created_by)
+      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
       
       const { data, error } = await query.order('created_at', { ascending: false })
       
