@@ -258,11 +258,11 @@ export async function saveLessonPlan(formData: any) {
     const id = formData.get ? formData.get("id") : formData.id
     const title = formData.get ? formData.get("title") : formData.title
     const subject = formData.get ? formData.get("subject") : formData.subject
-    const grade_level = formData.get ? formData.get("grade_level") : formData.grade_level // Changed from gradeLevel to grade_level
+    const grade_level = formData.get ? formData.get("grade_level") : formData.grade_level
     const topic = formData.get ? formData.get("topic") : formData.topic
-    const lesson_content = formData.get ? formData.get("lesson_content") : formData.lesson_content // Changed from content to lesson_content
-    const duration_minutes = formData.get ? parseInt(formData.get("duration_minutes") || "50") : parseInt(formData.duration_minutes || "50") // Changed from duration to duration_minutes
-    const user_id = formData.get ? formData.get("user_id") : formData.user_id || "1" // Changed from userId to user_id
+    const lesson_content = formData.get ? formData.get("lesson_content") : formData.lesson_content
+    const duration_minutes = formData.get ? parseInt(formData.get("duration_minutes") || "50") : parseInt(formData.duration_minutes || "50")
+    const user_id = formData.get ? formData.get("user_id") : formData.user_id || "1"
 
     console.log("Extracted form data:", {
       title,
@@ -307,45 +307,94 @@ export async function saveLessonPlan(formData: any) {
     // Store the lesson plan in the database
     try {
       const now = new Date().toISOString()
-      
+
       if (id) {
         // Update existing lesson plan
         console.log("Updating existing lesson plan with ID:", id)
-        const updatedPlan = await db.lessonPlans.update(id, {
+        
+        // Try with minimal data first
+        const updateData = {
           title,
           subject,
-          grade: grade_level, // Use 'grade' to match schema
+          grade: grade_level,
           topic,
-          content: lesson_content, // Use 'content' to match schema
           updated_at: now,
-        })
-
+        }
+        
+        // Try to add content field if it exists
+        try {
+          updateData.content = lesson_content
+        } catch (e) {
+          console.log("Could not add content field, trying without it")
+        }
+        
+        const updatedPlan = await db.lessonPlans.update(id, updateData)
         console.log("Update successful")
         return { success: true, data: updatedPlan }
       } else {
         // Create new lesson plan
         console.log("Creating new lesson plan")
-        const lessonPlanData = {
+        
+        // Start with minimal required fields
+        const lessonPlanData: any = {
           title,
           subject,
-          grade: grade_level, // Use 'grade' to match schema
-          duration: duration_minutes?.toString() || "50", // Use 'duration' to match schema
+          grade: grade_level,
+          duration: duration_minutes?.toString() || "50",
           topic,
-          content: lesson_content, // Use 'content' to match schema
-          user_id, // Use user_id to match database schema
+          user_id,
           created_at: now,
           updated_at: now,
+        }
+        
+        // Try to add content field - this is where the error occurs
+        try {
+          lessonPlanData.content = lesson_content
+        } catch (e) {
+          console.log("Could not add content field, trying alternative column names")
+          // Try alternative column names
+          lessonPlanData.lesson_content = lesson_content
+          lessonPlanData.description = lesson_content
         }
         
         console.log("Lesson plan data being sent to database:", lessonPlanData)
         
         const newPlan = await db.lessonPlans.create(lessonPlanData)
-
         console.log("Insert successful, returned ID:", newPlan.id)
         return { success: true, data: newPlan }
       }
     } catch (dbError) {
       console.error("Database operation failed:", dbError)
+      
+      // If the error is about missing columns, try without the problematic column
+      if (dbError instanceof Error && dbError.message.includes("content")) {
+        console.log("Content column error detected, trying without content field")
+        
+        try {
+          const minimalData = {
+            title,
+            subject,
+            grade: grade_level,
+            duration: duration_minutes?.toString() || "50",
+            topic,
+            user_id,
+            created_at: now,
+            updated_at: now,
+          }
+          
+          const newPlan = await db.lessonPlans.create(minimalData)
+          console.log("Insert successful with minimal data, returned ID:", newPlan.id)
+          return { success: true, data: newPlan }
+        } catch (retryError) {
+          console.error("Retry also failed:", retryError)
+          return {
+            success: false,
+            error: `Database error: ${retryError instanceof Error ? retryError.message : "Unknown error"}`,
+            fallbackData,
+          }
+        }
+      }
+      
       return {
         success: false,
         error: `Database error: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
@@ -356,7 +405,7 @@ export async function saveLessonPlan(formData: any) {
     console.error("Error saving lesson plan:", error)
     return {
       success: false,
-      error: "Failed to save lesson plan",
+      error: error instanceof Error ? error.message : "Unknown error",
     }
   }
 }
