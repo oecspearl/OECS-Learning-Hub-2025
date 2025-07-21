@@ -238,6 +238,18 @@ export const db = {
       return result
     },
 
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('cross_curricular_plans').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.created_by) query = query.eq('created_by', where.created_by)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
     async findMany(where?: any) {
       let query = supabaseAdmin.from('cross_curricular_plans').select('*')
       
@@ -273,6 +285,18 @@ export const db = {
       
       if (error) throw error
       return result
+    },
+
+    async findFirst(where: any) {
+      let query = supabaseAdmin.from('multigrade_plans').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.created_by) query = query.eq('created_by', where.created_by)
+      
+      const { data, error } = await query.limit(1).single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
     },
 
     async findMany(where?: any) {
