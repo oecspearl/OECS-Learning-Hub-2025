@@ -314,10 +314,9 @@ export async function saveLessonPlan(formData: any) {
         const updatedPlan = await db.lessonPlans.update(id, {
           title,
           subject,
-          grade_level,
-          duration: duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
+          grade: grade_level, // Use 'grade' to match schema
           topic,
-          lesson_content,
+          content: lesson_content, // Use 'content' to match schema
           updated_at: now,
         })
 
@@ -329,10 +328,10 @@ export async function saveLessonPlan(formData: any) {
         const newPlan = await db.lessonPlans.create({
           title,
           subject,
-          grade_level,
-          duration: duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
+          grade: grade_level, // Use 'grade' to match schema
+          duration: duration_minutes?.toString() || "50", // Use 'duration' to match schema
           topic,
-          lesson_content,
+          content: lesson_content, // Use 'content' to match schema
           user_id, // Use user_id to match database schema
           created_at: now,
           updated_at: now,
@@ -370,10 +369,10 @@ export async function updateLessonPlan(id: string, data: Partial<z.infer<typeof 
       const result = await db.lessonPlans.update(id, {
         title: data.title,
         subject: data.subject,
-        grade_level: data.grade_level,
+        grade: data.grade_level, // Use 'grade' to match schema
         topic: data.topic || null,
-        lesson_content: data.lesson_content,
-        duration: data.duration_minutes?.toString() || "50", // Use 'duration' instead of 'duration_minutes'
+        content: data.lesson_content, // Use 'content' to match schema
+        duration: data.duration_minutes?.toString() || "50", // Use 'duration' to match schema
         learning_objectives: data.learning_objectives ? JSON.stringify(data.learning_objectives) : null,
         materials_needed: data.materials_needed ? JSON.stringify(data.materials_needed) : null,
         description: data.description || null,
@@ -438,22 +437,22 @@ export async function getLessonPlanById(id: string) {
       id: plan.id,
       title: plan.title,
       subject: plan.subject,
-      grade_level: plan.grade_level,
+      grade_level: plan.grade, // Map from 'grade' to 'grade_level'
       topic: plan.topic ?? null,
-      lesson_content: plan.lesson_content,
-      duration_minutes: plan.duration_minutes,
+      lesson_content: plan.content, // Map from 'content' to 'lesson_content'
+      duration_minutes: plan.duration ? parseInt(plan.duration) : null, // Map from 'duration' to 'duration_minutes'
       materials_needed: plan.materials_needed,
       pedagogical_approach: plan.pedagogical_approach ?? null,
       differentiation_strategies: plan.differentiation_strategies ?? null,
       grouping_strategy: plan.grouping_strategy ?? null,
-      assessment_strategy: plan.assessment_strategy ?? null,
+      assessment_strategy: plan.assessment_approach ?? null, // Map from 'assessment_approach' to 'assessment_strategy'
       curriculum_standards: plan.curriculum_standards ?? null,
-      description: plan.description ?? null,
-      learning_objectives: plan.learning_objectives ?? null,
-      vocabulary_terms: plan.vocabulary_terms ?? null,
-      homework_assignment: plan.homework_assignment ?? null,
-      extension_activities: plan.extension_activities ?? null,
-      created_by: plan.created_by,
+      description: plan.overview ?? null, // Map from 'overview' to 'description'
+      learning_objectives: plan.objectives ?? null, // Map from 'objectives' to 'learning_objectives'
+      vocabulary_terms: plan.vocabulary ?? null, // Map from 'vocabulary' to 'vocabulary_terms'
+      homework_assignment: plan.homework ?? null, // Map from 'homework' to 'homework_assignment'
+      extension_activities: plan.extensions ?? null, // Map from 'extensions' to 'extension_activities'
+      created_by: plan.user_id, // Map from 'user_id' to 'created_by'
       created_at: plan.created_at,
       updated_at: plan.updated_at,
     }
