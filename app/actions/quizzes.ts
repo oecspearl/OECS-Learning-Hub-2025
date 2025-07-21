@@ -268,25 +268,33 @@ export async function saveQuiz(formData: any) {
           return { success: true, data: updatedQuiz }
         } catch (dbError) {
           console.error("Database update failed:", dbError)
-          // If the error is about missing content column, try without it
-          if (dbError instanceof Error && dbError.message.includes("content")) {
-            console.log("Retrying without content column...")
-            const { content: _, ...quizDataWithoutContent } = quizData
-            const updatedQuiz = await db.quizzes.update(id, {
-              ...quizDataWithoutContent,
+          // Try with minimal fields if the full update fails
+          try {
+            const minimalData = {
+              title,
+              description,
+              subject,
+              grade: grade_level,
+              topic,
+              content: content || "Quiz content",
+              question_count,
+              user_id: created_by,
               updated_at: now,
-            })
-            console.log("Update successful (without content)")
+            }
+            const updatedQuiz = await db.quizzes.update(id, minimalData)
+            console.log("Update successful with minimal fields")
             return { success: true, data: updatedQuiz }
+          } catch (minimalError) {
+            console.error("Minimal update also failed:", minimalError)
+            return { success: false, error: "Failed to update quiz" }
           }
-          throw dbError
         }
       } else {
         // Create new quiz
-        console.log("Creating new quiz")
+        console.log("Creating new quiz with data:", quizData)
         try {
           const newQuiz = await db.quizzes.create(quizData)
-          console.log("Insert successful, returned ID:", newQuiz.id)
+          console.log("Insert successful, returned quiz:", newQuiz)
           return { success: true, data: newQuiz }
         } catch (dbError) {
           console.error("Database create failed:", dbError)
@@ -296,22 +304,39 @@ export async function saveQuiz(formData: any) {
             details: (dbError as any)?.details,
             hint: (dbError as any)?.hint,
           })
-          // If the error is about missing content column, try without it
-          if (dbError instanceof Error && dbError.message.includes("content")) {
-            console.log("Retrying without content column...")
-            const { content: _, ...quizDataWithoutContent } = quizData
-            const newQuiz = await db.quizzes.create(quizDataWithoutContent)
-            console.log("Insert successful (without content), returned ID:", newQuiz.id)
+          
+          // Try with minimal required fields if the full insert fails
+          try {
+            console.log("Retrying with minimal fields...")
+            const minimalData = {
+              title,
+              description,
+              subject,
+              grade: grade_level,
+              topic,
+              content: content || "Quiz content",
+              question_count,
+              user_id: created_by,
+              created_at: now,
+              updated_at: now,
+            }
+            const newQuiz = await db.quizzes.create(minimalData)
+            console.log("Insert successful with minimal fields")
             return { success: true, data: newQuiz }
+          } catch (minimalError) {
+            console.error("Minimal insert also failed:", minimalError)
+            return { 
+              success: false, 
+              error: `Failed to save quiz: ${minimalError instanceof Error ? minimalError.message : "Unknown error"}` 
+            }
           }
-          throw dbError
         }
       }
-    } catch (dbError) {
-      console.error("Database operation failed:", dbError)
-      return {
-        success: false,
-        error: `Database error: ${dbError instanceof Error ? dbError.message : "Unknown error"}`,
+    } catch (error) {
+      console.error("Unexpected error in saveQuiz:", error)
+      return { 
+        success: false, 
+        error: `Unexpected error: ${error instanceof Error ? error.message : "Unknown error"}` 
       }
     }
   } catch (error) {
