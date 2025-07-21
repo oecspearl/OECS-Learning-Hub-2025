@@ -7,6 +7,8 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type")
     const userId = searchParams.get("userId")
 
+    console.log("Fetching resources:", { type, userId })
+
     if (!userId) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 })
     }
@@ -15,7 +17,9 @@ export async function GET(request: NextRequest) {
 
     switch (type) {
       case "quizzes":
+        console.log("Fetching quizzes for user:", userId)
         const quizResults = await db.quizzes.findMany({ user_id: userId })
+        console.log("Quiz results:", quizResults)
         resources = quizResults.map((quiz: any) => ({
           id: quiz.id,
           title: quiz.title,
@@ -25,6 +29,7 @@ export async function GET(request: NextRequest) {
           status: "active", // Default status for quizzes
           type: "quiz"
         }))
+        console.log("Processed quiz resources:", resources)
         break
 
       case "lesson-plans":
@@ -71,6 +76,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Invalid resource type" }, { status: 400 })
     }
 
+    console.log("Returning resources:", { type, count: resources.length, resources })
     return NextResponse.json({ resources })
   } catch (error) {
     console.error("Error fetching resources:", error)
