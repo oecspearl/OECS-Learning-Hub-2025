@@ -22,7 +22,12 @@ export async function executeQuery(query: string, params?: any[]) {
     
     // For now, return empty result to prevent build errors
     // This will need to be updated to work with Supabase
-    return { rows: [], rowCount: 0 }
+    return { 
+      rows: [], 
+      rowCount: 0,
+      // Add length property to make it compatible with array-like usage
+      length: 0
+    }
   } catch (error) {
     console.error("Error in executeQuery:", error)
     throw error

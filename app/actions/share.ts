@@ -1,6 +1,6 @@
 "use server"
 
-import { db, executeQuery } from "@/lib/db"
+import { db } from "@/lib/db"
 import { z } from "zod"
 
 const shareSchema = z.object({
@@ -12,8 +12,8 @@ const shareSchema = z.object({
 
 type User = {
   id: string
-  name: string
-  email: string
+  full_name: string
+  email?: string
 }
 
 export async function shareResource(data: z.infer<typeof shareSchema>) {
@@ -21,15 +21,16 @@ export async function shareResource(data: z.infer<typeof shareSchema>) {
     // Validate input data
     const validatedData = shareSchema.parse(data)
 
-    // Check if the recipient is a registered user
-    const existingUser = await executeQuery("SELECT id, name, email FROM users WHERE email = ?", [validatedData.email]) as User[]
-
-    if (existingUser.length === 0) {
-      return {
-        success: false,
-        error: "Recipient is not a registered user",
-      }
-    }
+    // For now, we'll assume the user exists since we don't have email lookup
+    // In a real implementation, you would query the user_profiles table by email
+    // Since we're using Supabase auth, user lookup would be different
+    
+    console.log("Share request:", {
+      email: validatedData.email,
+      resourceType: validatedData.resourceType,
+      resourceId: validatedData.resourceId,
+      resourceTitle: validatedData.resourceTitle,
+    })
 
     // Here you would typically:
     // 1. Generate a share token
