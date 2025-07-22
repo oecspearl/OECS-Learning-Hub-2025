@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import {
@@ -19,7 +19,6 @@ import {
   Play,
   Download,
 } from "lucide-react"
-import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -28,6 +27,16 @@ import { TeachingTip } from "@/components/math-strand-page"
 export default function Grade1MathematicsPage() {
   const [activeCard, setActiveCard] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return <div>Loading...</div>
+  }
 
   const handleCardHover = (id: string) => {
     setActiveCard(id)
@@ -141,11 +150,8 @@ export default function Grade1MathematicsPage() {
         </Button>
       </Link>
 
-      <motion.div
+      <div
         className="relative mb-12 overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 p-8 text-white shadow-lg"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10"></div>
         <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/10"></div>
@@ -177,7 +183,7 @@ export default function Grade1MathematicsPage() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="mb-8">
         <div className="relative">
@@ -202,13 +208,12 @@ export default function Grade1MathematicsPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredResources.map((resource) => (
               <Link href={resource.path} className="block" key={resource.id}>
-                <motion.div
+                <div
                   className={`h-full overflow-hidden rounded-lg border transition-all duration-300 ${
                     activeCard === resource.id
                       ? `border-${resource.id === "number-sense" ? "blue" : resource.id === "operations" ? "orange" : resource.id === "patterns" ? "purple" : resource.id === "geometry" ? "green" : resource.id === "measurement" ? "amber" : "red"}-400 shadow-lg shadow-${resource.id === "number-sense" ? "blue" : resource.id === "operations" ? "orange" : resource.id === "patterns" ? "purple" : resource.id === "geometry" ? "green" : resource.id === "measurement" ? "amber" : "red"}-100`
                       : "border-transparent shadow"
                   }`}
-                  whileHover={{ y: -5 }}
                   onMouseEnter={() => handleCardHover(resource.id)}
                   onMouseLeave={handleCardLeave}
                 >
@@ -243,7 +248,7 @@ export default function Grade1MathematicsPage() {
                       Explore {resource.title} <ChevronLeft className="ml-1 h-4 w-4 rotate-180" />
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </Link>
             ))}
           </div>
@@ -313,30 +318,30 @@ export default function Grade1MathematicsPage() {
             <div className="rounded-lg bg-blue-50 p-6">
               <h3 className="mb-3 text-xl font-bold text-blue-700">Key Principles</h3>
               <div className="mb-4 grid grid-cols-2 gap-4">
-                <motion.div whileHover={{ y: -5 }} className="rounded-lg bg-white p-4 shadow-sm">
+                <div className="rounded-lg bg-white p-4 shadow-sm">
                   <h4 className="mb-2 font-semibold text-blue-600">Active Learning</h4>
                   <p className="text-sm text-gray-600">
                     Students actively engage with mathematical concepts through exploration and discovery.
                   </p>
-                </motion.div>
-                <motion.div whileHover={{ y: -5 }} className="rounded-lg bg-white p-4 shadow-sm">
+                </div>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
                   <h4 className="mb-2 font-semibold text-blue-600">Differentiation</h4>
                   <p className="text-sm text-gray-600">
                     Instruction is tailored to meet the diverse needs and learning styles of all students.
                   </p>
-                </motion.div>
-                <motion.div whileHover={{ y: -5 }} className="rounded-lg bg-white p-4 shadow-sm">
+                </div>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
                   <h4 className="mb-2 font-semibold text-blue-600">Meaningful Context</h4>
                   <p className="text-sm text-gray-600">
                     Mathematics is connected to real-world situations relevant to students' lives.
                   </p>
-                </motion.div>
-                <motion.div whileHover={{ y: -5 }} className="rounded-lg bg-white p-4 shadow-sm">
+                </div>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
                   <h4 className="mb-2 font-semibold text-blue-600">Mathematical Discourse</h4>
                   <p className="text-sm text-gray-600">
                     Students communicate their mathematical thinking and reasoning.
                   </p>
-                </motion.div>
+                </div>
               </div>
 
               <div className="mt-6 rounded-lg bg-white p-5">
@@ -377,9 +382,7 @@ export default function Grade1MathematicsPage() {
         </TabsContent>
         <TabsContent value="resources">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <motion.div
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.2 }}
+            <div
               className="rounded-lg border border-blue-100 bg-white shadow-sm"
             >
               <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
@@ -414,11 +417,9 @@ export default function Grade1MathematicsPage() {
                   Access Teacher Portal
                 </Button>
               </CardFooter>
-            </motion.div>
+            </div>
 
-            <motion.div
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.2 }}
+            <div
               className="rounded-lg border border-green-100 bg-white shadow-sm"
             >
               <CardHeader className="bg-gradient-to-r from-green-50 to-green-100">
@@ -453,11 +454,9 @@ export default function Grade1MathematicsPage() {
                   View Student Resources
                 </Button>
               </CardFooter>
-            </motion.div>
+            </div>
 
-            <motion.div
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.2 }}
+            <div
               className="rounded-lg border border-purple-100 bg-white shadow-sm"
             >
               <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100">
@@ -492,7 +491,7 @@ export default function Grade1MathematicsPage() {
                   Parent Resources
                 </Button>
               </CardFooter>
-            </motion.div>
+            </div>
           </div>
 
           <div className="mt-8">
@@ -562,7 +561,7 @@ export default function Grade1MathematicsPage() {
         <h2 className="mb-4 text-2xl font-bold text-blue-800">Featured Activities</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {featuredActivities.map((activity, index) => (
-            <motion.div key={index} whileHover={{ y: -5 }} className="overflow-hidden rounded-lg bg-white shadow-sm">
+            <div key={index} className="overflow-hidden rounded-lg bg-white shadow-sm">
               <div className="relative h-40">
                 <Image
                   src={activity.image || "/placeholder.svg"}
@@ -588,7 +587,7 @@ export default function Grade1MathematicsPage() {
                   <Link href={activity.url}>View Activity</Link>
                 </Button>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
