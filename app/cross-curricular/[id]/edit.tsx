@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { safeArrayProcessor } from "@/lib/safeArrayProcessor"
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -124,11 +125,11 @@ export default function EditCrossCurricularPlan({ params }: { params: Promise<{ 
           title: plan.title,
           theme: plan.theme,
           grade_range: plan.grade_range,
-          subjects: plan.subjects.split(","),
+          subjects: safeArrayProcessor(plan.subjects),
           duration: (plan as any).duration || "",
           sessions: plan.sessions || "1",
-          learning_styles: plan.learning_styles ? plan.learning_styles.split(",") : [],
-          multiple_intelligences: plan.multiple_intelligences ? plan.multiple_intelligences.split(",") : [],
+          learning_styles: safeArrayProcessor(plan.learning_styles),
+          multiple_intelligences: safeArrayProcessor(plan.multiple_intelligences),
           special_needs: plan.special_needs || false,
           special_needs_details: plan.special_needs_details || "",
           ell_support: plan.ell_support || false,

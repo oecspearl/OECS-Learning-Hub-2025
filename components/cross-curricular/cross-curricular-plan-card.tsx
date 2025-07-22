@@ -1,52 +1,63 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Edit, Eye, Download } from "lucide-react"
 import Link from "next/link"
+import { safeArrayProcessor } from "@/lib/safeArrayProcessor"
 
 interface CrossCurricularPlan {
   id: string
   title: string
-  theme: string
-  grade_range: string
   subjects: string
+  grade_levels: string
+  content: string
   created_at: string
+  updated_at: string
 }
 
-interface CrossCurricularPlanCardProps {
-  plan: CrossCurricularPlan
-}
-
-export function CrossCurricularPlanCard({ plan }: CrossCurricularPlanCardProps) {
-  const subjects = plan.subjects.split(",")
-
+export function CrossCurricularPlanCard({ plan }: { plan: CrossCurricularPlan }) {
+  const subjects = safeArrayProcessor(plan.subjects)
+  
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
-        <CardTitle className="line-clamp-2">{plan.title}</CardTitle>
-        <div className="flex flex-wrap gap-1 mt-1">
-          {subjects.map((subject) => (
-            <Badge key={subject} variant="secondary">
-              {subject}
-            </Badge>
-          ))}
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle className="text-lg font-semibold">{plan.title}</CardTitle>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {subjects.map((subject, index) => (
+                <Badge key={index} variant="secondary">
+                  {subject}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Link href={`/cross-curricular/${plan.id}/view`}>
+              <Button size="sm" variant="outline">
+                <Eye className="h-4 w-4 mr-1" />
+                View
+              </Button>
+            </Link>
+            <Link href={`/cross-curricular/${plan.id}/edit`}>
+              <Button size="sm" variant="outline">
+                <Edit className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+            </Link>
+            <Button size="sm" variant="outline">
+              <Download className="h-4 w-4 mr-1" />
+              Download
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">Theme:</span> {plan.theme}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">Grade Range:</span> {plan.grade_range}
-          </div>
-          <Link
-            href={`/cross-curricular/${plan.id}/view`}
-            className="text-primary hover:underline text-sm inline-block mt-2"
-          >
-            View Plan
-          </Link>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Created: {new Date(plan.created_at).toLocaleDateString()}
+        </p>
       </CardContent>
     </Card>
   )

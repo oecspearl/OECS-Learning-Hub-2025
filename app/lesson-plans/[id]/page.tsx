@@ -1,7 +1,6 @@
-import { getLessonPlanById } from "@/app/actions/lesson-plans"
-import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { format } from "date-fns"
+import { getLessonPlanById } from "@/app/actions/lesson-plans"
+import { safeArrayProcessor, safeContentSplitter, safeMarkdownContent } from "@/lib/safeArrayProcessor"
 
 function stripMarkdown(text: string): string {
   return text
@@ -23,8 +22,8 @@ function parseMarkdownContent(content: string) {
   let currentSection = ""
   let currentContent: string[] = []
 
-  // Split content into lines and process
-  const lines = content.split("\n")
+  // Use safe content splitter to handle null content
+  const lines = safeContentSplitter(content)
   
   for (const line of lines) {
     // Check for section headers (## or ###)
@@ -54,15 +53,15 @@ function parseMarkdownContent(content: string) {
 }
 
 function parseListItems(content: string): string[] {
-  return content
-    .split("\n")
+  const lines = safeContentSplitter(content)
+  return lines
     .filter(line => line.trim().startsWith("- ") || line.trim().startsWith("• "))
     .map(line => line.replace(/^[-•]\s+/, "").trim())
 }
 
 function parseVocabulary(content: string): { term: string; definition: string; example: string }[] {
   const items: { term: string; definition: string; example: string }[] = []
-  const lines = content.split("\n")
+  const lines = safeContentSplitter(content)
   let currentTerm = ""
   let currentDef = ""
   let currentEx = ""
@@ -75,7 +74,7 @@ function parseVocabulary(content: string): { term: string; definition: string; e
       }
       // Start new term
       const parts = line.replace(/^[-•]\s+/, "").split(":")
-      currentTerm = parts[0].trim()
+      currentTerm = parts[0]?.trim() || ""
       currentDef = parts[1]?.trim() || ""
       currentEx = ""
     } else if (line.trim().startsWith("  Example:")) {

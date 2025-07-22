@@ -6,6 +6,7 @@ import Link from "next/link"
 import { deleteCrossCurricularPlan } from "@/app/actions/cross-curricular-plans"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { safeArrayProcessor } from "@/lib/safeArrayProcessor"
 
 interface CrossCurricularPlan {
   id: string
@@ -50,6 +51,8 @@ export default async function ViewCrossCurricularPlanPage({
       redirect("/dashboard")
     }
 
+    const subjects = safeArrayProcessor(plan.subjects)
+
     return (
       <div className="flex min-h-screen flex-col page-transition bg-gradient-to-b from-blue-50 to-white">
         <main className="flex-1 w-full px-4 py-6 max-w-[1400px] mx-auto">
@@ -59,7 +62,7 @@ export default async function ViewCrossCurricularPlanPage({
                 {plan.title}
               </h1>
               <p className="text-muted-foreground">
-                A cross-curricular lesson plan integrating {plan.subjects.split(",").join(", ")}.
+                A cross-curricular lesson plan integrating {subjects.join(", ")}.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -98,7 +101,7 @@ export default async function ViewCrossCurricularPlanPage({
 
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Subjects</h2>
-                <p>{plan.subjects.split(",").join(", ")}</p>
+                <p>{subjects.join(", ")}</p>
               </div>
 
               <div className="mb-6">

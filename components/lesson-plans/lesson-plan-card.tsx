@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, Edit, Calendar, Clock, BookOpen, Users, Target, Lightbulb, ClipboardList } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
+import { safeArrayProcessor, safeContentSplitter, safeMarkdownContent } from "@/lib/safeArrayProcessor"
 
 function stripMarkdown(text: string): string {
   return text
@@ -29,7 +30,8 @@ function parseMarkdownContent(content: string) {
   let currentSection = ""
   let currentContent: string[] = []
 
-  const lines = content.split("\n")
+  // Use safe content splitter to handle null content
+  const lines = safeContentSplitter(content)
   
   for (const line of lines) {
     if (line.startsWith("## ")) {
@@ -53,15 +55,15 @@ function parseMarkdownContent(content: string) {
 }
 
 function parseListItems(content: string): string[] {
-  return content
-    .split("\n")
+  const lines = safeContentSplitter(content)
+  return lines
     .filter(line => line.trim().startsWith("- ") || line.trim().startsWith("• "))
     .map(line => line.replace(/^[-•]\s+/, "").trim())
 }
 
 function parseVocabulary(content: string): { term: string; definition: string; example: string }[] {
   const items: { term: string; definition: string; example: string }[] = []
-  const lines = content.split("\n")
+  const lines = safeContentSplitter(content)
   let currentTerm = ""
   let currentDef = ""
   let currentEx = ""
@@ -72,7 +74,7 @@ function parseVocabulary(content: string): { term: string; definition: string; e
         items.push({ term: currentTerm, definition: currentDef, example: currentEx })
       }
       const parts = line.replace(/^[-•]\s+/, "").split(":")
-      currentTerm = parts[0].trim()
+      currentTerm = parts[0]?.trim() || ""
       currentDef = parts[1]?.trim() || ""
       currentEx = ""
     } else if (line.trim().startsWith("  Example:")) {
