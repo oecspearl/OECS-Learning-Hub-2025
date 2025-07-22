@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { supabaseAdmin } from '@/lib/db'
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    console.log('Testing database schema...')
+    console.log('Testing multigrade plan save...')
     
-    // Test multigrade_plans table
-    console.log('Testing multigrade_plans table...')
+    // First, check if the table exists
+    console.log('Checking if multigrade_plans table exists...')
+    
+    if (!supabaseAdmin) {
+      throw new Error('Supabase admin client not available')
+    }
+    
+    // Try to query the table to see if it exists
+    const { data: tableCheck, error: tableError } = await supabaseAdmin
+      .from('multigrade_plans')
+      .select('id')
+      .limit(1)
+    
+    if (tableError) {
+      console.error('Table check error:', tableError)
+      return NextResponse.json({
+        success: false,
+        error: `Table check failed: ${tableError.message}`,
+        details: tableError
+      }, { status: 500 })
+    }
+    
+    console.log('Table exists, proceeding with test save...')
     
     const testData = {
       title: 'Test Multigrade Plan',
@@ -37,10 +59,11 @@ export async function GET(request: NextRequest) {
       data: result
     })
   } catch (error) {
-    console.error('Error testing multigrade plan save:', error)
+    console.error('Error saving multigrade plan:', error)
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to test multigrade plan save'
+      error: error instanceof Error ? error.message : 'Failed to save multigrade plan',
+      details: error
     }, { status: 500 })
   }
 } 

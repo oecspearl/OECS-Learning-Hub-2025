@@ -475,7 +475,6 @@ export const db = {
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.user_id) query = query.eq('user_id', where.user_id)
       
       const { data, error } = await query.single()
       
@@ -490,7 +489,6 @@ export const db = {
       
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
-      if (where?.user_id) query = query.eq('user_id', where.user_id)
       if (where?.grade_range) query = query.eq('grade_range', where.grade_range)
       
       const { data, error } = await query.order('created_at', { ascending: false })
