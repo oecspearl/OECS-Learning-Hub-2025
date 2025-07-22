@@ -34,15 +34,7 @@ export async function POST(request: NextRequest) {
       title: 'Test Multigrade Plan',
       subject: 'Mathematics',
       grade_range: '3-4',
-      topic: 'Addition',
       content: 'This is a test multigrade lesson plan content.',
-      duration: '60',
-      materials: 'Tablets, Smartboard',
-      pedagogical_strategy: 'Direct Instruction',
-      differentiation_strategies: 'Tiered assignments',
-      grouping_strategy: 'Mixed-grade groups',
-      assessment_approach: 'Formative assessment',
-      curriculum_standards: 'Grade 3-4 math standards',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }
