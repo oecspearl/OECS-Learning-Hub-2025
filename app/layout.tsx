@@ -8,10 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'OECS Learning Hub',
-  description: 'A comprehensive learning platform for OECS educators',
-  viewport: {
-    themeColor: '#3b82f6'
-  }
+  description: 'A comprehensive learning platform for OECS educators'
 }
 
 export default function RootLayout({

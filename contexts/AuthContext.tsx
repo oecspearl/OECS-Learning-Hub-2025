@@ -47,6 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const getInitialSession = async () => {
       try {
         console.log('🔍 AuthProvider: Getting initial session...')
+        if (!supabase) {
+          console.error('❌ AuthProvider: Supabase client not available for session')
+          return
+        }
         const { data: { session }, error } = await supabase.auth.getSession()
         
         if (error) {
@@ -66,16 +70,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getInitialSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔄 AuthProvider: Auth state changed:', event, session ? 'User logged in' : 'No session')
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        console.log('🔄 AuthProvider: Auth state changed:', event, session ? 'User logged in' : 'No session')
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+      })
 
-    return () => {
-      console.log('🧹 AuthProvider: Cleaning up auth subscription')
-      subscription.unsubscribe()
+      return () => {
+        console.log('🧹 AuthProvider: Cleaning up auth subscription')
+        subscription.unsubscribe()
+      }
+    } else {
+      console.error('❌ AuthProvider: Cannot set up auth listener - Supabase client not available')
+      setLoading(false)
     }
   }, [])
 
