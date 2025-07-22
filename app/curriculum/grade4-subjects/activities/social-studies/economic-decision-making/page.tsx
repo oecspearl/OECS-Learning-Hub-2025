@@ -1,13 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, Search, Home, Building, DollarSign, Droplet, Sun, Leaf } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { motion } from "framer-motion"
 import Image from "next/image"
 
 const activities = [
@@ -120,6 +119,16 @@ const activities = [
 export default function EconomicDecisionMakingPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return <div>Loading...</div>
+  }
 
   const filteredActivities = activities.filter((activity) => {
     const matchesSearch =
@@ -130,21 +139,6 @@ export default function EconomicDecisionMakingPage() {
   })
 
   const allTags = Array.from(new Set(activities.flatMap((activity) => activity.tags)))
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -196,62 +190,58 @@ export default function EconomicDecisionMakingPage() {
         </div>
       </div>
 
-      <motion.div
+      <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        variants={container}
-        initial="hidden"
-        animate="show"
       >
         {filteredActivities.map((activity) => (
-          <motion.div key={activity.id} variants={item}>
-            <Card
-              className={`h-full transition-all duration-300 hover:shadow-lg ${activity.color} border-2 ${activity.borderColor} overflow-hidden`}
-            >
-              <div className="relative h-48 w-full">
-                <Image src={activity.image || "/placeholder.svg"} alt={activity.title} fill className="object-cover" />
+          <Card
+            key={activity.id}
+            className={`h-full transition-all duration-300 hover:shadow-lg ${activity.color} border-2 ${activity.borderColor} overflow-hidden`}
+          >
+            <div className="relative h-48 w-full">
+              <Image src={activity.image || "/placeholder.svg"} alt={activity.title} fill className="object-cover" />
+            </div>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl">{activity.title}</CardTitle>
+                {activity.icon}
               </div>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl">{activity.title}</CardTitle>
-                  {activity.icon}
-                </div>
-                <CardDescription className="text-gray-700">{activity.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <h4 className="font-semibold text-sm mb-2">Learning Outcomes:</h4>
-                  <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                    {activity.outcomes.map((outcome, index) => (
-                      <li key={index}>{outcome}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {activity.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
+              <CardDescription className="text-gray-700">{activity.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4">
+                <h4 className="font-semibold text-sm mb-2">Learning Outcomes:</h4>
+                <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                  {activity.outcomes.map((outcome, index) => (
+                    <li key={index}>{outcome}</li>
                   ))}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <div className="text-sm text-gray-600">{activity.duration}</div>
-                <Badge
-                  variant={
-                    activity.difficulty === "Easy"
-                      ? "default"
-                      : activity.difficulty === "Medium"
-                        ? "secondary"
-                        : "destructive"
-                  }
-                >
-                  {activity.difficulty}
-                </Badge>
-              </CardFooter>
-            </Card>
-          </motion.div>
+                </ul>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {activity.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <div className="text-sm text-gray-600">{activity.duration}</div>
+              <Badge
+                variant={
+                  activity.difficulty === "Easy"
+                    ? "default"
+                    : activity.difficulty === "Medium"
+                      ? "secondary"
+                      : "destructive"
+                }
+              >
+                {activity.difficulty}
+              </Badge>
+            </CardFooter>
+          </Card>
         ))}
-      </motion.div>
+      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12">

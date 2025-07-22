@@ -1,14 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Search, Beaker, Leaf, Dna, Cloud, Wrench } from "lucide-react"
+import { ChevronLeft, Search, Beaker, Leaf, Dna, Cloud, Zap, Globe } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { motion } from "framer-motion"
 import Image from "next/image"
+import { useState, useEffect } from "react"
 
 const scienceStrands = [
   {
@@ -64,7 +63,7 @@ const scienceStrands = [
     id: "engineering-design",
     title: "Engineering Design",
     description: "Apply the engineering design process to solve problems and create innovative solutions.",
-    icon: <Wrench className="h-10 w-10 text-amber-500" />,
+    icon: <Zap className="h-10 w-10 text-amber-500" />,
     image: "/placeholder.svg?height=200&width=300&query=children+building+engineering+projects",
     color: "bg-amber-50 hover:bg-amber-100",
     borderColor: "border-amber-200",
@@ -72,11 +71,33 @@ const scienceStrands = [
     difficulty: "Challenging",
     tags: ["design", "problem-solving", "building"],
   },
+  {
+    id: "earth-space",
+    title: "Earth and Space",
+    description: "Learn about the solar system, Earth's structure, and the universe beyond our planet.",
+    icon: <Globe className="h-10 w-10 text-red-500" />,
+    image: "/placeholder.svg?height=200&width=300&query=children+space+solar+system+universe",
+    color: "bg-red-50 hover:bg-red-100",
+    borderColor: "border-red-200",
+    activities: 4,
+    difficulty: "Easy",
+    tags: ["space", "solar system", "universe"],
+  },
 ]
 
 export default function Grade3ScienceActivitiesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return <div>Loading...</div>
+  }
 
   const filteredStrands = scienceStrands.filter((strand) => {
     const matchesSearch =
@@ -87,21 +108,6 @@ export default function Grade3ScienceActivitiesPage() {
   })
 
   const allTags = Array.from(new Set(scienceStrands.flatMap((strand) => strand.tags)))
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -153,56 +159,49 @@ export default function Grade3ScienceActivitiesPage() {
         </div>
       </div>
 
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredStrands.map((strand) => (
-          <motion.div key={strand.id} variants={item}>
-            <Link href={`/curriculum/grade3-subjects/activities/science/${strand.id}`}>
-              <Card
-                className={`h-full transition-all duration-300 hover:shadow-lg ${strand.color} border-2 ${strand.borderColor} overflow-hidden`}
-              >
-                <div className="relative h-48 w-full">
-                  <Image src={strand.image || "/placeholder.svg"} alt={strand.title} fill className="object-cover" />
+          <Link key={strand.id} href={`/curriculum/grade3-subjects/activities/science/${strand.id}`}>
+            <Card
+              className={`h-full transition-all duration-300 hover:shadow-lg ${strand.color} border-2 ${strand.borderColor} overflow-hidden`}
+            >
+              <div className="relative h-48 w-full">
+                <Image src={strand.image || "/placeholder.svg"} alt={strand.title} fill className="object-cover" />
+              </div>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl">{strand.title}</CardTitle>
+                  {strand.icon}
                 </div>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">{strand.title}</CardTitle>
-                    {strand.icon}
-                  </div>
-                  <CardDescription className="text-gray-700">{strand.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {strand.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <div className="text-sm text-gray-600">{strand.activities} activities</div>
-                  <Badge
-                    variant={
-                      strand.difficulty === "Easy"
-                        ? "default"
-                        : strand.difficulty === "Medium"
-                          ? "secondary"
-                          : "destructive"
-                    }
-                  >
-                    {strand.difficulty}
-                  </Badge>
-                </CardFooter>
-              </Card>
-            </Link>
-          </motion.div>
+                <CardDescription className="text-gray-700">{strand.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {strand.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="text-sm text-gray-600">{strand.activities} activities</div>
+                <Badge
+                  variant={
+                    strand.difficulty === "Easy"
+                      ? "default"
+                      : strand.difficulty === "Medium"
+                        ? "secondary"
+                        : "destructive"
+                  }
+                >
+                  {strand.difficulty}
+                </Badge>
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
-      </motion.div>
+      </div>
 
       {filteredStrands.length === 0 && (
         <div className="text-center py-12">

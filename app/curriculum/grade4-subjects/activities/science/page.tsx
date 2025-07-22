@@ -6,9 +6,8 @@ import { ChevronLeft, Search, Beaker, Leaf, Dna, Cloud } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const scienceStrands = [
   {
@@ -52,7 +51,7 @@ const scienceStrands = [
   {
     id: "earth-systems",
     title: "Earth Systems",
-    description: "Explore patterns of Earth’s features and how natural processes change landscapes over time.",
+    description: "Explore patterns of Earth's features and how natural processes change landscapes over time.",
     icon: <Cloud className="h-10 w-10 text-cyan-500" />,
     image: "/earth-systems-models.png",
     color: "bg-cyan-50 hover:bg-cyan-100",
@@ -66,6 +65,16 @@ const scienceStrands = [
 export default function Grade4ScienceActivitiesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Don't render until client-side
+  if (!isClient) {
+    return <div>Loading...</div>
+  }
 
   const filteredStrands = scienceStrands.filter((strand) => {
     const matchesSearch =
@@ -76,21 +85,6 @@ export default function Grade4ScienceActivitiesPage() {
   })
 
   const allTags = Array.from(new Set(scienceStrands.flatMap((strand) => strand.tags)))
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -142,56 +136,51 @@ export default function Grade4ScienceActivitiesPage() {
         </div>
       </div>
 
-      <motion.div
+      <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        variants={container}
-        initial="hidden"
-        animate="show"
       >
         {filteredStrands.map((strand) => (
-          <motion.div key={strand.id} variants={item}>
-            <Link href={`/curriculum/grade4-subjects/activities/science/${strand.id}`}>
-              <Card
-                className={`h-full transition-all duration-300 hover:shadow-lg ${strand.color} border-2 ${strand.borderColor} overflow-hidden`}
-              >
-                <div className="relative h-48 w-full">
-                  <Image src={strand.image || "/placeholder.svg"} alt={strand.title} fill className="object-cover" />
+          <Link key={strand.id} href={`/curriculum/grade4-subjects/activities/science/${strand.id}`}>
+            <Card
+              className={`h-full transition-all duration-300 hover:shadow-lg ${strand.color} border-2 ${strand.borderColor} overflow-hidden`}
+            >
+              <div className="relative h-48 w-full">
+                <Image src={strand.image || "/placeholder.svg"} alt={strand.title} fill className="object-cover" />
+              </div>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl">{strand.title}</CardTitle>
+                  {strand.icon}
                 </div>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">{strand.title}</CardTitle>
-                    {strand.icon}
-                  </div>
-                  <CardDescription className="text-gray-700">{strand.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {strand.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <div className="text-sm text-gray-600">{strand.activities} activities</div>
-                  <Badge
-                    variant={
-                      strand.difficulty === "Easy"
-                        ? "default"
-                        : strand.difficulty === "Medium"
-                          ? "secondary"
-                          : "destructive"
-                    }
-                  >
-                    {strand.difficulty}
-                  </Badge>
-                </CardFooter>
-              </Card>
-            </Link>
-          </motion.div>
+                <CardDescription className="text-gray-700">{strand.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {strand.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="text-sm text-gray-600">{strand.activities} activities</div>
+                <Badge
+                  variant={
+                    strand.difficulty === "Easy"
+                      ? "default"
+                      : strand.difficulty === "Medium"
+                        ? "secondary"
+                        : "destructive"
+                  }
+                >
+                  {strand.difficulty}
+                </Badge>
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
-      </motion.div>
+      </div>
 
       {filteredStrands.length === 0 && (
         <div className="text-center py-12">
