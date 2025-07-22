@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, CheckCircle } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { supabase } from '@/lib/db'
+import { supabase } from '@/lib/supabase'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
