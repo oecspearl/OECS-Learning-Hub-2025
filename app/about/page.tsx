@@ -132,7 +132,7 @@ export default function AboutPage() {
           <p>Morne Fortune</p>
           <p>P.O. Box 179</p>
           <p>Castries, Saint Lucia</p>
-          <p className="mt-2">Email: info@oecs.org</p>
+          <p className="mt-2">Email: pearl@oecs.int</p>
           <p>Tel: +1 758-455-6327</p>
         </address>
         <Link
