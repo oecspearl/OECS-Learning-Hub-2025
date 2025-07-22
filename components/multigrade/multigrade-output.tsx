@@ -329,7 +329,7 @@ export function MultigradeOutput() {
 
             <TabsContent value="preview" className="min-h-[400px]">
               <div className="prose prose-sm max-w-none p-4 bg-white rounded-md h-[500px] overflow-y-auto border">
-                {lessonPlan.split("\n").map((line, i) => {
+                {lessonPlan ? lessonPlan.split("\n").map((line, i) => {
                   if (line.startsWith("# ")) {
                     return (
                       <h1 key={i} className="text-xl font-bold mt-4 mb-2 text-green-800">
@@ -373,7 +373,11 @@ export function MultigradeOutput() {
                       {line}
                     </p>
                   )
-                })}
+                }) : (
+                  <div className="text-center text-muted-foreground py-8">
+                    <p>No lesson plan content available. Generate a lesson plan to see it here.</p>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>

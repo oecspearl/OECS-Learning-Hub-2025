@@ -143,7 +143,7 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
 
             <TabsContent value="preview" className="min-h-[400px]">
               <div className="prose prose-green max-w-none p-4 bg-white rounded-md min-h-[500px] overflow-y-auto border">
-                {plan.content.split("\n").map((line, i) => {
+                {plan.content ? plan.content.split("\n").map((line, i) => {
                   if (line.startsWith("# ")) {
                     return (
                       <h1 key={i} className="text-xl font-bold mt-4 mb-2 text-green-800">
@@ -187,13 +187,17 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
                       {line}
                     </p>
                   )
-                })}
+                }) : (
+                  <div className="text-center text-muted-foreground py-8">
+                    <p>No content available for this lesson plan.</p>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
             <TabsContent value="raw" className="min-h-[400px]">
               <pre className="whitespace-pre-wrap font-mono text-sm p-4 bg-muted/30 rounded-md min-h-[500px] overflow-y-auto border">
-                {plan.content}
+                {plan.content || "No content available"}
               </pre>
             </TabsContent>
           </Tabs>

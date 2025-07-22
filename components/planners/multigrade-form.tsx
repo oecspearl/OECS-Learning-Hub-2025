@@ -262,7 +262,7 @@ export function MultigradeForm() {
         const event = new CustomEvent("multigradePlanGenerated", {
           detail: {
             content: lessonPlan,
-            specialNeeds: specialNeedsDetails ? specialNeedsDetails.split(",").map((need) => need.trim()) : [],
+            specialNeeds: specialNeedsDetails && specialNeedsDetails.trim() ? specialNeedsDetails.split(",").map((need) => need.trim()) : [],
           },
         })
         window.dispatchEvent(event)
