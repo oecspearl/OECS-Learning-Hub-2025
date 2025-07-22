@@ -1,4 +1,6 @@
 import { Metadata } from "next"
+import { notFound } from "next/navigation"
+import { format } from "date-fns"
 import { getLessonPlanById } from "@/app/actions/lesson-plans"
 import { safeArrayProcessor, safeContentSplitter, safeMarkdownContent } from "@/lib/safeArrayProcessor"
 

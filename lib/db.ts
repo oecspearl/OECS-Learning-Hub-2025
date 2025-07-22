@@ -5,27 +5,26 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 // Check if environment variables are available
-if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+const hasValidEnvVars = supabaseUrl && supabaseAnonKey && supabaseServiceKey
+
+if (!hasValidEnvVars) {
   console.warn('Supabase environment variables are not set. Database operations will fail.')
 }
 
-// Create Supabase client for client-side operations
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-)
+// Create Supabase client for client-side operations (only if env vars are available)
+export const supabase = hasValidEnvVars 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null
 
-// Create Supabase client for server-side operations (with service role)
-export const supabaseAdmin = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseServiceKey || 'placeholder-key',
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
+// Create Supabase client for server-side operations (only if env vars are available)
+export const supabaseAdmin = hasValidEnvVars
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : null
 
 // Legacy function for backward compatibility
 export async function executeQuery(query: string, params?: any[]) {
@@ -51,6 +50,12 @@ export async function testDatabaseConnection() {
   try {
     console.log("testDatabaseConnection called")
     
+    // Check if Supabase client is available
+    if (!supabaseAdmin) {
+      console.error("Supabase client not initialized")
+      return { success: false, error: "Database connection not available" }
+    }
+    
     // Test the Supabase connection
     const { data, error } = await supabaseAdmin
       .from('user_profiles')
@@ -74,6 +79,10 @@ export const db = {
   // Lesson Plans
   lessonPlans: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('lesson_plans')
         .insert(data)
@@ -85,6 +94,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('lesson_plans')
         .update(data)
@@ -97,6 +110,10 @@ export const db = {
     },
 
     async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { error } = await supabaseAdmin
         .from('lesson_plans')
         .delete()
@@ -107,21 +124,30 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('lesson_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where.user_id) query = query.eq('user_id', where.user_id)
+      if (where.title) query = query.eq('title', where.title)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('lesson_plans').select('*')
       
-      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
       if (where?.subject) query = query.eq('subject', where.subject)
       if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
       
@@ -135,6 +161,10 @@ export const db = {
   // Quizzes
   quizzes: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('quizzes')
         .insert(data)
@@ -146,6 +176,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('quizzes')
         .update(data)
@@ -158,6 +192,10 @@ export const db = {
     },
 
     async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { error } = await supabaseAdmin
         .from('quizzes')
         .delete()
@@ -168,23 +206,31 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('quizzes').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where.user_id) query = query.eq('user_id', where.user_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('quizzes').select('*')
       
-      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
       if (where?.subject) query = query.eq('subject', where.subject)
-      if (where?.grade) query = query.eq('grade', where.grade)
+      if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
       
       const { data, error } = await query.order('created_at', { ascending: false })
       
@@ -196,6 +242,10 @@ export const db = {
   // User Profiles
   userProfiles: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('user_profiles')
         .insert(data)
@@ -207,6 +257,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('user_profiles')
         .update(data)
@@ -218,21 +272,61 @@ export const db = {
       return result
     },
 
+    async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { error } = await supabaseAdmin
+        .from('user_profiles')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
+    },
+
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('user_profiles').select('*')
       
       if (where.id) query = query.eq('id', where.id)
+      if (where.user_id) query = query.eq('user_id', where.user_id)
+      if (where.email) query = query.eq('email', where.email)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
+    },
+
+    async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('user_profiles').select('*')
+      
+      if (where?.role) query = query.eq('role', where.role)
+      if (where?.school) query = query.eq('school', where.school)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
     }
   },
 
   // Cross-curricular Plans
   crossCurricularPlans: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('cross_curricular_plans')
         .insert(data)
@@ -244,6 +338,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('cross_curricular_plans')
         .update(data)
@@ -256,6 +354,10 @@ export const db = {
     },
 
     async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { error } = await supabaseAdmin
         .from('cross_curricular_plans')
         .delete()
@@ -266,21 +368,30 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('cross_curricular_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.created_by) query = query.eq('created_by', where.created_by)
+      if (where.user_id) query = query.eq('user_id', where.user_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('cross_curricular_plans').select('*')
       
-      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
+      if (where?.subjects) query = query.contains('subjects', [where.subjects])
       
       const { data, error } = await query.order('created_at', { ascending: false })
       
@@ -292,6 +403,10 @@ export const db = {
   // Multigrade Plans
   multigradePlans: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('multigrade_plans')
         .insert(data)
@@ -303,6 +418,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('multigrade_plans')
         .update(data)
@@ -315,6 +434,10 @@ export const db = {
     },
 
     async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { error } = await supabaseAdmin
         .from('multigrade_plans')
         .delete()
@@ -325,23 +448,150 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
       if (where.id) query = query.eq('id', where.id)
-      if (where.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where.user_id) query = query.eq('user_id', where.user_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('multigrade_plans').select('*')
       
-      if (where?.user_id) query = query.eq('user_id', where.user_id) // Use user_id to match schema
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
+      if (where?.grade_range) query = query.eq('grade_range', where.grade_range)
       
       const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    }
+  },
+
+  // Lesson Reflections
+  lessonReflections: {
+    async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { data: result, error } = await supabaseAdmin
+        .from('lesson_reflections')
+        .insert(data)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { data: result, error } = await supabaseAdmin
+        .from('lesson_reflections')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { error } = await supabaseAdmin
+        .from('lesson_reflections')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
+    },
+
+    async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('lesson_reflections').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.user_id) query = query.eq('user_id', where.user_id)
+      if (where.lesson_plan_id) query = query.eq('lesson_plan_id', where.lesson_plan_id)
+      
+      const { data, error } = await query.single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
+    async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('lesson_reflections').select('*')
+      
+      if (where?.user_id) query = query.eq('user_id', where.user_id)
+      if (where?.lesson_plan_id) query = query.eq('lesson_plan_id', where.lesson_plan_id)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    }
+  },
+
+  // Curriculum Standards
+  curriculumStandards: {
+    async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('curriculum_standards').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.subject) query = query.eq('subject', where.subject)
+      if (where.grade_level) query = query.eq('grade_level', where.grade_level)
+      
+      const { data, error } = await query.single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
+    async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('curriculum_standards').select('*')
+      
+      if (where?.subject) query = query.eq('subject', where.subject)
+      if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
+      if (where?.strand) query = query.eq('strand', where.strand)
+      
+      const { data, error } = await query.order('code', { ascending: true })
       
       if (error) throw error
       return data || []
@@ -351,27 +601,33 @@ export const db = {
   // Strands
   strands: {
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('strands').select('*')
       
       if (where.id) query = query.eq('id', where.id)
+      if (where.name) query = query.eq('name', where.name)
       if (where.subject) query = query.eq('subject', where.subject)
-      if (where.grade_level) query = query.eq('grade_level', where.grade_level)
-      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('strands').select('*')
       
       if (where?.subject) query = query.eq('subject', where.subject)
       if (where?.grade_level) query = query.eq('grade_level', where.grade_level)
-      if (where?.is_active !== undefined) query = query.eq('is_active', where.is_active)
       
-      const { data, error } = await query.order('sort_order', { ascending: true })
+      const { data, error } = await query.order('name', { ascending: true })
       
       if (error) throw error
       return data || []
@@ -381,25 +637,33 @@ export const db = {
   // Essential Learning Outcomes
   essentialLearningOutcomes: {
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('essential_learning_outcomes').select('*')
       
       if (where.id) query = query.eq('id', where.id)
+      if (where.code) query = query.eq('code', where.code)
       if (where.strand_id) query = query.eq('strand_id', where.strand_id)
-      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('essential_learning_outcomes').select('*')
       
       if (where?.strand_id) query = query.eq('strand_id', where.strand_id)
-      if (where?.is_active !== undefined) query = query.eq('is_active', where.is_active)
+      if (where?.code) query = query.eq('code', where.code)
       
-      const { data, error } = await query.order('sort_order', { ascending: true })
+      const { data, error } = await query.order('code', { ascending: true })
       
       if (error) throw error
       return data || []
@@ -409,25 +673,33 @@ export const db = {
   // Specific Curriculum Outcomes
   specificCurriculumOutcomes: {
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('specific_curriculum_outcomes').select('*')
       
       if (where.id) query = query.eq('id', where.id)
+      if (where.code) query = query.eq('code', where.code)
       if (where.elo_id) query = query.eq('elo_id', where.elo_id)
-      if (where.is_active !== undefined) query = query.eq('is_active', where.is_active)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('specific_curriculum_outcomes').select('*')
       
       if (where?.elo_id) query = query.eq('elo_id', where.elo_id)
-      if (where?.is_active !== undefined) query = query.eq('is_active', where.is_active)
+      if (where?.code) query = query.eq('code', where.code)
       
-      const { data, error } = await query.order('sort_order', { ascending: true })
+      const { data, error } = await query.order('code', { ascending: true })
       
       if (error) throw error
       return data || []
@@ -437,6 +709,10 @@ export const db = {
   // Schedules
   schedules: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('schedules')
         .insert(data)
@@ -448,6 +724,10 @@ export const db = {
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('schedules')
         .update(data)
@@ -460,6 +740,10 @@ export const db = {
     },
 
     async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { error } = await supabaseAdmin
         .from('schedules')
         .delete()
@@ -470,18 +754,26 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('schedules').select('*')
       
       if (where.id) query = query.eq('id', where.id)
       if (where.user_id) query = query.eq('user_id', where.user_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('schedules').select('*')
       
       if (where?.user_id) query = query.eq('user_id', where.user_id)
@@ -497,6 +789,10 @@ export const db = {
   // Users (for setup-database.ts)
   users: {
     async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('user_profiles')
         .insert(data)
@@ -508,6 +804,10 @@ export const db = {
     },
 
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('user_profiles').select('*')
       
       if (where?.role) query = query.eq('role', where.role)
@@ -520,12 +820,16 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('user_profiles').select('*')
       
       if (where.id) query = query.eq('id', where.id)
       if (where.email) query = query.eq('email', where.email)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
@@ -535,6 +839,10 @@ export const db = {
   // Assessment Strategies
   assessmentStrategies: {
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('assessment_strategies').select('*')
       
       if (where?.elo_id) query = query.eq('elo_id', where.elo_id)
@@ -550,6 +858,10 @@ export const db = {
   // Teacher Content (placeholder - adjust table name as needed)
   teacherContent: {
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       // This is a placeholder - adjust the table name based on your schema
       let query = supabaseAdmin.from('learning_strategies').select('*')
       
@@ -565,6 +877,10 @@ export const db = {
   // Learning Strategies
   learningStrategies: {
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('learning_strategies').select('*')
       
       if (where?.sco_id) query = query.eq('sco_id', where.sco_id)
@@ -578,12 +894,16 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('learning_strategies').select('*')
       
       if (where.id) query = query.eq('id', where.id)
       if (where.sco_id) query = query.eq('sco_id', where.sco_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
@@ -593,6 +913,10 @@ export const db = {
   // PDF Documents
   pdfDocuments: {
     async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('pdf_documents').select('*')
       
       if (where?.status) query = query.eq('status', where.status)
@@ -606,19 +930,27 @@ export const db = {
     },
 
     async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       let query = supabaseAdmin.from('pdf_documents').select('*')
       
       if (where.id) query = query.eq('id', where.id)
       if (where.status) query = query.eq('status', where.status)
       if (where.user_id) query = query.eq('user_id', where.user_id)
       
-      const { data, error } = await query.limit(1).single()
+      const { data, error } = await query.single()
       
       if (error && error.code !== 'PGRST116') throw error
       return data
     },
 
     async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
       const { data: result, error } = await supabaseAdmin
         .from('pdf_documents')
         .update(data)
