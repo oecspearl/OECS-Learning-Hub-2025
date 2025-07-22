@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to prevent build issues
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,12 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { createClient } from '@supabase/supabase-js'
-
-// Create Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '@/lib/db'
 
 export default function LoginPage() {
   const [email, setEmail] = useState("roystonemmanuel@gmail.com")
@@ -40,6 +38,12 @@ export default function LoginPage() {
     }
 
     try {
+      // Check if supabase client is available
+      if (!supabase) {
+        setError("Database connection not available. Please try again later.")
+        return
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
@@ -67,6 +71,12 @@ export default function LoginPage() {
     try {
       setSocialLoading(provider)
       setError(null)
+      
+      // Check if supabase client is available
+      if (!supabase) {
+        setError("Database connection not available. Please try again later.")
+        return
+      }
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider.toLowerCase() as 'google' | 'github',

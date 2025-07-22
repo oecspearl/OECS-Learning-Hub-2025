@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to prevent build issues
+export const dynamic = 'force-dynamic'
+
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -18,6 +21,7 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseKey)
+
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({

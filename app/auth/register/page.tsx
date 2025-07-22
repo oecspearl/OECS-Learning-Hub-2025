@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to prevent build issues
+export const dynamic = 'force-dynamic'
+
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -12,12 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, CheckCircle } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { createClient } from '@supabase/supabase-js'
-
-// Create Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '@/lib/db'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -71,6 +69,12 @@ export default function RegisterPage() {
     setError(null)
 
     try {
+      // Check if supabase client is available
+      if (!supabase) {
+        setError("Database connection not available. Please try again later.")
+        return
+      }
+
       // Sign up with Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email: formData.email.trim().toLowerCase(),
@@ -108,6 +112,12 @@ export default function RegisterPage() {
     try {
       setIsLoading(true)
       setError(null)
+      
+      // Check if supabase client is available
+      if (!supabase) {
+        setError("Database connection not available. Please try again later.")
+        return
+      }
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
