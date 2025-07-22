@@ -1,4 +1,4 @@
--- Create multigrade_plans table for Supabase
+-- Create multigrade_plans table for Supabase with correct schema
 CREATE TABLE IF NOT EXISTS multigrade_plans (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,

@@ -374,7 +374,7 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     const allStandards = standardsResults.flat()
     const formattedStandards = formatStandardsForPrompt(allStandards)
 
-    // Store the plan in the database
+    // Store the plan in the database with correct field mappings
     try {
       const now = new Date().toISOString()
       
@@ -387,11 +387,11 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           subject: data.subject,
           grade_range: data.gradeRange,
           topic: data.topic,
-          content: planContent, // Use 'content' instead of 'lesson_content'
-          duration: data.duration || "60", // Use 'duration' instead of 'duration_minutes'
-          materials: data.materials || '', // Use 'materials' instead of 'materials_needed'
-          pedagogical_strategy: data.pedagogicalStrategy || '', // Use 'pedagogical_strategy' instead of 'pedagogical_approach'
-          differentiation_strategies: differentiationStrategies || '', // Use 'differentiation_strategies'
+          content: planContent,
+          duration: data.duration || "60",
+          materials: data.materials || '',
+          pedagogical_strategy: data.pedagogicalStrategy || '',
+          differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
           curriculum_standards: formattedStandards || '',
@@ -401,7 +401,7 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         console.log("SAVE MULTIGRADE PLAN: Update successful")
         return { success: true, data: updatedPlan }
       } else {
-        // Create new plan
+        // Create new plan with correct field mappings
         console.log("SAVE MULTIGRADE PLAN: Creating new plan")
         
         const newPlan = await db.multigradePlans.create({

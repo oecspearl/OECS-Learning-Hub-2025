@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
       pedagogical_strategy: 'Direct Instruction',
       differentiation_strategies: 'Tiered assignments',
       grouping_strategy: 'Mixed-grade groups',
-      assessment_approach: 'Formative assessment',
       curriculum_standards: 'Grade 3-4 math standards',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
