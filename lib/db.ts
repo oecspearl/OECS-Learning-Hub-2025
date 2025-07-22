@@ -4,16 +4,36 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-// Check if environment variables are available
+// Enhanced environment variable checking
 const hasValidEnvVars = supabaseUrl && supabaseAnonKey && supabaseServiceKey
 
+// Log environment variable status for debugging
+console.log('Environment Variables Status:', {
+  hasUrl: !!supabaseUrl,
+  hasAnonKey: !!supabaseAnonKey,
+  hasServiceKey: !!supabaseServiceKey,
+  hasAllVars: hasValidEnvVars,
+  url: supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'MISSING',
+  anonKey: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'MISSING',
+  serviceKey: supabaseServiceKey ? `${supabaseServiceKey.substring(0, 20)}...` : 'MISSING'
+})
+
 if (!hasValidEnvVars) {
-  console.warn('Supabase environment variables are not set. Database operations will fail.')
+  console.error('❌ Supabase environment variables are not set. Database operations will fail.')
+  console.error('Required variables: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY')
+} else {
+  console.log('✅ Supabase environment variables are properly configured')
 }
 
 // Create Supabase client for client-side operations (only if env vars are available)
 export const supabase = hasValidEnvVars 
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      }
+    })
   : null
 
 // Create Supabase client for server-side operations (only if env vars are available)

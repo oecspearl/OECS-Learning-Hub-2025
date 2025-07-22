@@ -32,30 +32,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('🔐 AuthProvider: Initializing authentication...')
+    
+    // Check if Supabase client is available
+    if (!supabase) {
+      console.error('❌ AuthProvider: Supabase client not initialized')
+      setLoading(false)
+      return
+    }
+
+    console.log('✅ AuthProvider: Supabase client is available')
+
     // Get initial session
-    if (supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session)
-        setUser(session?.user ?? null)
+    const getInitialSession = async () => {
+      try {
+        console.log('🔍 AuthProvider: Getting initial session...')
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('❌ AuthProvider: Error getting initial session:', error)
+        } else {
+          console.log('✅ AuthProvider: Initial session retrieved:', session ? 'User logged in' : 'No session')
+          setSession(session)
+          setUser(session?.user ?? null)
+        }
+      } catch (error) {
+        console.error('❌ AuthProvider: Exception getting initial session:', error)
+      } finally {
         setLoading(false)
-      })
+      }
+    }
 
-      // Listen for auth changes
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-      })
+    getInitialSession()
 
-      return () => subscription.unsubscribe()
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔄 AuthProvider: Auth state changed:', event, session ? 'User logged in' : 'No session')
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => {
+      console.log('🧹 AuthProvider: Cleaning up auth subscription')
+      subscription.unsubscribe()
     }
   }, [])
 
   const signOut = async () => {
+    console.log('🚪 AuthProvider: Signing out...')
     if (supabase) {
-      await supabase.auth.signOut()
+      try {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+          console.error('❌ AuthProvider: Error signing out:', error)
+        } else {
+          console.log('✅ AuthProvider: Sign out successful')
+        }
+      } catch (error) {
+        console.error('❌ AuthProvider: Exception during sign out:', error)
+      }
+    } else {
+      console.error('❌ AuthProvider: Cannot sign out - Supabase client not available')
     }
   }
 
@@ -65,6 +103,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signOut,
   }
+
+  console.log('🔐 AuthProvider: Current state:', {
+    user: user ? `${user.email} (${user.id})` : 'null',
+    session: session ? 'active' : 'null',
+    loading
+  })
 
   return (
     <AuthContext.Provider value={value}>
