@@ -117,7 +117,7 @@ export default function LoginPage() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <img 
-              src="/images/oecsnavlogo.png" 
+              src="/favlogo.png" 
               alt="OECS Learning Hub" 
               className="h-16 w-auto"
             />
