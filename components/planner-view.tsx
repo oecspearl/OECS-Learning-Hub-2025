@@ -8,8 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/components/ui/use-toast"
 import { generatePDF } from "@/lib/pdf-utils"
-import { ArrowLeft, Download, Pencil, Calendar, BookOpen, GraduationCap } from "lucide-react"
+import { ArrowLeft, Download, Pencil, Calendar, BookOpen, GraduationCap, Lightbulb, Plus, History } from "lucide-react"
 import { format } from "date-fns"
+import { LessonReflectionForm } from "@/components/lesson-plans/lesson-reflection-form"
+import { LessonReflectionDisplay } from "@/components/lesson-plans/lesson-reflection-display"
 
 interface LessonPlan {
   id: string
@@ -139,9 +141,11 @@ export function PlannerViewComponent({ lessonPlan }: { lessonPlan: LessonPlan })
 
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="preview">Preview</TabsTrigger>
               <TabsTrigger value="raw">Raw Content</TabsTrigger>
+              <TabsTrigger value="reflections">Reflections</TabsTrigger>
+              <TabsTrigger value="add-reflection">Add Reflection</TabsTrigger>
             </TabsList>
 
             <TabsContent value="preview" className="min-h-[400px]">
@@ -205,6 +209,50 @@ export function PlannerViewComponent({ lessonPlan }: { lessonPlan: LessonPlan })
               <pre className="whitespace-pre-wrap font-mono text-sm p-4 bg-muted/30 rounded-md min-h-[500px] overflow-y-auto border">
                 {lessonPlan.lesson_content}
               </pre>
+            </TabsContent>
+
+            <TabsContent value="reflections" className="min-h-[400px]">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">Lesson Reflections</h2>
+                    <p className="text-muted-foreground">
+                      Review your reflections and insights from teaching this lesson
+                    </p>
+                  </div>
+                </div>
+
+                <Card>
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <History className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">No Reflections Yet</h3>
+                    <p className="text-muted-foreground text-center mb-4">
+                      You haven't added any reflections for this lesson plan yet.
+                    </p>
+                    <Button onClick={() => setActiveTab("add-reflection")}>
+                      Add Your First Reflection
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="add-reflection" className="min-h-[400px]">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">Add Lesson Reflection</h2>
+                    <p className="text-muted-foreground">
+                      Complete this reflection after teaching the lesson to track outcomes and improvements
+                    </p>
+                  </div>
+                </div>
+
+                <LessonReflectionForm
+                  lessonPlanId={lessonPlan.id}
+                  lessonTitle={lessonPlan.title}
+                />
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
