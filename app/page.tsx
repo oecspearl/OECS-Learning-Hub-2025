@@ -81,7 +81,7 @@ export default function HomePage() {
               icon={<Users className="h-12 w-12" />}
               title="OECS MakerStudio"
               description="Empower Your Teaching Journey. Join OECS MakerStudio: Where Educators Collaborate, Share, and Innovate"
-              href="https://oecsmakerstudio.org/"
+              href="https://makerstudio.oecslearning.org/"
               external={true}
             />
           </div>
