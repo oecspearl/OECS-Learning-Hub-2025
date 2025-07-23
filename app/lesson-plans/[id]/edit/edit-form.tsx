@@ -48,6 +48,13 @@ interface FormData {
   extensions: string
 }
 
+// Helper function to safely convert array or string to string
+const arrayOrStringToString = (value: string | string[] | null | undefined): string => {
+  if (!value) return ""
+  if (Array.isArray(value)) return value.join('\n')
+  return value
+}
+
 export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -60,13 +67,13 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
     duration: typeof lessonPlan.duration_minutes === 'string' ? parseInt(lessonPlan.duration_minutes) || 0 : lessonPlan.duration_minutes || 0,
     content: lessonPlan.lesson_content || "",
     overview: lessonPlan.description || "",
-    standards: lessonPlan.curriculum_standards ? lessonPlan.curriculum_standards.join('\n') : "",
-    materials: lessonPlan.materials_needed ? lessonPlan.materials_needed.join('\n') : "",
+    standards: arrayOrStringToString(lessonPlan.curriculum_standards),
+    materials: arrayOrStringToString(lessonPlan.materials_needed),
     vocabulary: Array.isArray(lessonPlan.vocabulary_terms) 
       ? JSON.stringify(lessonPlan.vocabulary_terms, null, 2)
       : JSON.stringify([], null, 2),
     homework: lessonPlan.homework_assignment || "",
-    extensions: lessonPlan.extension_activities ? lessonPlan.extension_activities.join('\n') : "",
+    extensions: arrayOrStringToString(lessonPlan.extension_activities),
   })
   const [standards, setStandards] = useState<CurriculumStandard[]>([])
   const [filteredStandards, setFilteredStandards] = useState<CurriculumStandard[]>([])
@@ -403,4 +410,4 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
       </div>
     </div>
   )
-} 
+}

@@ -398,7 +398,7 @@ export type Database = {
           subject: string
           grade: string
           topic: string | null
-          content: string
+          lesson_content: string
           duration: string
           objectives: string | null
           materials: string | null
@@ -422,7 +422,7 @@ export type Database = {
           subject: string
           grade: string
           topic?: string | null
-          content: string
+          lesson_content: string
           duration: string
           objectives?: string | null
           materials?: string | null
@@ -446,7 +446,7 @@ export type Database = {
           subject?: string
           grade?: string
           topic?: string | null
-          content?: string
+          lesson_content?: string
           duration?: string
           objectives?: string | null
           materials?: string | null
