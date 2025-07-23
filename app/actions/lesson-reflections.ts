@@ -65,17 +65,22 @@ export async function createLessonReflection(data: LessonReflection): Promise<{ 
 
 export async function getLessonReflections(lesson_plan_id: string): Promise<{ success: boolean; data?: LessonReflection[]; error?: string }> {
   try {
+    console.log('Fetching reflections for lesson plan:', lesson_plan_id)
+    
     const { data: reflections, error } = await supabase
       .from('lesson_reflections')
       .select('*')
       .eq('lesson_plan_id', lesson_plan_id)
       .order('created_at', { ascending: false })
 
+    console.log('Supabase response:', { reflections, error })
+
     if (error) {
       console.error('Error fetching lesson reflections:', error)
       return { success: false, error: error.message }
     }
 
+    console.log('Returning reflections:', reflections)
     return { success: true, data: reflections }
   } catch (error) {
     console.error('Error fetching lesson reflections:', error)

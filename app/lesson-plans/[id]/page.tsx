@@ -132,6 +132,12 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
   // Get reflections for this lesson plan
   const reflectionsResult = await getLessonReflectionsByLessonPlan(id)
   const reflections = reflectionsResult.success ? reflectionsResult.data || [] : []
+  
+  // Debug logging
+  console.log('Lesson Plan ID:', id)
+  console.log('Reflections Result:', reflectionsResult)
+  console.log('Reflections Count:', reflections.length)
+  console.log('Reflections Data:', reflections)
 
   // Parse the markdown content into sections
   const sections = parseMarkdownContent(lessonPlan.lesson_content)
@@ -261,6 +267,18 @@ export default async function LessonPlanViewPage({ params }: LessonPlanViewPageP
                 <p className="text-muted-foreground">
                   Review your reflections and insights from teaching this lesson
                 </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-muted-foreground">
+                  Found {reflections.length} reflection{reflections.length !== 1 ? 's' : ''}
+                </p>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Refresh
+                </Button>
               </div>
             </div>
 

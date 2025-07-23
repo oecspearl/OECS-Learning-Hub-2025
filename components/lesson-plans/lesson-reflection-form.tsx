@@ -98,7 +98,8 @@ export function LessonReflectionForm({
         if (onClose) {
           onClose()
         } else {
-          router.refresh()
+          // Force a hard refresh to ensure the new reflection appears
+          window.location.reload()
         }
       } else {
         toast({
