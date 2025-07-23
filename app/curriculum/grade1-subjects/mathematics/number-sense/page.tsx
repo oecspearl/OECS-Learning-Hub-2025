@@ -41,8 +41,8 @@ export default function NumberSensePage() {
           <Link href="/curriculum/grade1-subjects/mathematics" className="inline-flex items-center text-blue-600 hover:text-blue-800">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Mathematics
-          </Link>
-        </div>
+        </Link>
+      </div>
 
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Number Sense</h1>
@@ -55,8 +55,8 @@ export default function NumberSensePage() {
           <h2 className="text-2xl font-semibold mb-4">Overview</h2>
           <p className="text-gray-700 mb-4">
             Number sense is the foundation of mathematical thinking. Students develop an intuitive understanding of numbers, their relationships, and how to work with them effectively.
-          </p>
-        </div>
+            </p>
+          </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
@@ -64,14 +64,14 @@ export default function NumberSensePage() {
               <CardTitle className="flex items-center gap-2">
                 <Hash className="h-5 w-5 text-blue-600" />
                 Counting
-              </CardTitle>
-            </CardHeader>
+                </CardTitle>
+              </CardHeader>
             <CardContent>
               <p className="text-gray-600">
                 Learn to count accurately and understand number sequences.
               </p>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
 
           <Card>
             <CardHeader>
@@ -84,8 +84,8 @@ export default function NumberSensePage() {
               <p className="text-gray-600">
                 Explore how numbers relate to each other and patterns.
               </p>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
 
           <Card>
             <CardHeader>
@@ -98,8 +98,8 @@ export default function NumberSensePage() {
               <p className="text-gray-600">
                 Develop mental calculation strategies and number fluency.
               </p>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
         </div>
       </div>
     </div>

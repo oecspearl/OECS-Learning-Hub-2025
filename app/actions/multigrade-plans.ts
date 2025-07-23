@@ -323,6 +323,8 @@ Ensure the lesson plan is practical, immediately usable, and specifically design
 export async function saveMultigradePlan(formData: FormData | MultigradePlanFormData, content?: string) {
   try {
     console.log("SAVE MULTIGRADE PLAN: Starting save operation")
+    console.log("SAVE MULTIGRADE PLAN: FormData type:", typeof formData)
+    console.log("SAVE MULTIGRADE PLAN: Content provided:", !!content)
 
     // Handle both FormData and object formats
     const data = formData instanceof FormData ? {
@@ -366,23 +368,34 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     }
 
     // Get curriculum standards
-    const gradeLevels = data.gradeRange.split("-").map(g => g.trim())
-    const standardsPromises = gradeLevels.map(grade => 
-      getCurriculumStandards(data.subject, grade)
-    )
-    const standardsResults = await Promise.all(standardsPromises)
-    const allStandards = standardsResults.flat()
-    const formattedStandards = formatStandardsForPrompt(allStandards)
+    let formattedStandards = ""
+    try {
+      const gradeLevels = data.gradeRange.split("-").map(g => g.trim())
+      const standardsPromises = gradeLevels.map(grade => 
+        getCurriculumStandards(data.subject, grade)
+      )
+      const standardsResults = await Promise.all(standardsPromises)
+      const allStandards = standardsResults.flat()
+      formattedStandards = formatStandardsForPrompt(allStandards)
+    } catch (standardsError) {
+      console.warn("SAVE MULTIGRADE PLAN: Could not fetch curriculum standards:", standardsError)
+      // Continue without curriculum standards
+    }
 
     // Store the plan in the database with correct field mappings
     try {
+      // Check if database is available
+      if (!db.multigradePlans) {
+        throw new Error("Database connection not available")
+      }
+      
       const now = new Date().toISOString()
       
       if (data.id) {
         // Update existing plan
         console.log("SAVE MULTIGRADE PLAN: Updating existing plan with ID:", data.id)
         
-        const updatedPlan = await db.multigradePlans.update(data.id, {
+        const updateData: any = {
           title: data.title || "",
           subject: data.subject,
           grade_range: data.gradeRange,
@@ -394,9 +407,15 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          curriculum_standards: formattedStandards || '',
           updated_at: now
-        })
+        }
+
+        // Only add curriculum_standards if it exists in the schema
+        if (formattedStandards) {
+          updateData.curriculum_standards = formattedStandards
+        }
+
+        const updatedPlan = await db.multigradePlans.update(data.id, updateData)
 
         console.log("SAVE MULTIGRADE PLAN: Update successful")
         return { success: true, data: updatedPlan }
@@ -404,7 +423,7 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         // Create new plan with correct field mappings
         console.log("SAVE MULTIGRADE PLAN: Creating new plan")
         
-        const newPlan = await db.multigradePlans.create({
+        const createData: any = {
           title: data.title || "",
           subject: data.subject,
           grade_range: data.gradeRange,
@@ -416,16 +435,29 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          curriculum_standards: formattedStandards || '',
           created_at: now,
           updated_at: now
-        })
+        }
+
+        // Only add curriculum_standards if it exists in the schema
+        if (formattedStandards) {
+          createData.curriculum_standards = formattedStandards
+        }
+
+        const newPlan = await db.multigradePlans.create(createData)
 
         console.log("SAVE MULTIGRADE PLAN: Create successful, returned ID:", newPlan.id)
         return { success: true, data: newPlan }
       }
     } catch (error) {
-      console.error("SAVE MULTIGRADE PLAN: Error:", error)
+      console.error("SAVE MULTIGRADE PLAN: Database error:", error)
+      
+      // Log more detailed error information
+      if (error instanceof Error) {
+        console.error("Error message:", error.message)
+        console.error("Error stack:", error.stack)
+      }
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : "Failed to save multigrade plan"
