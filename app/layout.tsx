@@ -44,7 +44,7 @@ export default function RootLayout({
           <Toaster />
           <AssistantWrapper 
             theme={{
-              primary: '#4F46E5',
+              primary: '#13af09',
               secondary: '#818CF8',
               background: '#FFFFFF',
               text: '#1F2937',
