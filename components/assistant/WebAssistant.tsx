@@ -74,7 +74,7 @@ export const WebAssistant: React.FC<WebAssistantProps> = ({
           <img 
             src="/psticker.png" 
             alt="AI Assistant" 
-            className="w-6 h-6 rounded-full"
+            className="w-8 h-8 rounded-full"
           />
         )}
       </motion.button>
