@@ -28,20 +28,32 @@ export interface MultigradePlanFormData {
 interface MultigradePlan {
   id: string
   title: string
+  description?: string | null
   subject: string
   grade_range: string
   topic: string | null
+  duration_minutes?: number | null
+  learning_objectives_by_grade?: string | null
+  materials_needed?: string | null
+  vocabulary_terms?: string | null
   lesson_content: string
-  duration_minutes: number | null
-  materials_needed: string[] | null
-  pedagogical_approach: string | null
-  differentiation_strategies: string[] | null
-  grouping_strategy: string | null
-  assessment_approach: string | null
-  curriculum_standards: string[] | null
-  created_by: string
+  differentiation_by_grade?: string | null
+  assessment_by_grade?: string | null
+  grouping_strategies?: string | null
+  management_strategies?: string | null
+  tags?: string | null
+  is_public?: boolean
+  created_by?: string
   created_at: string
   updated_at: string
+  user_id?: string
+  assessment_approach?: string | null
+  pedagogical_strategy?: string | null
+  differentiation_strategies?: string | null
+  grouping_strategy?: string | null
+  curriculum_standards?: string | null
+  materials?: string | null
+  duration?: string | null
 }
 
 export async function generateMultigradeLessonPlan(formData: MultigradePlanFormData) {
@@ -325,13 +337,14 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     console.log("SAVE MULTIGRADE PLAN: Starting save operation")
     console.log("SAVE MULTIGRADE PLAN: FormData type:", typeof formData)
     console.log("SAVE MULTIGRADE PLAN: Content provided:", !!content)
+    console.log("SAVE MULTIGRADE PLAN: Content length:", content?.length || 0)
 
     // Handle both FormData and object formats
     const data = formData instanceof FormData ? {
       id: formData.get("id") as string,
       title: formData.get("title") as string,
       subject: formData.get("subject") as string,
-      gradeRange: formData.get("gradeRange") as string,
+      gradeRange: formData.get("gradeRange") as string, // Will be mapped to grade_range
       topic: formData.get("topic") as string,
       duration: formData.get("duration") as string,
       materials: formData.get("materials") as string,
@@ -345,9 +358,19 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
       additionalInstructions: formData.get("additionalInstructions") as string,
     } : formData
 
-    console.log("SAVE MULTIGRADE PLAN: Extracted data:", data)
+    console.log("SAVE MULTIGRADE PLAN: Extracted data:", {
+      title: data.title,
+      subject: data.subject,
+      gradeRange: data.gradeRange,
+      topic: data.topic,
+      duration: data.duration,
+      materials: data.materials,
+      pedagogicalStrategy: data.pedagogicalStrategy,
+      groupingStrategy: data.groupingStrategy,
+      assessmentApproach: data.assessmentApproach
+    })
 
-    // Validate required fields
+    // Validate required fields based on actual database schema
     if (!data.subject || !data.gradeRange || !data.topic) {
       throw new Error("Missing required fields: subject, gradeRange, and topic are required")
     }
@@ -356,6 +379,13 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     if (!planContent) {
       throw new Error("No content provided for the multigrade plan")
     }
+
+    // Check if we have content to save
+    if (!planContent || planContent.trim().length === 0) {
+      throw new Error("Missing required field: lesson content cannot be empty")
+    }
+
+    console.log("SAVE MULTIGRADE PLAN: Plan content length:", planContent.length)
 
     // Process differentiation strategies
     let differentiationStrategies = ""
@@ -366,6 +396,8 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         differentiationStrategies = data.differentiationStrategies
       }
     }
+
+    console.log("SAVE MULTIGRADE PLAN: Differentiation strategies:", differentiationStrategies)
 
     // Get curriculum standards
     let formattedStandards = ""
@@ -398,15 +430,17 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         const updateData: any = {
           title: data.title || "",
           subject: data.subject,
-          grade_range: data.gradeRange,
+          grade_range: data.gradeRange, // ✅ Correct field name
           topic: data.topic,
-          content: planContent,
+          lesson_content: planContent, // ✅ Correct field name (lesson_content)
           duration: data.duration || "60",
           materials: data.materials || '',
           pedagogical_strategy: data.pedagogicalStrategy || '',
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
+          created_by: "system", // ✅ Add required field
+          user_id: "system", // ✅ Add required field
           updated_at: now
         }
 
@@ -426,15 +460,17 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         const createData: any = {
           title: data.title || "",
           subject: data.subject,
-          grade_range: data.gradeRange,
+          grade_range: data.gradeRange, // ✅ Correct field name
           topic: data.topic,
-          content: planContent,
+          lesson_content: planContent, // ✅ Correct field name (lesson_content)
           duration: data.duration || "60",
           materials: data.materials || '',
           pedagogical_strategy: data.pedagogicalStrategy || '',
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
+          created_by: "system", // ✅ Add required field
+          user_id: "system", // ✅ Add required field
           created_at: now,
           updated_at: now
         }
@@ -458,9 +494,11 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         console.error("Error stack:", error.stack)
       }
       
+      // Return the actual error message instead of generic message
+      const errorMessage = error instanceof Error ? error.message : "Unknown database error"
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to save multigrade plan"
+        error: `Database error: ${errorMessage}`
       }
     }
   } catch (error) {

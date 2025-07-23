@@ -83,7 +83,16 @@ export function MultigradeOutput() {
         additionalInstructions: metadata?.additionalInstructions || ''
       }
 
+      console.log("MULTIGRADE OUTPUT: Data being saved:", {
+        title: formData.title,
+        subject: formData.subject,
+        gradeRange: formData.gradeRange,
+        topic: formData.topic,
+        contentLength: contentToSave?.length || 0
+      })
+
       const result = await saveMultigradePlan(formData, contentToSave || '')
+      console.log("MULTIGRADE OUTPUT: Save result:", result)
 
       if (result.success) {
         toast({
@@ -96,7 +105,9 @@ export function MultigradeOutput() {
           setIsEditing(false)
         }
       } else {
-        throw new Error("Failed to save lesson plan")
+        // Show the actual error message from the database
+        const errorMessage = result.error || "Failed to save lesson plan"
+        throw new Error(`Save failed: ${errorMessage}`)
       }
     } catch (error) {
       console.error("Error saving multigrade lesson plan:", error)
