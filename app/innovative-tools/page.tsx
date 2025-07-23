@@ -17,7 +17,7 @@ export default function InnovativeToolsPage() {
       {/* Features Section */}
       <section id="features" className="w-full py-6">
         <div className="max-w-[1400px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 - Lesson Planning */}
             <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
               <CardContent className="p-8 text-center h-full flex flex-col">
@@ -534,6 +534,88 @@ export default function InnovativeToolsPage() {
                       </svg>
                     </div>
                     <span>Real-time student performance analytics</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Feature 9 - Content Maker */}
+            <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
+              <CardContent className="p-8 text-center h-full flex flex-col">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-10 w-10"
+                  >
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <path d="M9 14l2 2 4-4"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Content Maker</h3>
+                <p className="text-sm text-muted-foreground mb-4">Powered by H5P</p>
+                <p className="text-sm text-muted-foreground min-h-[5rem] mb-6">
+                  Create engaging educational content for the OECS with interactive multimedia elements and rich learning experiences.
+                </p>
+                <div className="mt-auto">
+                  <a
+                    href="http://creator.oecslearning.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mr-2 h-4 w-4"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      Open Content Maker
+                    </Button>
+                  </a>
+                  <div className="mt-5 flex items-center justify-between">
+                    <div className="flex items-center text-xs text-muted-foreground">
+                      <div className="bg-red-100 rounded-full p-1 mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-red-500"
+                        >
+                          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                          <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                      </div>
+                      <span>Interactive multimedia content</span>
+                    </div>
+                    <div className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">
+                      Coming Soon
+                    </div>
                   </div>
                 </div>
               </CardContent>
