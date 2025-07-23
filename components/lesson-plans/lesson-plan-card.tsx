@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Download, Edit, Calendar, Clock, BookOpen, Users, Target, Lightbulb, ClipboardList } from "lucide-react"
+import { Download, Edit, Calendar, Clock, BookOpen, Users, Target, Lightbulb, ClipboardList, Plus, History } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
 import { safeArrayProcessor, safeContentSplitter, safeMarkdownContent } from "@/lib/safeArrayProcessor"
+import { LessonReflectionForm } from "@/components/lesson-plans/lesson-reflection-form"
+import { LessonReflectionDisplay } from "@/components/lesson-plans/lesson-reflection-display"
 
 function stripMarkdown(text: string): string {
   return text
@@ -223,9 +225,11 @@ export function LessonPlanViewComponent({ plan }: LessonPlanViewComponentProps) 
 
       {/* Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="preview">Preview</TabsTrigger>
           <TabsTrigger value="raw">Raw Content</TabsTrigger>
+          <TabsTrigger value="reflections">Reflections</TabsTrigger>
+          <TabsTrigger value="add-reflection">Add Reflection</TabsTrigger>
         </TabsList>
 
         <TabsContent value="preview" className="space-y-6 mt-6">
@@ -434,6 +438,50 @@ export function LessonPlanViewComponent({ plan }: LessonPlanViewComponentProps) 
               </pre>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="reflections" className="mt-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Lesson Reflections</h2>
+                <p className="text-muted-foreground">
+                  Review your reflections and insights from teaching this lesson
+                </p>
+              </div>
+            </div>
+
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <History className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No Reflections Yet</h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  You haven't added any reflections for this lesson plan yet.
+                </p>
+                <Button onClick={() => setActiveTab("add-reflection")}>
+                  Add Your First Reflection
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="add-reflection" className="mt-6">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Add Lesson Reflection</h2>
+                <p className="text-muted-foreground">
+                  Complete this reflection after teaching the lesson to track outcomes and improvements
+                </p>
+              </div>
+            </div>
+
+            <LessonReflectionForm
+              lessonPlanId={plan.id}
+              lessonTitle={plan.title}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
