@@ -33,7 +33,7 @@ interface LessonPlan {
   subject: string
   grade_level: string
   topic: string
-  content: string
+  lesson_content: string
   created_at?: string
   user_id?: string
   pedagogical_strategy?: string
@@ -53,7 +53,7 @@ export function PlannerEditForm({ lessonPlan }: { lessonPlan: LessonPlan }) {
     subject: lessonPlan.subject,
     gradeLevel: lessonPlan.grade_level,
     topic: lessonPlan.topic,
-    content: lessonPlan.content,
+    content: lessonPlan.lesson_content,
     pedagogicalStrategy: lessonPlan.pedagogical_strategy || "",
     specialNeeds: lessonPlan.special_needs || false,
     specialNeedsDetails: lessonPlan.special_needs_details || "",
