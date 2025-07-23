@@ -71,11 +71,11 @@ export const WebAssistant: React.FC<WebAssistantProps> = ({
         {isOpen ? (
           '×'
         ) : (
-          <div className="w-8 h-8 rounded-full bg-[#13af09] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-[#ecf4ec] flex items-center justify-center">
             <img 
               src="/psticker.png" 
               alt="AI Assistant" 
-              className="w-6 h-6 rounded-full"
+              className="w-10 h-10 rounded-full"
             />
           </div>
         )}
