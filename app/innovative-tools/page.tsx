@@ -542,6 +542,169 @@ export default function InnovativeToolsPage() {
         </div>
       </section>
 
+      {/* Connect and Learn Section */}
+      <section className="py-12">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">Connect and Learn</h2>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Expand your knowledge and collaborate with peers through our digital platforms
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Card 1 - OECS MakerStudio */}
+            <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
+              <CardContent className="p-8 text-center h-full flex flex-col">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-orange-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-10 w-10"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-2">OECS MakerStudio</h3>
+                <p className="text-sm text-muted-foreground mb-4">Empower Your Teaching Journey</p>
+                <p className="text-sm text-muted-foreground min-h-[4rem] mb-6">
+                  Join OECS MakerStudio: Where Educators Collaborate, Share, and Innovate
+                </p>
+                <div className="mt-auto">
+                  <a
+                    href="https://makerstudio.oecslearning.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mr-2 h-4 w-4"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      Visit MakerStudio
+                    </Button>
+                  </a>
+                  <div className="mt-5 flex items-center text-xs text-muted-foreground">
+                    <div className="bg-orange-100 rounded-full p-1 mr-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-orange-500"
+                      >
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                      </svg>
+                    </div>
+                    <span>Collaborate and innovate with peers</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 2 - OECS PEARL Digital Skills Explorer */}
+            <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
+              <CardContent className="p-8 text-center h-full flex flex-col">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-10 w-10"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-3">OECS PEARL Digital Skills Explorer</h3>
+                <p className="text-sm text-muted-foreground min-h-[4rem] mb-6">
+                  Learn, Practice, and Stay Safe Online! Learn through engaging scenarios and real-world challenges.
+                </p>
+                <div className="mt-auto">
+                  <a
+                    href="https://dl.oecslearning.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mr-2 h-4 w-4"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      Explore Digital Skills
+                    </Button>
+                  </a>
+                  <div className="mt-5 flex items-center text-xs text-muted-foreground">
+                    <div className="bg-emerald-100 rounded-full p-1 mr-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-emerald-500"
+                      >
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                      </svg>
+                    </div>
+                    <span>Engaging scenarios and real-world challenges</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-12 bg-primary/5 rounded-xl my-12 p-8">
         <div className="text-center max-w-3xl mx-auto">
