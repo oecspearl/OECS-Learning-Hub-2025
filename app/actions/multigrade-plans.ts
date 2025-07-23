@@ -5,53 +5,6 @@ import { openai } from "@ai-sdk/openai"
 import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
-import { supabase } from '@/lib/supabase'
-
-// Function to get the current authenticated user from Supabase
-async function getCurrentUser() {
-  try {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    
-    console.log("GET CURRENT USER: Supabase auth result:", {
-      hasUser: !!user,
-      userId: user?.id,
-      userEmail: user?.email,
-      userRole: user?.user_metadata?.role,
-      error: error?.message
-    })
-    
-    if (error) {
-      console.error("GET CURRENT USER: Supabase auth error:", error)
-      throw new Error(`Authentication error: ${error.message}`)
-    }
-    
-    if (!user) {
-      throw new Error("No authenticated user found - please log in")
-    }
-    
-    console.log("GET CURRENT USER: Found authenticated user:", {
-      id: user.id,
-      email: user.email,
-      role: user.user_metadata?.role
-    })
-    
-    return user.id
-  } catch (error) {
-    console.error("GET CURRENT USER: Error getting authenticated user:", error)
-    
-    // Provide more specific error messages
-    if (error instanceof Error) {
-      if (error.message.includes("JWT")) {
-        throw new Error("Session expired - please log in again")
-      }
-      if (error.message.includes("refresh_token_not_found")) {
-        throw new Error("Authentication session invalid - please log in again")
-      }
-    }
-    
-    throw new Error("Authentication required to save lesson plans")
-  }
-}
 
 export interface MultigradePlanFormData {
   id?: string;
@@ -391,7 +344,7 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
       id: formData.get("id") as string,
       title: formData.get("title") as string,
       subject: formData.get("subject") as string,
-      gradeRange: formData.get("gradeRange") as string, // Will be mapped to grade_range
+      gradeRange: formData.get("gradeRange") as string,
       topic: formData.get("topic") as string,
       duration: formData.get("duration") as string,
       materials: formData.get("materials") as string,
@@ -417,17 +370,12 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
       assessmentApproach: data.assessmentApproach
     })
 
-    // Validate required fields based on actual database schema
+    // Validate required fields
     if (!data.subject || !data.gradeRange || !data.topic) {
       throw new Error("Missing required fields: subject, gradeRange, and topic are required")
     }
 
     const planContent = content || data.content || ""
-    if (!planContent) {
-      throw new Error("No content provided for the multigrade plan")
-    }
-
-    // Check if we have content to save
     if (!planContent || planContent.trim().length === 0) {
       throw new Error("Missing required field: lesson content cannot be empty")
     }
@@ -461,16 +409,12 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
       // Continue without curriculum standards
     }
 
-    // Store the plan in the database with correct field mappings
+    // Store the plan in the database
     try {
       // Check if database is available
       if (!db.multigradePlans) {
         throw new Error("Database connection not available")
       }
-      
-      // Get the current authenticated user
-      const currentUserId = await getCurrentUser()
-      console.log("SAVE MULTIGRADE PLAN: Using authenticated user ID:", currentUserId)
       
       const now = new Date().toISOString()
       
@@ -479,23 +423,21 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         console.log("SAVE MULTIGRADE PLAN: Updating existing plan with ID:", data.id)
         
         const updateData: any = {
-          title: data.title || `${data.subject} - ${data.topic}`, // ✅ Generate title if empty
+          title: data.title || `${data.subject} - ${data.topic}`,
           subject: data.subject,
-          grade_range: data.gradeRange, // ✅ Correct field name
+          grade_range: data.gradeRange,
           topic: data.topic,
-          lesson_content: planContent, // ✅ Correct field name (lesson_content)
+          lesson_content: planContent,
           duration: data.duration || "60",
           materials: data.materials || '',
           pedagogical_strategy: data.pedagogicalStrategy || '',
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: currentUserId, // ✅ Use authenticated user ID
-          user_id: currentUserId, // ✅ Use authenticated user ID
           updated_at: now
         }
 
-        // Only add curriculum_standards if it exists in the schema
+        // Add curriculum_standards if available
         if (formattedStandards) {
           updateData.curriculum_standards = formattedStandards
         }
@@ -505,28 +447,27 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         console.log("SAVE MULTIGRADE PLAN: Update successful")
         return { success: true, data: updatedPlan }
       } else {
-        // Create new plan with correct field mappings
+        // Create new plan
         console.log("SAVE MULTIGRADE PLAN: Creating new plan")
         
         const createData: any = {
-          title: data.title || `${data.subject} - ${data.topic}`, // ✅ Generate title if empty
+          title: data.title || `${data.subject} - ${data.topic}`,
           subject: data.subject,
-          grade_range: data.gradeRange, // ✅ Correct field name
+          grade_range: data.gradeRange,
           topic: data.topic,
-          lesson_content: planContent, // ✅ Correct field name (lesson_content)
+          lesson_content: planContent,
           duration: data.duration || "60",
           materials: data.materials || '',
           pedagogical_strategy: data.pedagogicalStrategy || '',
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: currentUserId, // ✅ Use authenticated user ID
-          user_id: currentUserId, // ✅ Use authenticated user ID
           created_at: now,
-          updated_at: now
+          updated_at: now,
+          is_public: true // Default to public since no user authentication
         }
 
-        // Only add curriculum_standards if it exists in the schema
+        // Add curriculum_standards if available
         if (formattedStandards) {
           createData.curriculum_standards = formattedStandards
         }
@@ -544,13 +485,11 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         message: (error as any).message
       })
       
-      // Log more detailed error information
       if (error instanceof Error) {
         console.error("Error message:", error.message)
         console.error("Error stack:", error.stack)
       }
       
-      // Return the actual error message instead of generic message
       const errorMessage = error instanceof Error ? error.message : "Unknown database error"
       return {
         success: false,
@@ -559,32 +498,6 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
     }
   } catch (error) {
     console.error("SAVE MULTIGRADE PLAN: Error:", error)
-    
-    // Provide specific error messages for different types of errors
-    if (error instanceof Error) {
-      if (error.message.includes("Authentication required") || 
-          error.message.includes("please log in") ||
-          error.message.includes("Session expired")) {
-        return {
-          success: false,
-          error: "Please log in to save lesson plans"
-        }
-      }
-      
-      if (error.message.includes("Database error")) {
-        return {
-          success: false,
-          error: "Database error occurred. Please try again."
-        }
-      }
-      
-      if (error.message.includes("Network")) {
-        return {
-          success: false,
-          error: "Network error. Please check your connection and try again."
-        }
-      }
-    }
     
     return {
       success: false,
