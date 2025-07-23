@@ -17,7 +17,7 @@ interface LessonPlan {
   subject: string
   grade_level: string
   topic: string
-  content: string
+  lesson_content: string
   created_at?: string
   updated_at?: string
   user_id?: string
@@ -35,7 +35,7 @@ export function PlannerViewComponent({ lessonPlan }: { lessonPlan: LessonPlan })
     setIsDownloading(true)
     try {
       await generatePDF({
-        content: lessonPlan.content,
+        content: lessonPlan.lesson_content,
         filename: `${lessonPlan.title.replace(/\s+/g, "_")}.pdf`,
         title: lessonPlan.title,
         metadata: {
@@ -146,7 +146,7 @@ export function PlannerViewComponent({ lessonPlan }: { lessonPlan: LessonPlan })
 
             <TabsContent value="preview" className="min-h-[400px]">
               <div className="prose prose-green max-w-none p-4 bg-white rounded-md min-h-[500px] overflow-y-auto border">
-                {lessonPlan.content.split("\n").map((line, i) => {
+                {lessonPlan.lesson_content.split("\n").map((line, i) => {
                   // Handle headers
                   if (line.startsWith("# ")) {
                     return (
@@ -203,7 +203,7 @@ export function PlannerViewComponent({ lessonPlan }: { lessonPlan: LessonPlan })
 
             <TabsContent value="raw" className="min-h-[400px]">
               <pre className="whitespace-pre-wrap font-mono text-sm p-4 bg-muted/30 rounded-md min-h-[500px] overflow-y-auto border">
-                {lessonPlan.content}
+                {lessonPlan.lesson_content}
               </pre>
             </TabsContent>
           </Tabs>
