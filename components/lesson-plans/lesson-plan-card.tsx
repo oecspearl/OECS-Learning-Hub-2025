@@ -95,7 +95,7 @@ interface LessonPlan {
   subject: string;
   grade: string;
   topic: string | null;
-  content: string;
+  lesson_content: string;
   duration: string | null;
   materials: string | null;
   pedagogical_strategy: string | null;
@@ -121,7 +121,7 @@ export function LessonPlanViewComponent({ plan }: LessonPlanViewComponentProps) 
   const [activeTab, setActiveTab] = useState("preview")
 
   // Parse the markdown content into sections
-  const sections = parseMarkdownContent(plan.content)
+  const sections = parseMarkdownContent(plan.lesson_content)
   
   // Parse objectives and materials from the content if not in database
   const objectives = plan.objectives ? JSON.parse(plan.objectives) : 
@@ -430,7 +430,7 @@ export function LessonPlanViewComponent({ plan }: LessonPlanViewComponentProps) 
             </CardHeader>
             <CardContent>
               <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg text-sm overflow-auto">
-                {plan.content}
+                {plan.lesson_content}
               </pre>
             </CardContent>
           </Card>
