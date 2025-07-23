@@ -4,6 +4,7 @@ import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Toaster } from '@/components/ui/toaster'
 import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
 import { AssistantWrapper } from '@/components/assistant/AssistantWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -40,7 +41,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <Header />
-          {children}
+          <main className="min-h-screen flex flex-col">
+            {children}
+          </main>
+          <Footer />
           <Toaster />
           <AssistantWrapper 
             theme={{
