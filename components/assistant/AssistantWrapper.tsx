@@ -5,7 +5,6 @@ import { useAssistant } from '@/hooks/useAssistant';
 import { WebAssistant } from './WebAssistant';
 
 interface AssistantWrapperProps {
-  userRole: string;
   theme: {
     primary: string;
     secondary: string;
@@ -15,10 +14,9 @@ interface AssistantWrapperProps {
 }
 
 export const AssistantWrapper: React.FC<AssistantWrapperProps> = ({
-  userRole,
   theme,
 }) => {
-  const { isOpen, setIsOpen, currentPage } = useAssistant();
+  const { isOpen, setIsOpen, currentPage, userRole } = useAssistant();
 
   return (
     <WebAssistant

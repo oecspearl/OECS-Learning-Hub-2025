@@ -68,7 +68,15 @@ export const WebAssistant: React.FC<WebAssistantProps> = ({
         whileTap={{ scale: 0.9 }}
         style={{ backgroundColor: theme.primary }}
       >
-        {isOpen ? '×' : '?'}
+        {isOpen ? (
+          '×'
+        ) : (
+          <img 
+            src="/psticker.png" 
+            alt="AI Assistant" 
+            className="w-6 h-6 rounded-full"
+          />
+        )}
       </motion.button>
 
       {/* Chat Window */}

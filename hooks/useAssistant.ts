@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@/contexts/AuthContext"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 interface Message {
   id: string
@@ -15,6 +15,13 @@ export const useAssistant = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
+
+  // Update current page when component mounts or route changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentPage(window.location.pathname)
+    }
+  }, [])
   
   const sendMessage = async (content: string) => {
     if (!content.trim()) return

@@ -4,6 +4,7 @@ import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Toaster } from '@/components/ui/toaster'
 import { Header } from '@/components/header'
+import { AssistantWrapper } from '@/components/assistant/AssistantWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -41,6 +42,14 @@ export default function RootLayout({
           <Header />
           {children}
           <Toaster />
+          <AssistantWrapper 
+            theme={{
+              primary: '#4F46E5',
+              secondary: '#818CF8',
+              background: '#FFFFFF',
+              text: '#1F2937',
+            }}
+          />
         </AuthProvider>
       </body>
     </html>
