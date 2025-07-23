@@ -44,7 +44,8 @@ export async function GET(request: NextRequest) {
     // Fetch cross-curricular plans
     let crossCurricularPlans = []
     try {
-      crossCurricularPlans = await db.crossCurricularPlans.findMany({ user_id: userId }) // Use user_id to match schema
+      // Remove user_id filter since the column doesn't exist in cross_curricular_plans table
+      crossCurricularPlans = await db.crossCurricularPlans.findMany()
       console.log(`Found ${crossCurricularPlans.length} cross-curricular plans`)
     } catch (error) {
       console.error("Error fetching cross-curricular plans:", error)
