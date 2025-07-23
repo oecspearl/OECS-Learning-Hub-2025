@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,8 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/components/ui/use-toast"
 import { generatePDF } from "@/lib/pdf-utils"
-import { ArrowLeft, Download, Pencil, Calendar, BookOpen, Users } from "lucide-react"
+import { ArrowLeft, Download, Pencil, Calendar, BookOpen, Users, Lightbulb, Plus, History } from "lucide-react"
 import { format } from "date-fns"
+import { MultigradeReflectionForm } from "@/components/multigrade/multigrade-reflection-form"
+import { MultigradeReflectionDisplay } from "@/components/multigrade/multigrade-reflection-display"
+import { getMultigradeReflectionsByPlan } from "@/app/actions/multigrade-reflections"
 
 interface MultigradePlan {
   id: string
@@ -32,6 +35,8 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("preview")
   const [isDownloading, setIsDownloading] = useState(false)
+  const [reflections, setReflections] = useState<any[]>([])
+  const [isLoadingReflections, setIsLoadingReflections] = useState(false)
 
   const handleDownload = async () => {
     setIsDownloading(true)
@@ -70,6 +75,45 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ")
+  }
+
+  // Fetch reflections when component mounts or when activeTab changes to reflections
+  useEffect(() => {
+    const fetchReflections = async () => {
+      if (activeTab === "reflections" && reflections.length === 0) {
+        setIsLoadingReflections(true)
+        try {
+          const result = await getMultigradeReflectionsByPlan(plan.id)
+          if (result.success) {
+            setReflections(result.data || [])
+          } else {
+            console.error('Error fetching reflections:', result.error)
+          }
+        } catch (error) {
+          console.error('Error fetching reflections:', error)
+        } finally {
+          setIsLoadingReflections(false)
+        }
+      }
+    }
+
+    fetchReflections()
+  }, [activeTab, plan.id, reflections.length])
+
+  const handleRefreshReflections = async () => {
+    setIsLoadingReflections(true)
+    try {
+      const result = await getMultigradeReflectionsByPlan(plan.id)
+      if (result.success) {
+        setReflections(result.data || [])
+      } else {
+        console.error('Error fetching reflections:', result.error)
+      }
+    } catch (error) {
+      console.error('Error fetching reflections:', error)
+    } finally {
+      setIsLoadingReflections(false)
+    }
   }
 
   return (
@@ -136,9 +180,17 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
 
         <CardContent className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="preview">Preview</TabsTrigger>
               <TabsTrigger value="raw">Raw Content</TabsTrigger>
+              <TabsTrigger value="reflections" className="flex items-center gap-2">
+                <Lightbulb className="h-4 w-4" />
+                Reflections ({reflections.length})
+              </TabsTrigger>
+              <TabsTrigger value="add-reflection" className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Reflection
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="preview" className="min-h-[400px]">
@@ -199,6 +251,81 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
               <pre className="whitespace-pre-wrap font-mono text-sm p-4 bg-muted/30 rounded-md min-h-[500px] overflow-y-auto border">
                 {plan.lesson_content || "No content available"}
               </pre>
+            </TabsContent>
+
+            <TabsContent value="reflections" className="min-h-[400px]">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">Multigrade Lesson Reflections</h2>
+                    <p className="text-muted-foreground">
+                      Review your reflections and insights from teaching this multigrade lesson
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-muted-foreground">
+                      Found {reflections.length} reflection{reflections.length !== 1 ? 's' : ''}
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleRefreshReflections}
+                      disabled={isLoadingReflections}
+                    >
+                      {isLoadingReflections ? "Loading..." : "Refresh"}
+                    </Button>
+                  </div>
+                </div>
+
+                {isLoadingReflections ? (
+                  <Card>
+                    <CardContent className="flex flex-col items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mb-4"></div>
+                      <p className="text-muted-foreground">Loading reflections...</p>
+                    </CardContent>
+                  </Card>
+                ) : reflections.length === 0 ? (
+                  <Card>
+                    <CardContent className="flex flex-col items-center justify-center py-12">
+                      <History className="h-12 w-12 text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No Reflections Yet</h3>
+                      <p className="text-muted-foreground text-center mb-4">
+                        You haven't added any reflections for this multigrade lesson plan yet.
+                      </p>
+                      <Button onClick={() => setActiveTab("add-reflection")}>
+                        Add Your First Reflection
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-6">
+                    {reflections.map((reflection: any) => (
+                      <MultigradeReflectionDisplay
+                        key={reflection.id}
+                        reflection={reflection}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="add-reflection" className="min-h-[400px]">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">Add Multigrade Lesson Reflection</h2>
+                    <p className="text-muted-foreground">
+                      Complete this reflection after teaching the multigrade lesson to track outcomes and improvements
+                    </p>
+                  </div>
+                </div>
+
+                <MultigradeReflectionForm
+                  multigradePlanId={plan.id}
+                  planTitle={plan.title}
+                />
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
