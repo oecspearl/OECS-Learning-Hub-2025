@@ -16,25 +16,34 @@ const supabase = createClient(
 )
 
 export interface LessonReflection {
-  id: string
+  id?: string
   lesson_plan_id: string
   user_id: string
-  reflection_text: string
-  what_went_well: string
-  what_could_be_improved: string
-  next_steps: string
-  created_at: string
-  updated_at: string
+  reflection_date: string
+  objectives_met?: string
+  student_understanding?: string
+  evidence_support?: string
+  students_not_meeting_objectives?: string
+  misconceptions_difficulties?: string
+  assessment_effective?: string
+  content_suitable?: string
+  strategies_engaging?: string
+  students_on_task?: string
+  differentiation_effective?: string
+  future_improvements?: string
+  long_term_goals?: string
+  behavioral_issues?: string
+  student_opportunities?: string
+  teaching_insights?: string
+  overall_rating?: number
+  time_management?: string
+  student_engagement_level?: string
+  next_steps?: string
+  created_at?: string
+  updated_at?: string
 }
 
-export async function createLessonReflection(data: {
-  lesson_plan_id: string
-  user_id: string
-  reflection_text: string
-  what_went_well: string
-  what_could_be_improved: string
-  next_steps: string
-}): Promise<{ success: boolean; data?: LessonReflection; error?: string }> {
+export async function createLessonReflection(data: LessonReflection): Promise<{ success: boolean; data?: LessonReflection; error?: string }> {
   try {
     const { data: reflection, error } = await supabase
       .from('lesson_reflections')
