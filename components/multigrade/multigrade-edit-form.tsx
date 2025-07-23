@@ -31,7 +31,7 @@ interface MultigradePlan {
   subject: string
   grade_range: string
   topic: string
-  content: string
+  lesson_content: string
   created_at?: string
   duration?: string
   materials?: string
@@ -53,7 +53,7 @@ export function MultigradeEditForm({ plan }: { plan: MultigradePlan }) {
     subject: plan.subject,
     gradeRange: plan.grade_range,
     topic: plan.topic,
-    content: plan.content,
+    content: plan.lesson_content,
     duration: plan.duration || "60",
     materials: plan.materials || "",
     pedagogicalStrategy: plan.pedagogical_strategy || "",

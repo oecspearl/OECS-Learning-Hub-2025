@@ -17,7 +17,7 @@ interface MultigradePlan {
   subject: string
   grade_range: string
   topic: string
-  content: string
+  lesson_content: string
   created_at?: string
   updated_at?: string
   duration?: string
@@ -37,7 +37,7 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
     setIsDownloading(true)
     try {
       await generatePDF({
-        content: plan.content,
+        content: plan.lesson_content,
         filename: `${plan.title.replace(/\s+/g, "_")}.pdf`,
         title: plan.title,
         metadata: {
@@ -143,7 +143,7 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
 
             <TabsContent value="preview" className="min-h-[400px]">
               <div className="prose prose-green max-w-none p-4 bg-white rounded-md min-h-[500px] overflow-y-auto border">
-                {plan.content ? plan.content.split("\n").map((line, i) => {
+                {plan.lesson_content ? plan.lesson_content.split("\n").map((line, i) => {
                   if (line.startsWith("# ")) {
                     return (
                       <h1 key={i} className="text-xl font-bold mt-4 mb-2 text-green-800">
@@ -197,7 +197,7 @@ export function MultigradeViewComponent({ plan }: { plan: MultigradePlan }) {
 
             <TabsContent value="raw" className="min-h-[400px]">
               <pre className="whitespace-pre-wrap font-mono text-sm p-4 bg-muted/30 rounded-md min-h-[500px] overflow-y-auto border">
-                {plan.content || "No content available"}
+                {plan.lesson_content || "No content available"}
               </pre>
             </TabsContent>
           </Tabs>
