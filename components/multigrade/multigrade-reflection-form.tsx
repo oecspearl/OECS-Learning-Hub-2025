@@ -82,8 +82,10 @@ export function MultigradeReflectionForm({
         return
       }
       
+      // Generate unique ID for new reflections
       const dataWithUserId = {
         ...formData,
+        id: existingReflection?.id || crypto.randomUUID(),
         user_id: user.id
       }
 
