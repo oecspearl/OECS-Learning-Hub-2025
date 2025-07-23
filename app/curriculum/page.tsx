@@ -75,9 +75,9 @@ export default function CurriculumPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Explore Curriculum Standards</h2>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">Explore Specific Curriculum Outcomes</h2>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Discover our comprehensive collection of 1616 standards across all subjects and grade levels
+                  Discover our comprehensive collection of 1616 specific curriculum outcomes across all subjects and grade levels
                 </p>
               </div>
 
