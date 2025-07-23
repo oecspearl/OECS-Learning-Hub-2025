@@ -32,25 +32,35 @@ const lessonPlanSchema = z.object({
 export interface LessonPlan {
   id: string
   title: string
+  description?: string | null
   subject: string
   grade_level: string
   topic: string | null
+  duration_minutes?: number | null
+  strand_id?: number | null
+  elo_id?: number | null
+  sco_id?: number | null
+  learning_objectives?: string | null
+  materials_needed?: string | null
+  vocabulary_terms?: string | null
   lesson_content: string
-  duration_minutes: number | null
-  materials_needed: string[] | null
-  pedagogical_approach: string | null
-  differentiation_strategies: string[] | null
-  grouping_strategy: string | null
-  assessment_strategy: string | null
-  curriculum_standards: string[] | null
-  description: string | null
-  learning_objectives: string[] | null
-  vocabulary_terms: any | null
-  homework_assignment: string | null
-  extension_activities: string[] | null
-  created_by: string
+  assessment_strategy?: string | null
+  homework_assignment?: string | null
+  extension_activities?: string | null
+  pedagogical_approach?: string | null
+  differentiation_strategies?: string | null
+  grouping_strategy?: string | null
+  curriculum_standards?: string | null
+  difficulty_level?: string | null
+  tags?: string | null
+  is_public?: boolean
+  created_by?: string
   created_at: string
   updated_at: string
+  content?: string | null
+  duration?: string | null
+  grade?: string | null
+  user_id?: string
 }
 
 export interface LessonPlansResponse {
@@ -336,15 +346,16 @@ export async function saveLessonPlan(formData: any) {
         // Create new lesson plan
         console.log("Creating new lesson plan")
         
-        // Try with minimal data first - only use columns that definitely exist
+        // Create lesson plan data with correct field mappings
         const lessonPlanData: any = {
           title,
           subject,
           grade_level: grade_level,
           topic,
           lesson_content: lesson_content,
+          duration_minutes: duration_minutes,
           user_id,
-          created_by: user_id, // Add created_by field
+          created_by: user_id, // ✅ Required field
           created_at: now,
           updated_at: now,
         }
@@ -413,17 +424,17 @@ export async function updateLessonPlan(id: string, data: Partial<z.infer<typeof 
       const result = await db.lessonPlans.update(id, {
         title: data.title,
         subject: data.subject,
-        grade: data.grade_level, // Use 'grade' to match schema
+        grade_level: data.grade_level, // ✅ Correct field name
         topic: data.topic || null,
-        content: data.lesson_content, // Use 'content' to match schema
-        duration: data.duration_minutes?.toString() || "50", // Use 'duration' to match schema
-        learning_objectives: data.learning_objectives ? JSON.stringify(data.learning_objectives) : null,
-        materials_needed: data.materials_needed ? JSON.stringify(data.materials_needed) : null,
+        lesson_content: data.lesson_content, // ✅ Correct field name
+        duration_minutes: data.duration_minutes || 50, // ✅ Correct field name
+        learning_objectives: data.learning_objectives || null,
+        materials_needed: data.materials_needed || null,
         description: data.description || null,
-        curriculum_standards: data.curriculum_standards ? JSON.stringify(data.curriculum_standards) : null,
-        vocabulary_terms: data.vocabulary_terms ? JSON.stringify(data.vocabulary_terms) : null,
+        curriculum_standards: data.curriculum_standards || null,
+        vocabulary_terms: data.vocabulary_terms || null,
         homework_assignment: data.homework_assignment || null,
-        extension_activities: data.extension_activities ? JSON.stringify(data.extension_activities) : null,
+        extension_activities: data.extension_activities || null,
         updated_at: new Date().toISOString(),
       })
 
@@ -481,15 +492,15 @@ export async function getLessonPlanById(id: string) {
       id: plan.id,
       title: plan.title,
       subject: plan.subject,
-      grade_level: plan.grade, // Map from 'grade' to 'grade_level'
+      grade_level: plan.grade_level, // ✅ Correct field name
       topic: plan.topic ?? null,
-      lesson_content: plan.content, // Map from 'content' to 'lesson_content'
-      duration_minutes: plan.duration ? parseInt(plan.duration) : null, // Map from 'duration' to 'duration_minutes'
+      lesson_content: plan.lesson_content, // ✅ Correct field name
+      duration_minutes: plan.duration_minutes, // ✅ Correct field name
       materials_needed: plan.materials_needed,
       pedagogical_approach: plan.pedagogical_approach ?? null,
       differentiation_strategies: plan.differentiation_strategies ?? null,
       grouping_strategy: plan.grouping_strategy ?? null,
-      assessment_strategy: plan.assessment_approach ?? null, // Map from 'assessment_approach' to 'assessment_strategy'
+      assessment_strategy: plan.assessment_strategy ?? null, // ✅ Correct field name
       curriculum_standards: plan.curriculum_standards ?? null,
       description: plan.overview ?? null, // Map from 'overview' to 'description'
       learning_objectives: plan.objectives ?? null, // Map from 'objectives' to 'learning_objectives'
