@@ -6,8 +6,8 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
 
-// System user UUID for generated content
-const SYSTEM_USER_ID = "00000000-0000-0000-0000-000000000000"
+// System user UUID for generated content (not used if fields are nullable)
+// const SYSTEM_USER_ID = "00000000-0000-0000-0000-000000000000"
 
 export interface MultigradePlanFormData {
   id?: string;
@@ -442,8 +442,8 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
-          user_id: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
+          created_by: null, // ✅ Fixed: Use null instead of UUID
+          user_id: null, // ✅ Fixed: Use null instead of UUID
           updated_at: now
         }
 
@@ -472,8 +472,8 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
-          user_id: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
+          created_by: null, // ✅ Fixed: Use null instead of UUID
+          user_id: null, // ✅ Fixed: Use null instead of UUID
           created_at: now,
           updated_at: now
         }
