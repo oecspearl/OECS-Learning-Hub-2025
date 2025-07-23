@@ -6,6 +6,9 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { getCurriculumStandards, formatStandardsForPrompt } from "@/lib/curriculum-standards"
 
+// System user UUID for generated content
+const SYSTEM_USER_ID = "00000000-0000-0000-0000-000000000000"
+
 export interface MultigradePlanFormData {
   id?: string;
   title?: string;
@@ -439,8 +442,8 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: "system", // ✅ Add required field
-          user_id: "system", // ✅ Add required field
+          created_by: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
+          user_id: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
           updated_at: now
         }
 
@@ -469,8 +472,8 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
           differentiation_strategies: differentiationStrategies || '',
           grouping_strategy: data.groupingStrategy || '',
           assessment_approach: data.assessmentApproach || '',
-          created_by: "system", // ✅ Add required field
-          user_id: "system", // ✅ Add required field
+          created_by: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
+          user_id: SYSTEM_USER_ID, // ✅ Fixed: Use valid UUID
           created_at: now,
           updated_at: now
         }
@@ -486,7 +489,12 @@ export async function saveMultigradePlan(formData: FormData | MultigradePlanForm
         return { success: true, data: newPlan }
       }
     } catch (error) {
-      console.error("SAVE MULTIGRADE PLAN: Database error:", error)
+      console.error("SAVE MULTIGRADE PLAN: Database error:", {
+        code: (error as any).code,
+        details: (error as any).details,
+        hint: (error as any).hint,
+        message: (error as any).message
+      })
       
       // Log more detailed error information
       if (error instanceof Error) {
