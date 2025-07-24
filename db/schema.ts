@@ -43,7 +43,7 @@ export const crossCurricularPlans = sqliteTable("cross_curricular_plans", {
   materials_needed: text("materials_needed"),
   tags: text("tags"),
   is_public: integer("is_public", { mode: "boolean" }).default(false),
-  created_by: text("created_by").notNull(),
+  created_by: text("created_by"),
   created_at: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   updated_at: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 })

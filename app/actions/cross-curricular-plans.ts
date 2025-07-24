@@ -407,8 +407,12 @@ export async function saveCrossCurricularPlan(formData: any) {
         subjects_included: Array.isArray(subjects) ? subjects : (typeof subjects === 'string' ? subjects.split(',') : []),
         plan_content: content,
         duration_days: parseInt(duration) || 1,
-        created_by: userId,
         updated_at: now,
+      }
+
+      // Only include created_by if we have a valid authenticated user
+      if (userId !== "1") {
+        planData.created_by = userId
       }
 
       // Add optional fields only if they exist in the form data
