@@ -189,10 +189,12 @@ export default async function ViewCrossCurricularPlanPage({
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-lg font-medium text-gray-900">{plan.theme}</p>
-                      {plan.description && (
-                        <p className="text-gray-600 mt-2">{plan.description}</p>
-                      )}
+                      <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-3">{plan.theme}</h3>
+                        {plan.description && (
+                          <p className="text-gray-700 text-lg leading-relaxed">{plan.description}</p>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
 
@@ -206,7 +208,11 @@ export default async function ViewCrossCurricularPlanPage({
                     </CardHeader>
                     <CardContent>
                       <div className="prose max-w-none">
-                        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">{plan.content}</div>
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-l-4 border-blue-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed text-lg">
+                            {plan.content}
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -223,13 +229,20 @@ export default async function ViewCrossCurricularPlanPage({
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-2">
-                        {subjects.map((subject, index) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span className="font-medium">{subject}</span>
-                          </div>
-                        ))}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-l-4 border-green-500">
+                        <div className="grid grid-cols-1 gap-3">
+                          {subjects.map((subject, index) => (
+                            <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm border border-green-100 hover:shadow-md transition-shadow">
+                              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                                <div className="w-2 h-2 rounded-full bg-white"></div>
+                              </div>
+                              <span className="font-semibold text-gray-800 text-lg">{subject}</span>
+                              <Badge variant="outline" className="ml-auto bg-green-100 text-green-800">
+                                Integrated
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -242,18 +255,37 @@ export default async function ViewCrossCurricularPlanPage({
                         Lesson Details
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Grade Range:</span>
-                        <Badge variant="outline">{plan.grade_range}</Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Sessions:</span>
-                        <Badge variant="outline">{plan.sessions}</Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Subjects:</span>
-                        <Badge variant="outline">{subjects.length}</Badge>
+                    <CardContent>
+                      <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-lg border-l-4 border-orange-500">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <Users className="h-5 w-5 text-blue-600" />
+                              <span className="font-medium text-gray-700">Grade Range</span>
+                            </div>
+                            <Badge variant="outline" className="bg-blue-100 text-blue-800 font-semibold">
+                              {plan.grade_range}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <Clock className="h-5 w-5 text-orange-600" />
+                              <span className="font-medium text-gray-700">Sessions</span>
+                            </div>
+                            <Badge variant="outline" className="bg-orange-100 text-orange-800 font-semibold">
+                              {plan.sessions}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <BookOpen className="h-5 w-5 text-green-600" />
+                              <span className="font-medium text-gray-700">Subjects</span>
+                            </div>
+                            <Badge variant="outline" className="bg-green-100 text-green-800 font-semibold">
+                              {subjects.length}
+                            </Badge>
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -274,7 +306,9 @@ export default async function ViewCrossCurricularPlanPage({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="whitespace-pre-wrap text-gray-700">{plan.learning_styles}</div>
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-l-4 border-blue-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{plan.learning_styles}</div>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
@@ -288,7 +322,9 @@ export default async function ViewCrossCurricularPlanPage({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="whitespace-pre-wrap text-gray-700">{plan.multiple_intelligences}</div>
+                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-l-4 border-green-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{plan.multiple_intelligences}</div>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
@@ -302,7 +338,9 @@ export default async function ViewCrossCurricularPlanPage({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="whitespace-pre-wrap text-gray-700">{plan.pedagogical_strategy}</div>
+                        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{plan.pedagogical_strategy}</div>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
@@ -316,7 +354,9 @@ export default async function ViewCrossCurricularPlanPage({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="whitespace-pre-wrap text-gray-700">{plan.assessment_strategy}</div>
+                        <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-lg border-l-4 border-purple-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{plan.assessment_strategy}</div>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
@@ -398,8 +438,10 @@ export default async function ViewCrossCurricularPlanPage({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="whitespace-pre-wrap text-gray-700 p-3 bg-amber-50 rounded-lg">
-                          {plan.additional_instructions}
+                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border-l-4 border-amber-500">
+                          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed text-lg">
+                            {plan.additional_instructions}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
