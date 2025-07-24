@@ -384,50 +384,98 @@ export async function saveCrossCurricularPlan(formData: any) {
       const planData: any = {
         title,
         theme,
-        central_problem: central_problem || 'Integrated learning experience across multiple subjects',
+        description: central_problem || 'Integrated learning experience across multiple subjects',
         grade_range,
-        subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
-        content,
-        duration,
-        sessions,
-        user_id: userId,
+        subjects_included: Array.isArray(subjects) ? subjects.join(',') : subjects,
+        plan_content: content,
+        duration_days: parseInt(duration) || 1,
+        created_by: userId,
         updated_at: now,
       }
 
       // Add optional fields only if they exist in the form data
-      if (overlapping_concepts) planData.overlapping_concepts = overlapping_concepts
-      if (curriculum_objectives_mapping) planData.curriculum_objectives_mapping = curriculum_objectives_mapping
-      if (assessment_rubric_requirements) planData.assessment_rubric_requirements = assessment_rubric_requirements
-      if (resource_requirements) planData.resource_requirements = resource_requirements
+      if (overlapping_concepts) planData.subject_connections = JSON.stringify({ overlapping_concepts: overlapping_concepts })
+      if (curriculum_objectives_mapping) planData.learning_objectives = JSON.stringify([curriculum_objectives_mapping])
+      if (assessment_rubric_requirements) planData.assessment_strategies = JSON.stringify([assessment_rubric_requirements])
+      if (resource_requirements) planData.materials_needed = JSON.stringify([resource_requirements])
+      
+      // Handle learning styles and multiple intelligences as tags
+      const tags = []
+      
       if (formData.get ? formData.get("learning_styles") : formData.learning_styles) {
-        planData.learning_styles = formData.get ? formData.get("learning_styles") : formData.learning_styles
+        const learningStyles = formData.get ? formData.get("learning_styles") : formData.learning_styles
+        if (Array.isArray(learningStyles)) {
+          tags.push(...learningStyles)
+        } else {
+          tags.push(learningStyles)
+        }
       }
+      
       if (formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences) {
-        planData.multiple_intelligences = formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences
+        const intelligences = formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences
+        if (Array.isArray(intelligences)) {
+          tags.push(...intelligences)
+        } else {
+          tags.push(intelligences)
+        }
       }
+      
+      // Handle special needs and support as tags
       if (formData.get ? formData.get("special_needs") : formData.special_needs) {
-        planData.special_needs = formData.get ? formData.get("special_needs") === "true" : formData.special_needs
+        const specialNeeds = formData.get ? formData.get("special_needs") === "true" : formData.special_needs
+        if (specialNeeds) {
+          tags.push("special_needs_accommodations")
+        }
       }
-      if (formData.get ? formData.get("special_needs_details") : formData.special_needs_details) {
-        planData.special_needs_details = formData.get ? formData.get("special_needs_details") : formData.special_needs_details
-      }
+      
       if (formData.get ? formData.get("ell_support") : formData.ell_support) {
-        planData.ell_support = formData.get ? formData.get("ell_support") === "true" : formData.ell_support
+        const ellSupport = formData.get ? formData.get("ell_support") === "true" : formData.ell_support
+        if (ellSupport) {
+          tags.push("ell_support")
+        }
       }
+      
       if (formData.get ? formData.get("gifted_extension") : formData.gifted_extension) {
-        planData.gifted_extension = formData.get ? formData.get("gifted_extension") === "true" : formData.gifted_extension
+        const giftedExtension = formData.get ? formData.get("gifted_extension") === "true" : formData.gifted_extension
+        if (giftedExtension) {
+          tags.push("gifted_extension")
+        }
       }
-      if (formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy) {
-        planData.pedagogical_strategy = formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy
-      }
-      if (formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy) {
-        planData.assessment_strategy = formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy
-      }
+      
       if (formData.get ? formData.get("technology_integration") : formData.technology_integration) {
-        planData.technology_integration = formData.get ? formData.get("technology_integration") === "true" : formData.technology_integration
+        const techIntegration = formData.get ? formData.get("technology_integration") === "true" : formData.technology_integration
+        if (techIntegration) {
+          tags.push("technology_integration")
+        }
       }
+      
+      if (tags.length > 0) {
+        planData.tags = JSON.stringify(tags)
+      }
+      
+      // Handle pedagogical and assessment strategies
+      const assessmentStrategies = []
+      
+      if (formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy) {
+        const pedagogicalStrategy = formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy
+        assessmentStrategies.push(pedagogicalStrategy)
+      }
+      
+      if (formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy) {
+        const assessmentStrategy = formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy
+        assessmentStrategies.push(assessmentStrategy)
+      }
+      
+      if (assessmentStrategies.length > 0) {
+        planData.assessment_strategies = JSON.stringify(assessmentStrategies)
+      }
+      
+      // Handle additional instructions as part of the plan content
       if (formData.get ? formData.get("additional_instructions") : formData.additional_instructions) {
-        planData.additional_instructions = formData.get ? formData.get("additional_instructions") : formData.additional_instructions
+        const additionalInstructions = formData.get ? formData.get("additional_instructions") : formData.additional_instructions
+        if (additionalInstructions) {
+          planData.plan_content = `${content}\n\nAdditional Instructions:\n${additionalInstructions}`
+        }
       }
       
       if (id) {
