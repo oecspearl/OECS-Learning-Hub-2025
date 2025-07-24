@@ -99,7 +99,61 @@ export default function InnovativeToolsPage() {
               </CardContent>
             </Card>
 
-            {/* Feature 3 - Lesson Review */}
+            {/* Feature 3 - Cross-Curricular Planning */}
+            <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
+              <CardContent className="p-8 text-center h-full flex flex-col">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-blue-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-10 w-10"
+                  >
+                    <path d="M3 3v18h18"></path>
+                    <path d="m19 9-5 5-4-4-3 3"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-3">Cross-Curricular Planning</h3>
+                <p className="text-sm text-muted-foreground min-h-[5rem] mb-6">
+                  Create authentic, integrated lessons that connect multiple subjects through real-world problems and projects.
+                </p>
+                <div className="mt-auto">
+                  <Link href="/cross-curricular/new" className="w-full">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Create
+                    </Button>
+                  </Link>
+                  <div className="mt-5 flex items-center text-xs text-muted-foreground">
+                    <div className="bg-blue-100 rounded-full p-1 mr-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-blue-500"
+                      >
+                        <path d="M20 6 9 17l-5-5"></path>
+                      </svg>
+                    </div>
+                    <span>Authentic integration across subject areas</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Feature 4 - Lesson Review */}
             <Card className="border-0 shadow-xl rounded-xl overflow-hidden transition-all duration-200 hover:translate-y-[-10px] hover:shadow-2xl">
               <CardContent className="p-8 text-center h-full flex flex-col">
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-indigo-600">

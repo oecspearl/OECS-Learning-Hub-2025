@@ -380,69 +380,72 @@ export async function saveCrossCurricularPlan(formData: any) {
     try {
       const now = new Date().toISOString()
       
+      // Prepare the data object with only the fields that exist in the database
+      const planData: any = {
+        title,
+        theme,
+        central_problem: central_problem || 'Integrated learning experience across multiple subjects',
+        grade_range,
+        subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
+        content,
+        duration,
+        sessions,
+        user_id: userId,
+        updated_at: now,
+      }
+
+      // Add optional fields only if they exist in the form data
+      if (overlapping_concepts) planData.overlapping_concepts = overlapping_concepts
+      if (curriculum_objectives_mapping) planData.curriculum_objectives_mapping = curriculum_objectives_mapping
+      if (assessment_rubric_requirements) planData.assessment_rubric_requirements = assessment_rubric_requirements
+      if (resource_requirements) planData.resource_requirements = resource_requirements
+      if (formData.get ? formData.get("learning_styles") : formData.learning_styles) {
+        planData.learning_styles = formData.get ? formData.get("learning_styles") : formData.learning_styles
+      }
+      if (formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences) {
+        planData.multiple_intelligences = formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences
+      }
+      if (formData.get ? formData.get("special_needs") : formData.special_needs) {
+        planData.special_needs = formData.get ? formData.get("special_needs") === "true" : formData.special_needs
+      }
+      if (formData.get ? formData.get("special_needs_details") : formData.special_needs_details) {
+        planData.special_needs_details = formData.get ? formData.get("special_needs_details") : formData.special_needs_details
+      }
+      if (formData.get ? formData.get("ell_support") : formData.ell_support) {
+        planData.ell_support = formData.get ? formData.get("ell_support") === "true" : formData.ell_support
+      }
+      if (formData.get ? formData.get("gifted_extension") : formData.gifted_extension) {
+        planData.gifted_extension = formData.get ? formData.get("gifted_extension") === "true" : formData.gifted_extension
+      }
+      if (formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy) {
+        planData.pedagogical_strategy = formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy
+      }
+      if (formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy) {
+        planData.assessment_strategy = formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy
+      }
+      if (formData.get ? formData.get("technology_integration") : formData.technology_integration) {
+        planData.technology_integration = formData.get ? formData.get("technology_integration") === "true" : formData.technology_integration
+      }
+      if (formData.get ? formData.get("additional_instructions") : formData.additional_instructions) {
+        planData.additional_instructions = formData.get ? formData.get("additional_instructions") : formData.additional_instructions
+      }
+      
       if (id) {
         // Update existing plan
         console.log("Updating existing cross-curricular plan with ID:", id)
-        const updatedPlan = await db.crossCurricularPlans.update(id, {
-          title,
-          theme,
-          central_problem,
-          grade_range,
-          subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
-          content,
-          overlapping_concepts,
-          curriculum_objectives_mapping,
-          assessment_rubric_requirements,
-          resource_requirements,
-          duration,
-          sessions,
-          learning_styles: formData.get ? formData.get("learning_styles") : formData.learning_styles,
-          multiple_intelligences: formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences,
-          special_needs: formData.get ? formData.get("special_needs") === "true" : formData.special_needs,
-          special_needs_details: formData.get ? formData.get("special_needs_details") : formData.special_needs_details,
-          ell_support: formData.get ? formData.get("ell_support") === "true" : formData.ell_support,
-          gifted_extension: formData.get ? formData.get("gifted_extension") === "true" : formData.gifted_extension,
-          pedagogical_strategy: formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy,
-          assessment_strategy: formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy,
-          technology_integration: formData.get ? formData.get("technology_integration") === "true" : formData.technology_integration,
-          additional_instructions: formData.get ? formData.get("additional_instructions") : formData.additional_instructions,
-          user_id: userId,
-          updated_at: now,
-        })
+        const updatedPlan = await db.crossCurricularPlans.update(id, planData)
 
         console.log("Update successful")
         return { success: true, data: updatedPlan }
       } else {
         // Create new plan
         console.log("Creating new cross-curricular plan")
-        const newPlan = await db.crossCurricularPlans.create({
+        const createData = {
+          ...planData,
           id: fallbackId,
-          title,
-          theme,
-          central_problem,
-          grade_range,
-          subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
-          content,
-          overlapping_concepts,
-          curriculum_objectives_mapping,
-          assessment_rubric_requirements,
-          resource_requirements,
-          duration,
-          sessions,
-          learning_styles: formData.get ? formData.get("learning_styles") : formData.learning_styles,
-          multiple_intelligences: formData.get ? formData.get("multiple_intelligences") : formData.multiple_intelligences,
-          special_needs: formData.get ? formData.get("special_needs") === "true" : formData.special_needs,
-          special_needs_details: formData.get ? formData.get("special_needs_details") : formData.special_needs_details,
-          ell_support: formData.get ? formData.get("ell_support") === "true" : formData.ell_support,
-          gifted_extension: formData.get ? formData.get("gifted_extension") === "true" : formData.gifted_extension,
-          pedagogical_strategy: formData.get ? formData.get("pedagogical_strategy") : formData.pedagogical_strategy,
-          assessment_strategy: formData.get ? formData.get("assessment_strategy") : formData.assessment_strategy,
-          technology_integration: formData.get ? formData.get("technology_integration") === "true" : formData.technology_integration,
-          additional_instructions: formData.get ? formData.get("additional_instructions") : formData.additional_instructions,
-          user_id: userId,
           created_at: now,
-          updated_at: now,
-        })
+        }
+        const newPlan = await db.crossCurricularPlans.create(createData)
 
         console.log("Insert successful, returned ID:", newPlan.id)
         return { success: true, data: newPlan }

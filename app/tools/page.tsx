@@ -123,7 +123,7 @@ export default function ToolsPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Link href="/dashboard/teacher/planners" className="w-full">
+            <Link href="/cross-curricular/new" className="w-full">
               <Button className="w-full bg-purple-600 hover:bg-purple-700">Get Started</Button>
             </Link>
           </CardFooter>
