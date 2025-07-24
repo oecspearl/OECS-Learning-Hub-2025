@@ -80,6 +80,24 @@ export async function generateCrossCurricularPlan(formData: any) {
       : ""
     const technologyText = formData.technology_integration ? "\nTechnology Integration Required" : ""
 
+    // Get curriculum standards for the subjects and grade range
+    let curriculumStandards = ""
+    try {
+      const gradeLevels = formData.grade_range.split("-").map((g: string) => g.trim())
+      const standardsPromises = gradeLevels.map((grade: string) => 
+        Promise.all(formData.subjects.map((subject: string) => 
+          getCurriculumStandards(subject, grade)
+        ))
+      )
+      const standardsResults = await Promise.all(standardsPromises)
+      const allStandards = standardsResults.flat().flat()
+      curriculumStandards = formatStandardsForPrompt(allStandards)
+      console.log("Curriculum standards retrieved successfully for cross-curricular plan")
+    } catch (error) {
+      console.warn("Failed to retrieve curriculum standards for cross-curricular plan:", error)
+      curriculumStandards = "Curriculum standards not available for this subject/grade combination."
+    }
+
     const prompt = `
 Create a comprehensive, detailed cross-curricular lesson plan for OECS (Organization of Eastern Caribbean States) teachers with the following information:
 
@@ -90,6 +108,9 @@ Subjects: ${formData.subjects.join(", ")}
 Duration: ${formData.duration} minutes
 Number of Sessions: ${formData.sessions}${learningStylesText}${intelligencesText}${specialNeedsText}${ellSupportText}${giftedExtensionText}${pedagogicalText}${assessmentText}${technologyText}
 Additional Instructions: ${formData.additional_instructions || "None"}
+
+Available Curriculum Standards:
+${curriculumStandards}
 
 Format the lesson plan with the following detailed sections using Markdown formatting:
 
@@ -104,8 +125,8 @@ List 3-5 specific, measurable learning objectives that clearly state what studen
 - Students will understand [concept] as demonstrated by [observable behavior].
 - Students will develop [skill] through [specific activity].
 
-## CURRICULUM STANDARDS
-List relevant standards for each integrated subject area, showing explicit connections between standards across subjects.
+## CURRICULUM STANDARDS ALIGNMENT
+IMPORTANT: Include a dedicated section listing the specific curriculum standards that this cross-curricular lesson addresses. For each subject area, select the most relevant standards from the provided list and explain how the lesson activities align with each standard. Show explicit connections between standards across subjects.
 
 ## CROSS-CURRICULAR CONNECTIONS
 Explain how the subjects naturally connect through the theme, identifying shared concepts, skills, and processes.

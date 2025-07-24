@@ -138,31 +138,37 @@ Prerequisite Skills: ${formData.prerequisiteSkills}${specialNeedsText}
 Additional Instructions: ${formData.additionalInstructions || "None"}
 Reference URL: ${formData.referenceUrl || "None"}
 
-Curriculum Standards:
+Available Curriculum Standards:
 ${curriculumStandards}
 
 Please create a detailed lesson plan that includes:
 
 1. **Lesson Title and Overview**
 2. **Learning Objectives** (specific, measurable, achievable, relevant, time-bound)
-3. **Materials and Resources**
-4. **Lesson Structure** (with timing for each activity)
-5. **Teaching Strategies** (based on the pedagogical strategy specified)
-6. **Student Activities** (engaging and appropriate for the grade level)
-7. **Assessment Methods** (formative and summative)
-8. **Differentiation Strategies** (for diverse learners)
-9. **Closure and Reflection**
-10. **Homework/Extension Activities** (if applicable)
+3. **Curriculum Standards Alignment** - IMPORTANT: Include a dedicated section listing the specific curriculum standards that this lesson addresses. Select the most relevant standards from the list above and explain how the lesson activities align with each standard.
+4. **Materials and Resources**
+5. **Lesson Structure** (with timing for each activity)
+6. **Teaching Strategies** (based on the pedagogical strategy specified)
+7. **Student Activities** (engaging and appropriate for the grade level)
+8. **Assessment Methods** (formative and summative)
+9. **Differentiation Strategies** (for diverse learners)
+10. **Closure and Reflection**
+11. **Homework/Extension Activities** (if applicable)
+
+IMPORTANT: You MUST include a "Curriculum Standards Alignment" section that:
+- Lists the specific standards from the provided list that this lesson addresses
+- Explains how each listed standard is addressed through the lesson activities
+- Shows clear alignment between lesson objectives and curriculum standards
 
 Make sure the lesson plan is:
 - Age-appropriate for the specified grade level
-- Aligned with the curriculum standards
+- Explicitly aligned with the curriculum standards (include the standards section)
 - Engaging and interactive
 - Inclusive of all learning styles mentioned
 - Practical and implementable
 - Well-structured with clear timing
 
-Format the response as a complete, ready-to-use lesson plan.`
+Format the response as a complete, ready-to-use lesson plan with the curriculum standards section prominently included.`
 
     console.log("Sending to direct generateLessonPlan:", formData)
 
