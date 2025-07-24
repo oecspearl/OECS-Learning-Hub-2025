@@ -13,28 +13,28 @@ export default function CurriculumPage() {
       subject: "Mathematics",
       icon: "🔢",
       color: "bg-blue-500",
-      standards: 266,
+      standards:"",
       description: "Number sense, operations, patterns & geometry"
     },
     {
       subject: "Language Arts",
       icon: "📚",
       color: "bg-pink-500",
-      standards: 829,
+      standards:"",
       description: "Reading, writing, listening & speaking"
     },
     {
       subject: "Science",
       icon: "🔬",
       color: "bg-green-500",
-      standards: 96,
+      standards:"",
       description: "Forces, ecosystems, matter & energy"
     },
     {
       subject: "Social Studies",
       icon: "🌍",
       color: "bg-yellow-500",
-      standards: 425,
+      standards: "",
       description: "History, culture, civic participation"
     }
   ]
@@ -77,7 +77,7 @@ export default function CurriculumPage() {
                 </div>
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">Explore Specific Curriculum Outcomes</h2>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Discover our comprehensive collection of 1616 specific curriculum outcomes across all subjects and grade levels
+                  Discover our comprehensive collection of 596 specific curriculum outcomes across all subjects and grade levels
                 </p>
               </div>
 
