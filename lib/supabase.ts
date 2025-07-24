@@ -360,9 +360,14 @@ export type Database = {
           id: string
           title: string
           theme: string
+          central_problem: string
           grade_range: string
           content: string
           subjects: string
+          overlapping_concepts: string | null
+          curriculum_objectives_mapping: string | null
+          assessment_rubric_requirements: string | null
+          resource_requirements: string | null
           sessions: string | null
           learning_styles: string | null
           multiple_intelligences: string | null
@@ -382,9 +387,14 @@ export type Database = {
           id: string
           title: string
           theme: string
+          central_problem: string
           grade_range: string
           content: string
           subjects: string
+          overlapping_concepts?: string | null
+          curriculum_objectives_mapping?: string | null
+          assessment_rubric_requirements?: string | null
+          resource_requirements?: string | null
           sessions?: string | null
           learning_styles?: string | null
           multiple_intelligences?: string | null
@@ -404,9 +414,14 @@ export type Database = {
           id?: string
           title?: string
           theme?: string
+          central_problem?: string
           grade_range?: string
           content?: string
           subjects?: string
+          overlapping_concepts?: string | null
+          curriculum_objectives_mapping?: string | null
+          assessment_rubric_requirements?: string | null
+          resource_requirements?: string | null
           sessions?: string | null
           learning_styles?: string | null
           multiple_intelligences?: string | null

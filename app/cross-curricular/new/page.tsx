@@ -2,7 +2,7 @@ import { CrossCurricularForm } from "@/components/cross-curricular/cross-curricu
 
 export default function NewCrossCurricularPlanPage() {
   return (
-    <div className="flex min-h-screen flex-col page-transition bg-gradient-to-b from-blue-50 to-white">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-blue-50 to-white">
       <main className="flex-1 w-full px-4 py-6 max-w-[1400px] mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">

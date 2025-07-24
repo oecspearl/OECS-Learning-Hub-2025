@@ -20,10 +20,15 @@ import { Label } from "@/components/ui/label"
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   theme: z.string().min(1, "Theme is required"),
+  central_problem: z.string().min(1, "Central problem/project is required"),
   grade_range: z.string().min(1, "Grade range is required"),
   subjects: z.array(z.string()).min(2, "At least 2 subjects are required"),
   duration: z.string().min(1, "Duration is required"),
   sessions: z.string().min(1, "Number of sessions is required"),
+  overlapping_concepts: z.string().optional(),
+  curriculum_objectives_mapping: z.string().optional(),
+  assessment_rubric_requirements: z.string().optional(),
+  resource_requirements: z.string().optional(),
   learning_styles: z.array(z.string()).optional(),
   multiple_intelligences: z.array(z.string()).optional(),
   special_needs: z.boolean().optional(),
@@ -98,10 +103,15 @@ export function CrossCurricularForm() {
     defaultValues: {
       title: "",
       theme: "",
+      central_problem: "",
       grade_range: "",
       subjects: [],
       duration: "",
       sessions: "1",
+      overlapping_concepts: "",
+      curriculum_objectives_mapping: "",
+      assessment_rubric_requirements: "",
+      resource_requirements: "",
       learning_styles: [],
       multiple_intelligences: [],
       special_needs: false,
@@ -147,8 +157,9 @@ export function CrossCurricularForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="basic">Basic Information</TabsTrigger>
+          <TabsTrigger value="curriculum">Curriculum Mapping</TabsTrigger>
           <TabsTrigger value="learning">Learning Profile</TabsTrigger>
           <TabsTrigger value="advanced">Advanced Options</TabsTrigger>
         </TabsList>
@@ -175,6 +186,24 @@ export function CrossCurricularForm() {
                   id="theme"
                   placeholder="Enter the central connecting theme"
                   {...form.register("theme")}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="central_problem">Central Problem/Project</Label>
+                <Textarea
+                  id="central_problem"
+                  placeholder="Describe the central problem, project, or driving question that authentically requires multiple disciplines"
+                  {...form.register("central_problem")}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="overlapping_concepts">Overlapping Concepts</Label>
+                <Textarea
+                  id="overlapping_concepts"
+                  placeholder="Identify overlapping themes, concepts, or skills across the selected subject areas"
+                  {...form.register("overlapping_concepts")}
                 />
               </div>
 
@@ -224,6 +253,43 @@ export function CrossCurricularForm() {
                     {...form.register("sessions")}
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="curriculum" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Curriculum Mapping</CardTitle>
+              <CardDescription>Map curriculum objectives and assessment requirements</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="curriculum_objectives_mapping">Curriculum Objectives Mapping</Label>
+                <Textarea
+                  id="curriculum_objectives_mapping"
+                  placeholder="Map specific curriculum objectives from each subject to lesson activities. Include how each objective will be addressed."
+                  {...form.register("curriculum_objectives_mapping")}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="assessment_rubric_requirements">Assessment Rubric Requirements</Label>
+                <Textarea
+                  id="assessment_rubric_requirements"
+                  placeholder="Describe assessment requirements that measure both individual subject learning and cross-curricular synthesis"
+                  {...form.register("assessment_rubric_requirements")}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="resource_requirements">Resource Requirements</Label>
+                <Textarea
+                  id="resource_requirements"
+                  placeholder="List resources and materials that support multiple subject areas. Include digital, physical, and human resources."
+                  {...form.register("resource_requirements")}
+                />
               </div>
             </CardContent>
           </Card>

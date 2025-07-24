@@ -12,9 +12,14 @@ import { revalidatePath } from "next/cache"
 const crossCurricularPlanSchema = z.object({
   title: z.string().min(1, "Title is required"),
   theme: z.string().min(1, "Theme is required"),
+  central_problem: z.string().min(1, "Central problem/project is required"),
   grade_range: z.string().min(1, "Grade range is required"),
   subjects: z.array(z.string()).min(2, "At least 2 subjects are required"),
   content: z.string().min(1, "Content is required"),
+  overlapping_concepts: z.string().optional(),
+  curriculum_objectives_mapping: z.string().optional(),
+  assessment_rubric_requirements: z.string().optional(),
+  resource_requirements: z.string().optional(),
   learning_objectives: z.array(z.string()),
   materials: z.array(z.string()),
   duration: z.string(),
@@ -33,9 +38,14 @@ export interface CrossCurricularPlan {
   id: string
   title: string
   theme: string
+  central_problem: string
   grade_range: string
   content: string
   subjects: string
+  overlapping_concepts: string | null
+  curriculum_objectives_mapping: string | null
+  assessment_rubric_requirements: string | null
+  resource_requirements: string | null
   learning_objectives: string | null
   materials: string | null
   duration: string | null
@@ -99,18 +109,34 @@ export async function generateCrossCurricularPlan(formData: any) {
     }
 
     const prompt = `
-Create a comprehensive, detailed cross-curricular lesson plan for OECS (Organization of Eastern Caribbean States) teachers with the following information:
+Create a comprehensive, detailed cross-curricular lesson plan for OECS (Organization of Eastern Caribbean States) teachers following this structured approach:
 
+**PLANNING CONTEXT:**
 Title: ${formData.title}
 Theme: ${formData.theme}
+Central Problem/Project: ${formData.central_problem}
 Grade Range: ${formData.grade_range}
 Subjects: ${formData.subjects.join(", ")}
 Duration: ${formData.duration} minutes
-Number of Sessions: ${formData.sessions}${learningStylesText}${intelligencesText}${specialNeedsText}${ellSupportText}${giftedExtensionText}${pedagogicalText}${assessmentText}${technologyText}
+Number of Sessions: ${formData.sessions}
+${formData.overlapping_concepts ? `Overlapping Concepts: ${formData.overlapping_concepts}` : ""}
+${formData.curriculum_objectives_mapping ? `Curriculum Objectives Mapping: ${formData.curriculum_objectives_mapping}` : ""}
+${formData.assessment_rubric_requirements ? `Assessment Requirements: ${formData.assessment_rubric_requirements}` : ""}
+${formData.resource_requirements ? `Resource Requirements: ${formData.resource_requirements}` : ""}
+${learningStylesText}${intelligencesText}${specialNeedsText}${ellSupportText}${giftedExtensionText}${pedagogicalText}${assessmentText}${technologyText}
 Additional Instructions: ${formData.additional_instructions || "None"}
 
 Available Curriculum Standards:
 ${curriculumStandards}
+
+**PLANNING METHODOLOGY:**
+1. First, consult the relevant curriculum pages for each subject being integrated
+2. Identify overlapping themes, concepts, or skills across subject areas
+3. Design a central problem, project, or theme that authentically requires multiple disciplines
+4. Map specific curriculum objectives from each subject to lesson activities
+5. Create assessment rubrics that measure both individual subject learning and cross-curricular synthesis
+6. Include differentiation strategies from the curriculum guides
+7. Suggest resources and materials that support multiple subject areas
 
 Format the lesson plan with the following detailed sections using Markdown formatting:
 
@@ -212,11 +238,43 @@ ${assessmentText ? `
 - Student choice in demonstration
 ` : ""}
 
+${formData.assessment_rubric_requirements ? `
+### Assessment Rubric Requirements
+${formData.assessment_rubric_requirements}
+
+**Individual Subject Assessment:**
+- Specific criteria for each subject area
+- Measurable learning outcomes
+- Clear performance indicators
+
+**Cross-Curricular Synthesis Assessment:**
+- Integration quality evaluation
+- Connection demonstration
+- Application across disciplines
+- Collaborative learning assessment
+` : ""}
+
 ## MATERIALS & RESOURCES
-- Physical materials needed
-- Digital resources (if technology integration specified)
-- Human resources (guest speakers, community connections)
-- Family engagement possibilities
+${formData.resource_requirements ? `
+### Resource Requirements
+${formData.resource_requirements}
+` : ""}
+
+**Physical Materials:**
+- Materials supporting multiple subject areas
+- Manipulatives and hands-on resources
+- Art supplies and creative materials
+
+**Digital Resources:**
+- Technology tools for cross-curricular exploration
+- Online databases and research materials
+- Digital creation and presentation tools
+
+**Human Resources:**
+- Guest speakers from relevant fields
+- Community connections and partnerships
+- Family engagement opportunities
+- Peer collaboration structures
 
 ## EXTENSION & HOMEWORK
 - Activities reinforcing cross-curricular connections
@@ -262,9 +320,14 @@ export async function saveCrossCurricularPlan(formData: any) {
     const id = formData.get ? formData.get("id") : formData.id
     const title = formData.get ? formData.get("title") : formData.title
     const theme = formData.get ? formData.get("theme") : formData.theme
+    const central_problem = formData.get ? formData.get("central_problem") : formData.central_problem
     const grade_range = formData.get ? formData.get("grade_range") : formData.grade_range
     const subjects = formData.get ? formData.get("subjects") : formData.subjects
     const content = formData.get ? formData.get("content") : formData.content
+    const overlapping_concepts = formData.get ? formData.get("overlapping_concepts") : formData.overlapping_concepts
+    const curriculum_objectives_mapping = formData.get ? formData.get("curriculum_objectives_mapping") : formData.curriculum_objectives_mapping
+    const assessment_rubric_requirements = formData.get ? formData.get("assessment_rubric_requirements") : formData.assessment_rubric_requirements
+    const resource_requirements = formData.get ? formData.get("resource_requirements") : formData.resource_requirements
     const duration = formData.get ? formData.get("duration") || "Multiple class periods" : formData.duration || "Multiple class periods"
     const sessions = formData.get ? formData.get("sessions") || "1" : formData.sessions || "1"
     const userId = formData.get ? formData.get("userId") : formData.userId || "1"
@@ -284,6 +347,7 @@ export async function saveCrossCurricularPlan(formData: any) {
     const missingFields = []
     if (!title) missingFields.push("title")
     if (!theme) missingFields.push("theme")
+    if (!central_problem) missingFields.push("central problem/project")
     if (!grade_range) missingFields.push("grade range")
     if (!subjects) missingFields.push("subjects")
     if (!content) missingFields.push("content")
@@ -322,9 +386,14 @@ export async function saveCrossCurricularPlan(formData: any) {
         const updatedPlan = await db.crossCurricularPlans.update(id, {
           title,
           theme,
+          central_problem,
           grade_range,
           subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
           content,
+          overlapping_concepts,
+          curriculum_objectives_mapping,
+          assessment_rubric_requirements,
+          resource_requirements,
           duration,
           sessions,
           learning_styles: formData.get ? formData.get("learning_styles") : formData.learning_styles,
@@ -350,9 +419,14 @@ export async function saveCrossCurricularPlan(formData: any) {
           id: fallbackId,
           title,
           theme,
+          central_problem,
           grade_range,
           subjects: Array.isArray(subjects) ? subjects.join(",") : subjects,
           content,
+          overlapping_concepts,
+          curriculum_objectives_mapping,
+          assessment_rubric_requirements,
+          resource_requirements,
           duration,
           sessions,
           learning_styles: formData.get ? formData.get("learning_styles") : formData.learning_styles,
