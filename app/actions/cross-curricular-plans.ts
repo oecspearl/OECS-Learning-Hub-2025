@@ -379,9 +379,7 @@ export async function saveCrossCurricularPlan(formData: any) {
     }
 
     // Create a fallback object to return if database operations fail
-    const fallbackId = `cross_curricular_plan_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
     const fallbackData = {
-      id: fallbackId,
       title,
       theme,
       grade_range,
@@ -517,7 +515,6 @@ export async function saveCrossCurricularPlan(formData: any) {
         console.log("Creating new cross-curricular plan")
         const createData = {
           ...planData,
-          id: fallbackId,
           created_at: now,
         }
         const newPlan = await db.crossCurricularPlans.create(createData)
