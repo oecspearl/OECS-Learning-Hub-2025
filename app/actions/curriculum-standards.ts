@@ -24,6 +24,7 @@ export async function getCurriculumStandards(subject: string, gradeLevel: string
       code: `${subject.toUpperCase()}.${gradeLevel}.1`,
       subject,
       grade_level: gradeLevel,
+      strand: 'General',
       description: `Students will demonstrate understanding of key concepts in Grade ${gradeLevel} ${subject}.`
     }]
   }

@@ -27,6 +27,38 @@ export const supabase = supabaseUrl && supabaseAnonKey
 export type Database = {
   public: {
     Tables: {
+      curriculum_standards: {
+        Row: {
+          id: number
+          subject: string
+          grade_level: string
+          strand: string
+          code: string | null
+          description: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: number
+          subject: string
+          grade_level: string
+          strand: string
+          code?: string | null
+          description: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: number
+          subject?: string
+          grade_level?: string
+          strand?: string
+          code?: string | null
+          description?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+      }
       strands: {
         Row: {
           id: number

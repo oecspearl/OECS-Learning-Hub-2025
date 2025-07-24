@@ -3,34 +3,38 @@ import { db } from "@/lib/db"
 
 export async function GET() {
   try {
-    // Fetch strands with their related data
-    const strands = await db.strands.findMany()
+    // Fetch curriculum standards grouped by subject and grade
+    const standards = await db.curriculumStandards.findMany()
     
-    const curriculum = await Promise.all(
-      strands.map(async (strand: any) => {
-        const elos = await db.essentialLearningOutcomes.findMany({ strand_id: strand.id })
-        
-        const strandWithElos = {
-          ...strand,
-          essential_learning_outcomes: await Promise.all(
-            elos.map(async (elo: any) => {
-              const assessmentStrategies = await db.assessmentStrategies.findMany({ elo_id: elo.id })
-              const teacherContent = await db.teacherContent.findMany({ elo_id: elo.id })
-              
-              return {
-                ...elo,
-                assessment_strategies: assessmentStrategies,
-                teacher_content: teacherContent
-              }
-            })
-          )
+    // Group standards by subject and grade level
+    const curriculum = standards.reduce((acc, standard) => {
+      const key = `${standard.subject}-${standard.grade_level}`
+      
+      if (!acc[key]) {
+        acc[key] = {
+          subject: standard.subject,
+          grade_level: standard.grade_level,
+          strands: {}
         }
-        
-        return strandWithElos
+      }
+      
+      if (!acc[key].strands[standard.strand]) {
+        acc[key].strands[standard.strand] = []
+      }
+      
+      acc[key].strands[standard.strand].push({
+        id: standard.id,
+        code: standard.code,
+        description: standard.description
       })
-    )
+      
+      return acc
+    }, {})
 
-    return NextResponse.json({ curriculum })
+    return NextResponse.json({ 
+      curriculum: Object.values(curriculum),
+      total_standards: standards.length
+    })
   } catch (error) {
     console.error("Error fetching curriculum:", error)
     return NextResponse.json(
