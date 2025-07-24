@@ -1,4 +1,5 @@
 import { getCrossCurricularPlanById } from "@/app/actions/cross-curricular-plans"
+import { getCrossCurricularReflection } from "@/app/actions/cross-curricular-reflections"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Edit, Trash } from "lucide-react"
@@ -7,6 +8,8 @@ import { deleteCrossCurricularPlan } from "@/app/actions/cross-curricular-plans"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { safeArrayProcessor } from "@/lib/safeArrayProcessor"
+import CrossCurricularReflectionForm from "@/components/cross-curricular/cross-curricular-reflection-form"
+import CrossCurricularReflectionDisplay from "@/components/cross-curricular/cross-curricular-reflection-display"
 
 interface CrossCurricularPlan {
   id: string
@@ -40,6 +43,7 @@ export default async function ViewCrossCurricularPlanPage({
   const { id } = await params
   try {
     const plan = await getCrossCurricularPlanById(id)
+    const reflection = await getCrossCurricularReflection(id)
 
     if (!plan) {
       return notFound()
@@ -178,6 +182,16 @@ export default async function ViewCrossCurricularPlanPage({
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Reflection Section */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4 text-primary">Lesson Reflection</h2>
+            {reflection ? (
+              <CrossCurricularReflectionDisplay reflection={reflection} />
+            ) : (
+              <CrossCurricularReflectionForm planId={id} />
+            )}
           </div>
         </main>
       </div>

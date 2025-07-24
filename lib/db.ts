@@ -420,6 +420,85 @@ export const db = {
     }
   },
 
+  // Cross-curricular Reflections
+  crossCurricularReflections: {
+    async create(data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { data: result, error } = await supabaseAdmin
+        .from('cross_curricular_reflections')
+        .insert(data)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async update(id: string, data: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { data: result, error } = await supabaseAdmin
+        .from('cross_curricular_reflections')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return result
+    },
+
+    async delete(id: string) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      const { error } = await supabaseAdmin
+        .from('cross_curricular_reflections')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      return { success: true }
+    },
+
+    async findFirst(where: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('cross_curricular_reflections').select('*')
+      
+      if (where.id) query = query.eq('id', where.id)
+      if (where.plan_id) query = query.eq('plan_id', where.plan_id)
+      
+      const { data, error } = await query.single()
+      
+      if (error && error.code !== 'PGRST116') throw error
+      return data
+    },
+
+    async findMany(where?: any) {
+      if (!supabaseAdmin) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      let query = supabaseAdmin.from('cross_curricular_reflections').select('*')
+      
+      if (where?.plan_id) query = query.eq('plan_id', where.plan_id)
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    }
+  },
+
   // Multigrade Plans
   multigradePlans: {
     async create(data: any) {

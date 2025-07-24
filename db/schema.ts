@@ -48,6 +48,18 @@ export const crossCurricularPlans = sqliteTable("cross_curricular_plans", {
   updated_at: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const crossCurricularReflections = sqliteTable("cross_curricular_reflections", {
+  id: text("id").primaryKey(),
+  plan_id: text("plan_id").notNull().references(() => crossCurricularPlans.id),
+  reflection_notes: text("reflection_notes"),
+  student_engagement: text("student_engagement"),
+  effectiveness_rating: integer("effectiveness_rating"),
+  improvements_needed: text("improvements_needed"),
+  reflection_date: text("reflection_date"),
+  created_at: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updated_at: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+})
+
 export const strands = sqliteTable("strands", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
