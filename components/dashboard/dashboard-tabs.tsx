@@ -129,8 +129,8 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
         return `/planner/edit/${resourceId}`
       case "multigrade":
         return `/multigrade/edit/${resourceId}`
-      case "cross-curricular":
-        return `/cross-curricular/${resourceId}/edit`
+              case "cross-curricular":
+          return `/cross-curricular/edit/${resourceId}`
       default:
         return `/${resourceType}/${resourceId}`
     }
