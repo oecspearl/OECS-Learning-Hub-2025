@@ -8,6 +8,7 @@ import { db } from "@/lib/db"
 import { crossCurricularPlans } from "../../db/schema"
 import { eq, desc } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
+import { supabaseAdmin } from "@/lib/db"
 
 const crossCurricularPlanSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -316,6 +317,24 @@ export async function saveCrossCurricularPlan(formData: any) {
   try {
     console.log("Starting saveCrossCurricularPlan function")
 
+    // Get the current user session
+    let userId = "1" // fallback
+    if (supabaseAdmin) {
+      try {
+        const { data: { session }, error } = await supabaseAdmin.auth.getSession()
+        if (error) {
+          console.error("Error getting session:", error)
+        } else if (session?.user?.id) {
+          userId = session.user.id
+          console.log("Using authenticated user ID:", userId)
+        } else {
+          console.log("No authenticated session found, using fallback user ID")
+        }
+      } catch (sessionError) {
+        console.error("Error accessing auth session:", sessionError)
+      }
+    }
+
     // Check if we're dealing with FormData or a regular object
     const id = formData.get ? formData.get("id") : formData.id
     const title = formData.get ? formData.get("title") : formData.title
@@ -330,7 +349,6 @@ export async function saveCrossCurricularPlan(formData: any) {
     const resource_requirements = formData.get ? formData.get("resource_requirements") : formData.resource_requirements
     const duration = formData.get ? formData.get("duration") || "Multiple class periods" : formData.duration || "Multiple class periods"
     const sessions = formData.get ? formData.get("sessions") || "1" : formData.sessions || "1"
-    const userId = formData.get ? formData.get("userId") : formData.userId || "1"
 
     console.log("Extracted form data:", {
       title,
