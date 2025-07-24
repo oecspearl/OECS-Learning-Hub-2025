@@ -555,17 +555,18 @@ export async function getCrossCurricularPlanById(id: string) {
       grade_range: plan.grade_range,
       content: plan.plan_content, // Map plan_content to content
       subjects: plan.subjects_included, // Map subjects_included to subjects
-      sessions: plan.sessions || "1",
-      learning_styles: plan.learning_styles,
-      multiple_intelligences: plan.multiple_intelligences,
-      special_needs: plan.special_needs,
-      special_needs_details: plan.special_needs_details,
-      ell_support: plan.ell_support,
-      gifted_extension: plan.gifted_extension,
-      pedagogical_strategy: plan.pedagogical_strategy,
-      assessment_strategy: plan.assessment_strategy,
-      technology_integration: plan.technology_integration,
-      additional_instructions: plan.additional_instructions,
+      sessions: "1", // Default value since sessions doesn't exist in DB
+      duration: plan.duration_days ? plan.duration_days.toString() : "1",
+      learning_styles: [], // Default empty array since field doesn't exist in DB
+      multiple_intelligences: [], // Default empty array since field doesn't exist in DB
+      special_needs: false, // Default false since field doesn't exist in DB
+      special_needs_details: "", // Default empty string since field doesn't exist in DB
+      ell_support: false, // Default false since field doesn't exist in DB
+      gifted_extension: false, // Default false since field doesn't exist in DB
+      pedagogical_strategy: "", // Default empty string since field doesn't exist in DB
+      assessment_strategy: "", // Default empty string since field doesn't exist in DB
+      technology_integration: false, // Default false since field doesn't exist in DB
+      additional_instructions: "", // Default empty string since field doesn't exist in DB
       user_id: plan.created_by, // Map created_by to user_id
       created_at: plan.created_at,
       updated_at: plan.updated_at,
