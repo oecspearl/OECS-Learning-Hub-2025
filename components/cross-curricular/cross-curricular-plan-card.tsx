@@ -11,7 +11,7 @@ interface CrossCurricularPlan {
   id: string
   title: string
   subjects: string
-  grade_levels: string
+  grade_range: string
   content: string
   created_at: string
   updated_at: string

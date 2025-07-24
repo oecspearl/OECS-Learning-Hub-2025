@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
         ...crossCurricularPlans.map(plan => ({
           id: plan.id,
           title: plan.title,
-          subject: plan.subjects || "Cross-curricular",
+          subject: plan.subjects_included || "Cross-curricular",
           grade: plan.grade_range,
           topic: plan.theme,
           createdAt: plan.created_at,
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
           resources = crossCurricularPlans.map(plan => ({
             id: plan.id,
             title: plan.title,
-            subject: plan.subjects || "Cross-curricular",
+            subject: plan.subjects_included || "Cross-curricular",
             grade: plan.grade_range,
             topic: plan.theme,
             createdAt: plan.created_at,

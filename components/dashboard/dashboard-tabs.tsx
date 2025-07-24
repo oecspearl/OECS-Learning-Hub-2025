@@ -130,7 +130,7 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
       case "multigrade":
         return `/multigrade/edit/${resourceId}`
       case "cross-curricular":
-        return `/cross-curricular/edit/${resourceId}`
+        return `/cross-curricular/${resourceId}/edit`
       default:
         return `/${resourceType}/${resourceId}`
     }
@@ -145,7 +145,7 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
       case "multigrade":
         return `/multigrade/view/${resourceId}`
       case "cross-curricular":
-        return `/cross-curricular/view/${resourceId}`
+        return `/cross-curricular/${resourceId}/view`
       default:
         return `/${resourceType}/${resourceId}`
     }
