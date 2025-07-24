@@ -86,7 +86,7 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
     setRefreshing(false)
   }
 
-  const subjects = ["All", "Mathematics", "Language Arts", "Science", "Social Studies"]
+  const subjects = ["All", "mathematics", "language-arts", "science", "social-studies"]
   const [selectedSubject, setSelectedSubject] = useState("All")
 
   const filteredResources = selectedSubject === "All" 

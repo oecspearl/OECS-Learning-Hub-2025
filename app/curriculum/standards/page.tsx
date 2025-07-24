@@ -1905,12 +1905,12 @@ export default function AllCurriculumStandardsPage() {
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center text-green-700">Curriculum Standards Database</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center text-green-700">Curriculum Outcomes Database</h1>
       
       {/* Search & Filter Controls */}
       <div className="flex flex-col md:flex-row md:items-end gap-4 mb-8 bg-green-50 rounded-lg p-6 shadow-sm border border-green-200">
         <div className="flex-1">
-          <label className="block text-sm font-medium mb-2 text-green-700">Search Standards</label>
+          <label className="block text-sm font-medium mb-2 text-green-700">Search Outcomes</label>
           <input
             type="text"
             placeholder="Search by code, description, or strand..."
@@ -1973,7 +1973,7 @@ export default function AllCurriculumStandardsPage() {
       {/* Results Summary */}
       <div className="mb-6 text-center">
         <p className="text-lg text-gray-600">
-          Showing <span className="font-bold text-green-700">{filtered.length}</span> standards across{" "}
+          Showing <span className="font-bold text-green-700">{filtered.length}</span> outcomes across{" "}
           <span className="font-bold text-green-700">{Object.keys(grouped).length}</span> subjects
         </p>
       </div>

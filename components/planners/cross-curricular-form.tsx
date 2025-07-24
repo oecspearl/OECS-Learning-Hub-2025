@@ -328,9 +328,9 @@ export function CrossCurricularForm({ setGeneratedPlan, setActiveTab, isGenerati
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="mathematics">Mathematics</SelectItem>
-                            <SelectItem value="language_arts">Language Arts</SelectItem>
+                            <SelectItem value="language-arts">Language Arts</SelectItem>
                             <SelectItem value="science">Science</SelectItem>
-                            <SelectItem value="social_studies">Social Studies</SelectItem>
+                            <SelectItem value="social-studies">Social Studies</SelectItem>
                             <SelectItem value="arts">Arts</SelectItem>
                             <SelectItem value="physical_education">Physical Education</SelectItem>
                             <SelectItem value="technology">Technology</SelectItem>

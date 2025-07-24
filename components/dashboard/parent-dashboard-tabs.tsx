@@ -77,7 +77,7 @@ export function ParentDashboardTabs({
     fetchProgress()
   }, [])
 
-  const subjects = ["All", "Mathematics", "Language Arts", "Science", "Social Studies"]
+  const subjects = ["All", "mathematics", "language-arts", "science", "social-studies"]
   const [selectedSubject, setSelectedSubject] = useState("All")
 
   const filteredProgress = selectedSubject === "All" 

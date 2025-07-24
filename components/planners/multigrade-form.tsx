@@ -56,8 +56,8 @@ const createMockForm = (
 const SUBJECTS = [
   { value: "mathematics", label: "Mathematics" },
   { value: "science", label: "Science" },
-  { value: "language_arts", label: "Language Arts" },
-  { value: "social_studies", label: "Social Studies" },
+  { value: "language-arts", label: "Language Arts" },
+  { value: "social-studies", label: "Social Studies" },
   { value: "history", label: "History" },
   { value: "geography", label: "Geography" },
   { value: "art", label: "Art" },

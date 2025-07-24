@@ -290,7 +290,7 @@ export default function ResourcesPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Subjects</SelectItem>
-                <SelectItem value="language arts">Language Arts</SelectItem>
+                <SelectItem value="language-arts">Language Arts</SelectItem>
                 <SelectItem value="mathematics">Mathematics</SelectItem>
                 <SelectItem value="science">Science</SelectItem>
                 <SelectItem value="social studies">Social Studies</SelectItem>

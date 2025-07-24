@@ -379,7 +379,7 @@ export default function EditQuizPage() {
                         <SelectContent>
                           <SelectItem value="Mathematics">Mathematics</SelectItem>
                           <SelectItem value="Science">Science</SelectItem>
-                          <SelectItem value="Language Arts">Language Arts</SelectItem>
+                          <SelectItem value="language-arts">Language Arts</SelectItem>
                           <SelectItem value="Social Studies">Social Studies</SelectItem>
                         </SelectContent>
                       </Select>

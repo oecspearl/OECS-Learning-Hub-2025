@@ -62,9 +62,9 @@ export function QuizEditWrapper({ quiz }: QuizEditWrapperProps) {
 
   const subjects = [
     "Language Arts",
-    "Mathematics",
-    "Science",
-    "Social Studies",
+            "mathematics",
+        "science",
+        "social-studies",
     "Art",
     "Music",
     "Physical Education",

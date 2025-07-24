@@ -39,7 +39,7 @@ const formSchema = z.object({
 const subjects = [
   { value: "mathematics", label: "Mathematics" },
   { value: "science", label: "Science" },
-  { value: "english", label: "English Language Arts" },
+          { value: "language-arts", label: "Language Arts" },
   { value: "socialstudies", label: "Social Studies" },
   { value: "art", label: "Art" },
   { value: "music", label: "Music" },

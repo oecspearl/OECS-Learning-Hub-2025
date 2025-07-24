@@ -23,9 +23,9 @@ import Link from "next/link"
 
 const subjects = [
   "Language Arts",
-  "Mathematics",
-  "Science",
-  "Social Studies",
+          "mathematics",
+        "science",
+        "social-studies",
   "Art",
   "Music",
   "Physical Education",

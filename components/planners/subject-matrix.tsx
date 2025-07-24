@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"
 
 const SUBJECTS = [
   { id: "math", name: "Mathematics" },
-  { id: "ela", name: "Language Arts" },
+  { id: "language-arts", name: "Language Arts" },
   { id: "science", name: "Science" },
   { id: "social", name: "Social Studies" },
   { id: "art", name: "Art" },

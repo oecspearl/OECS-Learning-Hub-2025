@@ -178,10 +178,10 @@ export function MultigradeForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="mathematics">Mathematics</SelectItem>
-                            <SelectItem value="science">Science</SelectItem>
-                            <SelectItem value="english">English Language Arts</SelectItem>
-                            <SelectItem value="social-studies">Social Studies</SelectItem>
+                                        <SelectItem value="mathematics">Mathematics</SelectItem>
+            <SelectItem value="science">Science</SelectItem>
+            <SelectItem value="language-arts">Language Arts</SelectItem>
+            <SelectItem value="social-studies">Social Studies</SelectItem>
                             <SelectItem value="art">Art</SelectItem>
                             <SelectItem value="music">Music</SelectItem>
                             <SelectItem value="physical-education">Physical Education</SelectItem>
