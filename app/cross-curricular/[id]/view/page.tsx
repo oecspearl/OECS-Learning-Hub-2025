@@ -10,6 +10,7 @@ import { redirect } from "next/navigation"
 import { safeArrayProcessor } from "@/lib/safeArrayProcessor"
 import CrossCurricularReflectionForm from "@/components/cross-curricular/cross-curricular-reflection-form"
 import CrossCurricularReflectionDisplay from "@/components/cross-curricular/cross-curricular-reflection-display"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface CrossCurricularPlan {
   id: string
@@ -92,107 +93,121 @@ export default async function ViewCrossCurricularPlanPage({
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="prose max-w-none">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Theme</h2>
-                <p>{plan.theme}</p>
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="overview">Lesson Overview</TabsTrigger>
+              <TabsTrigger value="details">Lesson Details</TabsTrigger>
+              <TabsTrigger value="reflection">Reflection</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-4">
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="prose max-w-none">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-2">Theme</h2>
+                    <p>{plan.theme}</p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-2">Grade Range</h2>
+                    <p>{plan.grade_range}</p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-2">Subjects</h2>
+                    <p>{subjects.join(", ")}</p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-2">Sessions</h2>
+                    <p>{plan.sessions}</p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold mb-2">Content</h2>
+                    <div className="whitespace-pre-wrap">{plan.content}</div>
+                  </div>
+                </div>
               </div>
+            </TabsContent>
 
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Grade Range</h2>
-                <p>{plan.grade_range}</p>
+            <TabsContent value="details" className="space-y-4">
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="prose max-w-none">
+                  {plan.learning_styles && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Learning Styles</h2>
+                      <div className="whitespace-pre-wrap">{plan.learning_styles}</div>
+                    </div>
+                  )}
+
+                  {plan.multiple_intelligences && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Multiple Intelligences</h2>
+                      <div className="whitespace-pre-wrap">{plan.multiple_intelligences}</div>
+                    </div>
+                  )}
+
+                  {plan.special_needs && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Special Needs</h2>
+                      <p>{plan.special_needs_details}</p>
+                    </div>
+                  )}
+
+                  {plan.ell_support && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">ELL Support</h2>
+                      <p>Yes</p>
+                    </div>
+                  )}
+
+                  {plan.gifted_extension && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Gifted Extension</h2>
+                      <p>Yes</p>
+                    </div>
+                  )}
+
+                  {plan.pedagogical_strategy && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Pedagogical Strategy</h2>
+                      <div className="whitespace-pre-wrap">{plan.pedagogical_strategy}</div>
+                    </div>
+                  )}
+
+                  {plan.assessment_strategy && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Assessment Strategy</h2>
+                      <div className="whitespace-pre-wrap">{plan.assessment_strategy}</div>
+                    </div>
+                  )}
+
+                  {plan.technology_integration && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Technology Integration</h2>
+                      <p>Yes</p>
+                    </div>
+                  )}
+
+                  {plan.additional_instructions && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Additional Instructions</h2>
+                      <div className="whitespace-pre-wrap">{plan.additional_instructions}</div>
+                    </div>
+                  )}
+                </div>
               </div>
+            </TabsContent>
 
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Subjects</h2>
-                <p>{subjects.join(", ")}</p>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Sessions</h2>
-                <p>{plan.sessions}</p>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Content</h2>
-                <div className="whitespace-pre-wrap">{plan.content}</div>
-              </div>
-
-              {plan.learning_styles && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Learning Styles</h2>
-                  <div className="whitespace-pre-wrap">{plan.learning_styles}</div>
-                </div>
+            <TabsContent value="reflection" className="space-y-4">
+              {reflection ? (
+                <CrossCurricularReflectionDisplay reflection={reflection} />
+              ) : (
+                <CrossCurricularReflectionForm planId={id} />
               )}
-
-              {plan.multiple_intelligences && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Multiple Intelligences</h2>
-                  <div className="whitespace-pre-wrap">{plan.multiple_intelligences}</div>
-                </div>
-              )}
-
-              {plan.special_needs && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Special Needs</h2>
-                  <p>{plan.special_needs_details}</p>
-                </div>
-              )}
-
-              {plan.ell_support && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">ELL Support</h2>
-                  <p>Yes</p>
-                </div>
-              )}
-
-              {plan.gifted_extension && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Gifted Extension</h2>
-                  <p>Yes</p>
-                </div>
-              )}
-
-              {plan.pedagogical_strategy && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Pedagogical Strategy</h2>
-                  <div className="whitespace-pre-wrap">{plan.pedagogical_strategy}</div>
-                </div>
-              )}
-
-              {plan.assessment_strategy && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Assessment Strategy</h2>
-                  <div className="whitespace-pre-wrap">{plan.assessment_strategy}</div>
-                </div>
-              )}
-
-              {plan.technology_integration && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Technology Integration</h2>
-                  <p>Yes</p>
-                </div>
-              )}
-
-              {plan.additional_instructions && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Additional Instructions</h2>
-                  <div className="whitespace-pre-wrap">{plan.additional_instructions}</div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Reflection Section */}
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4 text-primary">Lesson Reflection</h2>
-            {reflection ? (
-              <CrossCurricularReflectionDisplay reflection={reflection} />
-            ) : (
-              <CrossCurricularReflectionForm planId={id} />
-            )}
-          </div>
+            </TabsContent>
+          </Tabs>
         </main>
       </div>
     )
