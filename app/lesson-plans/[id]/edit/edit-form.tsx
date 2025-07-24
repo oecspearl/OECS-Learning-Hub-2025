@@ -152,7 +152,7 @@ export default function EditLessonPlanForm({ lessonPlan }: EditLessonPlanFormPro
     const filtered = standards.filter(standard => {
       const description = standard?.description || ""
       const code = standard?.code || ""
-      const strandName = standard?.strand_name || ""
+      const strandName = standard?.strand || ""
       
       return description.toLowerCase().includes(searchTerm.toLowerCase()) ||
              code.toLowerCase().includes(searchTerm.toLowerCase()) ||
