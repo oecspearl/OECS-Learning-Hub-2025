@@ -551,10 +551,11 @@ export async function getCrossCurricularPlanById(id: string) {
       id: plan.id,
       title: plan.title,
       theme: plan.theme,
+      description: plan.description,
       grade_range: plan.grade_range,
-      content: plan.content,
-      subjects: plan.subjects,
-      sessions: plan.sessions,
+      content: plan.plan_content, // Map plan_content to content
+      subjects: plan.subjects_included, // Map subjects_included to subjects
+      sessions: plan.sessions || "1",
       learning_styles: plan.learning_styles,
       multiple_intelligences: plan.multiple_intelligences,
       special_needs: plan.special_needs,
@@ -565,7 +566,7 @@ export async function getCrossCurricularPlanById(id: string) {
       assessment_strategy: plan.assessment_strategy,
       technology_integration: plan.technology_integration,
       additional_instructions: plan.additional_instructions,
-      user_id: plan.user_id,
+      user_id: plan.created_by, // Map created_by to user_id
       created_at: plan.created_at,
       updated_at: plan.updated_at,
     }
