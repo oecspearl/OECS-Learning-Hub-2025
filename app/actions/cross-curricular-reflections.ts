@@ -65,7 +65,7 @@ export async function saveCrossCurricularReflection(formData: any) {
     console.log("Starting saveCrossCurricularReflection function")
 
     // Get the current user session
-    let userId = "1" // fallback
+    let userId: string | undefined = undefined
     if (supabaseAdmin) {
       try {
         const { data: { session }, error } = await supabaseAdmin.auth.getSession()
@@ -75,15 +75,32 @@ export async function saveCrossCurricularReflection(formData: any) {
           userId = session.user.id
           console.log("Using authenticated user ID:", userId)
         } else {
-          console.log("No authenticated session found, using fallback user ID")
+          console.log("No authenticated session found.")
         }
       } catch (sessionError) {
         console.error("Error accessing auth session:", sessionError)
       }
     }
 
+    // If no valid userId, return error and do not save
+    if (!userId) {
+      return {
+        success: false,
+        error: "User not authenticated. Please log in to save your reflection.",
+      }
+    }
+
     // Check if we're dealing with FormData or a regular object
     const plan_id = formData.get ? formData.get("plan_id") : formData.plan_id
+    // Validate plan_id is a UUID (basic check)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!plan_id || !uuidRegex.test(plan_id)) {
+      return {
+        success: false,
+        error: "Invalid or missing plan ID.",
+      }
+    }
+
     const reflection_date = formData.get ? formData.get("reflection_date") : formData.reflection_date
     const objectives_met = formData.get ? formData.get("objectives_met") : formData.objectives_met
     const student_understanding = formData.get ? formData.get("student_understanding") : formData.student_understanding
