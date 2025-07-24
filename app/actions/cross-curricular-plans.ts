@@ -386,7 +386,7 @@ export async function saveCrossCurricularPlan(formData: any) {
         theme,
         description: central_problem || 'Integrated learning experience across multiple subjects',
         grade_range,
-        subjects_included: Array.isArray(subjects) ? subjects.join(',') : subjects,
+        subjects_included: Array.isArray(subjects) ? subjects : (typeof subjects === 'string' ? subjects.split(',') : []),
         plan_content: content,
         duration_days: parseInt(duration) || 1,
         created_by: userId,
@@ -395,9 +395,9 @@ export async function saveCrossCurricularPlan(formData: any) {
 
       // Add optional fields only if they exist in the form data
       if (overlapping_concepts) planData.subject_connections = JSON.stringify({ overlapping_concepts: overlapping_concepts })
-      if (curriculum_objectives_mapping) planData.learning_objectives = JSON.stringify([curriculum_objectives_mapping])
-      if (assessment_rubric_requirements) planData.assessment_strategies = JSON.stringify([assessment_rubric_requirements])
-      if (resource_requirements) planData.materials_needed = JSON.stringify([resource_requirements])
+      if (curriculum_objectives_mapping) planData.learning_objectives = [curriculum_objectives_mapping]
+      if (assessment_rubric_requirements) planData.assessment_strategies = [assessment_rubric_requirements]
+      if (resource_requirements) planData.materials_needed = [resource_requirements]
       
       // Handle learning styles and multiple intelligences as tags
       const tags = []
@@ -450,7 +450,7 @@ export async function saveCrossCurricularPlan(formData: any) {
       }
       
       if (tags.length > 0) {
-        planData.tags = JSON.stringify(tags)
+        planData.tags = tags
       }
       
       // Handle pedagogical and assessment strategies
@@ -467,7 +467,12 @@ export async function saveCrossCurricularPlan(formData: any) {
       }
       
       if (assessmentStrategies.length > 0) {
-        planData.assessment_strategies = JSON.stringify(assessmentStrategies)
+        // If assessment_strategies already exists, merge them
+        if (planData.assessment_strategies) {
+          planData.assessment_strategies = [...planData.assessment_strategies, ...assessmentStrategies]
+        } else {
+          planData.assessment_strategies = assessmentStrategies
+        }
       }
       
       // Handle additional instructions as part of the plan content
