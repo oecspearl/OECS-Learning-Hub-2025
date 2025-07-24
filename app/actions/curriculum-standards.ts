@@ -2,6 +2,7 @@
 
 import { getCurriculumStandards as getStandards } from "@/lib/curriculum-standards"
 import type { CurriculumStandard } from "@/lib/curriculum-standards"
+import { db } from "@/lib/db"
 
 export async function getCurriculumStandards(subject: string, gradeLevel: string): Promise<CurriculumStandard[]> {
   if (!subject || !gradeLevel) {
@@ -27,5 +28,21 @@ export async function getCurriculumStandards(subject: string, gradeLevel: string
       strand: 'General',
       description: `Students will demonstrate understanding of key concepts in Grade ${gradeLevel} ${subject}.`
     }]
+  }
+}
+
+export async function getAllCurriculumStandards(): Promise<CurriculumStandard[]> {
+  try {
+    console.log("Getting all curriculum standards for standards page")
+    
+    // Query all standards from the curriculum_standards table
+    const standards = await db.curriculumStandards.findMany()
+    
+    console.log(`Found ${standards.length} total curriculum standards`)
+    return standards
+
+  } catch (error) {
+    console.error("Error in getAllCurriculumStandards server action:", error)
+    return []
   }
 } 

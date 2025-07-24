@@ -1,7 +1,7 @@
 "use client"
 import { useState, useMemo, useEffect } from "react"
 import { BookOpen, Calculator, Atom, Globe, XCircle, ChevronDown, ChevronRight } from "lucide-react"
-import { getCurriculumStandards } from "@/lib/curriculum-standards"
+import { getAllCurriculumStandards } from "@/app/actions/curriculum-standards"
 
 export const dynamic = "force-dynamic"
 
@@ -84,17 +84,7 @@ export default function AllCurriculumStandardsPage() {
   useEffect(() => {
     async function fetchStandards() {
       try {
-        const allStandards: CurriculumStandard[] = []
-        const subjects = ['language-arts', 'mathematics', 'science', 'social-studies']
-        const grades = ['K', '1', '2', '3', '4', '5', '6']
-        
-        for (const subject of subjects) {
-          for (const grade of grades) {
-            const subjectStandards = await getCurriculumStandards(subject, grade)
-            allStandards.push(...subjectStandards)
-          }
-        }
-        
+        const allStandards = await getAllCurriculumStandards()
         setStandards(allStandards)
       } catch (error) {
         console.error('Error fetching standards:', error)
