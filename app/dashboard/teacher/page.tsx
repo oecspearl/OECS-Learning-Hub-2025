@@ -135,71 +135,157 @@ export default function TeacherDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500 text-white">
-                  <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Link href="/planner/create">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-blue-500 text-white">
+                    <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm sm:text-base">Create Lesson Plan</h3>
+                    <p className="text-xs text-muted-foreground">Design a new lesson</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-sm sm:text-base">Create Lesson Plan</h3>
-                  <p className="text-xs text-muted-foreground">Design a new lesson</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500 text-white">
-                  <ClipboardCheck className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Link href="/quiz">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-green-500 text-white">
+                    <ClipboardCheck className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm sm:text-base">Create Quiz</h3>
+                    <p className="text-xs text-muted-foreground">Assess student learning</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-sm sm:text-base">Create Quiz</h3>
-                  <p className="text-xs text-muted-foreground">Assess student learning</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500 text-white">
-                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Link href="/multigrade">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500 text-white">
+                    <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm sm:text-base">Multigrade Plan</h3>
+                    <p className="text-xs text-muted-foreground">Teach multiple grades</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-sm sm:text-base">Multigrade Plan</h3>
-                  <p className="text-xs text-muted-foreground">Teach multiple grades</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-orange-500 text-white">
-                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Link href="/cross-curricular/new">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-orange-500 text-white">
+                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm sm:text-base">Cross-Curricular</h3>
+                    <p className="text-xs text-muted-foreground">Integrate subjects</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-sm sm:text-base">Cross-Curricular</h3>
-                  <p className="text-xs text-muted-foreground">Integrate subjects</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
-        {/* Dashboard Tabs */}
-        <DashboardTabs
-          type="lesson-plans"
-          title="Lesson Plans"
-          description="Manage your lesson plans and teaching resources"
-          emptyMessage="No lesson plans created yet. Create your first lesson plan to get started!"
-          createLink="/planner/create"
-        />
+        {/* Resource Management Tabs */}
+        <Card>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <CardTitle className="text-lg sm:text-xl">Resource Management</CardTitle>
+                <CardDescription className="text-sm">Organize and manage your teaching resources</CardDescription>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button asChild size="sm" className="w-full sm:w-auto">
+                  <Link href="/planner/create">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Lesson Plan
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline" className="w-full sm:w-auto">
+                  <Link href="/quiz">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Quiz
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4 sm:p-6">
+            <Tabs defaultValue="lesson-plans" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 h-auto p-1">
+                <TabsTrigger value="lesson-plans" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                  <span className="hidden sm:inline">Lesson Plans</span>
+                  <span className="sm:hidden">Plans</span>
+                </TabsTrigger>
+                <TabsTrigger value="quizzes" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                  Quizzes
+                </TabsTrigger>
+                <TabsTrigger value="multigrade" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                  <span className="hidden sm:inline">Multigrade</span>
+                  <span className="sm:hidden">Multi</span>
+                </TabsTrigger>
+                <TabsTrigger value="cross-curricular" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                  <span className="hidden sm:inline">Cross-Curricular</span>
+                  <span className="sm:hidden">Cross</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="lesson-plans" className="mt-6">
+                <DashboardTabs
+                  type="lesson-plans"
+                  title="Lesson Plans"
+                  description="Your created lesson plans"
+                  emptyMessage="Create your first lesson plan to get started"
+                  createLink="/planner/create"
+                />
+              </TabsContent>
+
+              <TabsContent value="quizzes" className="mt-6">
+                <DashboardTabs
+                  type="quizzes"
+                  title="Quizzes"
+                  description="Your created assessments"
+                  emptyMessage="Create your first quiz to assess student learning"
+                  createLink="/quiz"
+                />
+              </TabsContent>
+
+              <TabsContent value="multigrade" className="mt-6">
+                <DashboardTabs
+                  type="multigrade"
+                  title="Multigrade Plans"
+                  description="Your multigrade lesson plans"
+                  emptyMessage="Create your first multigrade lesson plan"
+                  createLink="/multigrade"
+                />
+              </TabsContent>
+
+              <TabsContent value="cross-curricular" className="mt-6">
+                <DashboardTabs
+                  type="cross-curricular"
+                  title="Cross-Curricular Plans"
+                  description="Your integrated lesson plans"
+                  emptyMessage="Create your first cross-curricular lesson plan"
+                  createLink="/cross-curricular/new"
+                />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </main>
     </div>
   )
