@@ -119,27 +119,27 @@ export default function CrossCurricularReflectionForm({
 
   const renderTextarea = (field: string, label: string, placeholder?: string) => (
     <div className="space-y-2">
-      <Label htmlFor={field}>{label}</Label>
+      <Label htmlFor={field} className="text-sm sm:text-base">{label}</Label>
       <Textarea
         id={field}
         placeholder={placeholder}
         value={formData[field] || ""}
         onChange={(e) => handleInputChange(field, e.target.value)}
-        className="min-h-[100px]"
+        className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
       />
     </div>
   )
 
   const renderSelect = (field: string, label: string, options: { value: string; label: string }[]) => (
     <div className="space-y-2">
-      <Label htmlFor={field}>{label}</Label>
+      <Label htmlFor={field} className="text-sm sm:text-base">{label}</Label>
       <Select value={formData[field] || ""} onValueChange={(value) => handleInputChange(field, value)}>
-        <SelectTrigger>
+        <SelectTrigger className="text-sm sm:text-base">
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value} className="text-sm sm:text-base">
               {option.label}
             </SelectItem>
           ))}
@@ -150,22 +150,22 @@ export default function CrossCurricularReflectionForm({
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
+      <CardHeader className="p-4 sm:p-6">
         <div className="flex items-center gap-2">
-          <BookOpen className="h-6 w-6 text-green-600" />
+          <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
           <div>
-            <CardTitle>Cross-Curricular Lesson Reflection</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Cross-Curricular Lesson Reflection</CardTitle>
+            <CardDescription className="text-sm">
               Complete this reflection after teaching "{planTitle}"
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <CardContent className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Lesson Outcome Checklist */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Lesson Outcome Checklist</h3>
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold">Lesson Outcome Checklist</h3>
             
             {renderSelect('objectives_met', 'Were the lesson objectives met by most students?', [
               { value: 'Yes', label: 'Yes' },
@@ -223,8 +223,8 @@ export default function CrossCurricularReflectionForm({
           </div>
 
           {/* Detailed Responses */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Detailed Responses</h3>
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold">Detailed Responses</h3>
             
             {renderTextarea('evidence_support', 'What evidence (student responses, work samples, behavior) supports this?', 'Describe specific evidence that supports your assessment...')}
             
@@ -238,8 +238,8 @@ export default function CrossCurricularReflectionForm({
           </div>
 
           {/* Additional Reflection */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Additional Reflection</h3>
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold">Additional Reflection</h3>
             
             {renderTextarea('time_management', 'Time Management', 'How well did you manage time during this lesson?')}
             
@@ -249,8 +249,8 @@ export default function CrossCurricularReflectionForm({
           </div>
 
           {/* Ratings */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Ratings</h3>
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold">Ratings</h3>
             
             {renderSelect('overall_rating', 'Overall Lesson Rating (1-5)', [
               { value: '1', label: '1 - Poor' },
@@ -267,11 +267,11 @@ export default function CrossCurricularReflectionForm({
             ])}
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto">
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
               {isSubmitting ? "Saving..." : "Save Reflection"}
             </Button>
           </div>

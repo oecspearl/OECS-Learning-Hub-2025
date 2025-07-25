@@ -73,29 +73,30 @@ export default async function ViewCrossCurricularPlanPage({
       <div className="flex min-h-screen flex-col page-transition bg-gradient-to-b from-blue-50 to-white">
         <main className="flex-1 w-full px-4 py-6 max-w-[1400px] mx-auto">
           {/* Enhanced Header Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 sm:p-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/dashboard">
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Dashboard
+                    <span className="hidden sm:inline">Back to Dashboard</span>
+                    <span className="sm:hidden">Back</span>
                   </Link>
                 </Button>
-                <div className="flex items-center gap-3">
-                  <BookOpen className="h-8 w-8 text-blue-600" />
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                   <div>
-                    <h1 className="text-3xl font-bold text-gray-900">{plan.title}</h1>
-                    <p className="text-gray-600">Cross-Curricular Lesson Plan</p>
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{plan.title}</h1>
+                    <p className="text-sm sm:text-base text-gray-600">Cross-Curricular Lesson Plan</p>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
+                    <Button variant="outline" size="sm" className="px-2 sm:px-3">
+                      <Share2 className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Share</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -113,56 +114,56 @@ export default async function ViewCrossCurricularPlanPage({
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="px-2 sm:px-3">
                   <Link href={`/cross-curricular/edit/${id}`}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
+                    <Edit className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Edit</span>
                   </Link>
                 </Button>
                 <form action={deletePlan}>
-                  <Button variant="destructive" size="sm" type="submit">
-                    <Trash className="mr-2 h-4 w-4" />
-                    Delete
+                  <Button variant="destructive" size="sm" type="submit" className="px-2 sm:px-3">
+                    <Trash className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Delete</span>
                   </Button>
                 </form>
               </div>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Grade Range</p>
-                    <p className="font-semibold text-gray-900">{plan.grade_range}</p>
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-gray-600">Grade Range</p>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{plan.grade_range}</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-green-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Subjects</p>
-                    <p className="font-semibold text-gray-900">{subjects.length} subjects</p>
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-gray-600">Subjects</p>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base">{subjects.length} subjects</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-orange-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Sessions</p>
-                    <p className="font-semibold text-gray-900">{plan.sessions}</p>
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-gray-600">Sessions</p>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base">{plan.sessions}</p>
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-purple-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Status</p>
-                    <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-gray-600">Status</p>
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs">Active</Badge>
                   </div>
                 </div>
               </div>
@@ -170,16 +171,24 @@ export default async function ViewCrossCurricularPlanPage({
           </div>
 
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="overview">Lesson Overview</TabsTrigger>
-              <TabsTrigger value="details">Lesson Details</TabsTrigger>
-              <TabsTrigger value="reflection">Reflection</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 h-auto p-1">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="hidden sm:inline">Lesson Overview</span>
+                <span className="sm:hidden">Overview</span>
+              </TabsTrigger>
+              <TabsTrigger value="details" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="hidden sm:inline">Lesson Details</span>
+                <span className="sm:hidden">Details</span>
+              </TabsTrigger>
+              <TabsTrigger value="reflection" className="text-xs sm:text-sm px-2 sm:px-3 py-2">
+                Reflection
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="xl:col-span-2 space-y-4">
                   {/* Theme Card */}
                   <Card>
                     <CardHeader>
@@ -219,7 +228,7 @@ export default async function ViewCrossCurricularPlanPage({
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-4">
+                <div className="space-y-4 order-first xl:order-last">
                   {/* Subjects Integration */}
                   <Card>
                     <CardHeader>
@@ -294,7 +303,7 @@ export default async function ViewCrossCurricularPlanPage({
             </TabsContent>
 
             <TabsContent value="details" className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
                 {/* Teaching Strategies */}
                 <div className="space-y-4">
                   {plan.learning_styles && (

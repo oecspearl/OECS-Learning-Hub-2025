@@ -98,188 +98,109 @@ export default function TeacherDashboard() {
       icon: BookOpen,
       color: "bg-orange-500",
       description: "Integrated plans"
-    },
-    {
-      title: "Students",
-      value: stats.totalStudents,
-      icon: GraduationCap,
-      color: "bg-teal-500",
-      description: "Total students"
-    },
-    {
-      title: "Classes",
-      value: stats.totalClasses,
-      icon: Users,
-      color: "bg-indigo-500",
-      description: "Active classes"
     }
   ]
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage your resources and lesson planning</p>
+    <div className="flex min-h-screen flex-col page-transition bg-gradient-to-b from-blue-50 to-white">
+      <main className="flex-1 w-full px-4 py-6 max-w-[1400px] mx-auto">
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+            Teacher Dashboard
+          </h1>
+          <p className="text-muted-foreground">
+            Welcome back, {user?.email || 'Teacher'}! Here's your teaching overview.
+          </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={loading}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          <Badge variant="secondary" className="flex items-center gap-2">
-            <GraduationCap className="h-4 w-4" />
-            Teacher
-          </Badge>
-        </div>
-      </div>
 
-      {/* Profile and Quick Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
-          <ProfileCard />
-        </div>
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Statistics</CardTitle>
-              <CardDescription>Overview of your teaching resources</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {statCards.slice(0, 6).map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className={`inline-flex p-3 rounded-lg ${stat.color} text-white mb-2`}>
-                      <stat.icon className="h-6 w-6" />
-                    </div>
-                    <div className="text-2xl font-bold">{stat.value}</div>
-                    <div className="text-sm text-gray-600">{stat.title}</div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {statCards.map((stat, index) => (
+            <Card key={index} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${stat.color} text-white`}>
+                    <stat.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                ))}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{stat.title}</p>
+                    <p className="text-lg sm:text-2xl font-bold">{stat.value}</p>
+                    <p className="text-xs text-muted-foreground truncate">{stat.description}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500 text-white">
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Create Lesson Plan</h3>
+                  <p className="text-xs text-muted-foreground">Design a new lesson</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-500 text-white">
+                  <ClipboardCheck className="h-4 w-4 sm:h-5 sm:w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Create Quiz</h3>
+                  <p className="text-xs text-muted-foreground">Assess student learning</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500 text-white">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Multigrade Plan</h3>
+                  <p className="text-xs text-muted-foreground">Teach multiple grades</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-orange-500 text-white">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Cross-Curricular</h3>
+                  <p className="text-xs text-muted-foreground">Integrate subjects</p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* Resource Management */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Resource Management</CardTitle>
-              <CardDescription>Organize and manage your teaching resources</CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button asChild size="sm">
-                <Link href="/planner">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Lesson Plan
-                </Link>
-              </Button>
-              <Button asChild size="sm" variant="outline">
-                <Link href="/quiz">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Quiz
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="lesson-plans" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="lesson-plans">Lesson Plans</TabsTrigger>
-              <TabsTrigger value="quizzes">Quizzes</TabsTrigger>
-              <TabsTrigger value="multigrade">Multigrade</TabsTrigger>
-              <TabsTrigger value="cross-curricular">Cross-Curricular</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="lesson-plans" className="mt-6">
-              <DashboardTabs
-                type="lesson-plans"
-                title="Lesson Plans"
-                description="Your created lesson plans"
-                emptyMessage="Create your first lesson plan to get started"
-                createLink="/planner"
-              />
-            </TabsContent>
-
-            <TabsContent value="quizzes" className="mt-6">
-              <DashboardTabs
-                type="quizzes"
-                title="Quizzes"
-                description="Your created assessments"
-                emptyMessage="Create your first quiz to assess student learning"
-                createLink="/quiz"
-              />
-            </TabsContent>
-
-            <TabsContent value="multigrade" className="mt-6">
-              <DashboardTabs
-                type="multigrade"
-                title="Multigrade Plans"
-                description="Your multigrade lesson plans"
-                emptyMessage="Create your first multigrade lesson plan"
-                createLink="/multigrade"
-              />
-            </TabsContent>
-
-            <TabsContent value="cross-curricular" className="mt-6">
-              <DashboardTabs
-                type="cross-curricular"
-                title="Cross-Curricular Plans"
-                description="Your integrated lesson plans"
-                emptyMessage="Create your first cross-curricular lesson plan"
-                createLink="/cross-curricular"
-              />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common teaching tasks and shortcuts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
-              <Link href="/planner">
-                <FileText className="h-6 w-6" />
-                <span>AI Lesson Planner</span>
-              </Link>
-            </Button>
-            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
-              <Link href="/rubric-generator">
-                <ClipboardCheck className="h-6 w-6" />
-                <span>Create Rubric</span>
-              </Link>
-            </Button>
-            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
-              <Link href="/multigrade">
-                <Users className="h-6 w-6" />
-                <span>Multigrade Tools</span>
-              </Link>
-            </Button>
-            <Button asChild className="h-auto p-4 flex flex-col items-center gap-2">
-              <Link href="/curriculum">
-                <BookOpen className="h-6 w-6" />
-                <span>Curriculum</span>
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Dashboard Tabs */}
+        <DashboardTabs
+          type="lesson-plans"
+          title="Lesson Plans"
+          description="Manage your lesson plans and teaching resources"
+          emptyMessage="No lesson plans created yet. Create your first lesson plan to get started!"
+          createLink="/planner/create"
+        />
+      </main>
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { FileText, ClipboardCheck, Users, BookOpen, Plus, Eye, Edit, Download, MoreHorizontal, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
+import React from "react"
 
 interface Resource {
   id: string
@@ -180,122 +181,88 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
     return new Date(dateString).toLocaleDateString()
   }
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{title}</CardTitle>
-              <CardDescription>{description}</CardDescription>
-            </div>
-            <Button variant="outline" size="sm" disabled>
-              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-              Loading...
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg animate-pulse">
-                <div className="w-12 h-12 bg-gray-200 rounded"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">{title}</CardTitle>
+            <CardDescription className="text-sm">{description}</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              {refreshing ? 'Refreshing...' : 'Refresh'}
-            </Button>
-            <Button asChild>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button asChild size="sm" className="w-full sm:w-auto">
               <Link href={createLink}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create New
               </Link>
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="w-full sm:w-auto"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        {resources.length === 0 ? (
+      <CardContent className="p-4 sm:p-6">
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+            <span>Loading resources...</span>
+          </div>
+        ) : filteredResources.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-4xl mb-4 text-muted-foreground">📝</div>
-            <h3 className="text-lg font-medium mb-2">No {title} Yet</h3>
-            <p className="text-muted-foreground mb-4">{emptyMessage}</p>
+            <div className="inline-flex p-3 rounded-lg bg-gray-100 text-gray-600 mb-4">
+              {React.createElement(getTypeIcon(type), { className: "h-6 w-6" })}
+            </div>
+            <h3 className="text-lg font-semibold mb-2">No {type.replace('-', ' ')} found</h3>
+            <p className="text-gray-600 mb-4">{emptyMessage}</p>
             <Button asChild>
               <Link href={createLink}>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Your First {title.slice(0, -1)}
+                Create Your First {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </Link>
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Filter by subject:</span>
-                <select
-                  value={selectedSubject}
-                  onChange={(e) => setSelectedSubject(e.target.value)}
-                  className="text-sm border rounded px-2 py-1"
-                >
-                  {subjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject}
-                    </option>
-                  ))}
-                </select>
+            {/* Filter */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-wrap gap-2">
+                {subjects.map((subject) => (
+                  <Button
+                    key={subject}
+                    variant={selectedSubject === subject ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedSubject(subject)}
+                    className="text-xs sm:text-sm"
+                  >
+                    {subject}
+                  </Button>
+                ))}
               </div>
-              <span className="text-sm text-muted-foreground">
-                {filteredResources.length} of {resources.length} items
-              </span>
             </div>
 
-            <div className="space-y-4">
-              {filteredResources.map((resource) => {
-                const IconComponent = getTypeIcon(type)
-                return (
-                  <div key={resource.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center space-x-4">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <IconComponent className="h-5 w-5 text-primary" />
+            {/* Resources Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredResources.map((resource) => (
+                <Card key={resource.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm sm:text-base truncate">{resource.title}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">
+                          {resource.subject} • {resource.grade}
+                        </CardDescription>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium">{resource.title}</h3>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                          <span>{resource.subject}</span>
-                          <span>•</span>
-                          <span>Grade {resource.grade}</span>
-                          <span>•</span>
-                          <span>{formatDate(resource.createdAt)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(resource.status)}>
-                        {resource.status}
-                      </Badge>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -316,12 +283,26 @@ export function DashboardTabs({ type, title, description, emptyMessage, createLi
                             <Download className="h-4 w-4 mr-2" />
                             Download PDF
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDownload(resource.id, 'word')}>
+                            <Download className="h-4 w-4 mr-2" />
+                            Download Word
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                  </div>
-                )
-              })}
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-xs">
+                        {resource.status}
+                      </Badge>
+                      <span className="text-xs text-gray-500">
+                        {formatDate(resource.createdAt)}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         )}
