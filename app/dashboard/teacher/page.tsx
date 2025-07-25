@@ -135,7 +135,7 @@ export default function TeacherDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Link href="/planner/create">
+          <Link href="/planner">
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center gap-3">
@@ -210,7 +210,7 @@ export default function TeacherDashboard() {
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button asChild size="sm" className="w-full sm:w-auto">
-                  <Link href="/planner/create">
+                  <Link href="/planner">
                     <Plus className="h-4 w-4 mr-2" />
                     New Lesson Plan
                   </Link>
@@ -250,7 +250,7 @@ export default function TeacherDashboard() {
                   title="Lesson Plans"
                   description="Your created lesson plans"
                   emptyMessage="Create your first lesson plan to get started"
-                  createLink="/planner/create"
+                  createLink="/planner"
                 />
               </TabsContent>
 
