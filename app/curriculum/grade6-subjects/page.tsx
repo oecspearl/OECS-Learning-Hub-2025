@@ -3,7 +3,32 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Calculator, Microscope, Globe, Users, Target, Clock, Award } from "lucide-react"
 import Link from "next/link"
-import { Breadcrumb } from "@/components/breadcrumb"
+
+// Mock Breadcrumb component since it's not in the standard shadcn/ui
+function Breadcrumb({ items }: { items: { label: string; href: string }[] }) {
+  return (
+    <nav className="flex mb-6" aria-label="Breadcrumb">
+      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        {items.map((item, index) => (
+          <li key={index} className="inline-flex items-center">
+            {index > 0 && (
+              <svg className="w-3 h-3 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+            <Link href={item.href} className="text-sm font-medium text-gray-700 hover:text-blue-600">
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
 export default function Grade6SubjectsPage() {
   const subjects = [
@@ -288,12 +313,21 @@ export default function Grade6SubjectsPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-2 pt-4">
                     <Button asChild className="flex-1">
                       <Link href={`/curriculum/grade6-subjects/${subject.id}`}>View Curriculum</Link>
                     </Button>
-                    <Button asChild variant="outline" className="flex-1">
+                    <Button asChild variant="outline" className="flex-1 bg-transparent">
                       <Link href={`/curriculum/grade6-subjects/activities/${subject.id}`}>View Activities</Link>
+                    </Button>
+                    <Button asChild variant="secondary" className="flex-1">
+                      <Link
+                        href={`/docs/grade6-${subject.id}-curriculum.pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Download PDF
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -309,7 +343,7 @@ export default function Grade6SubjectsPage() {
             <CardDescription>Supporting materials and tools for Grade 6 education</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <BookOpen className="w-6 h-6 text-blue-600" />
@@ -337,6 +371,16 @@ export default function Grade6SubjectsPage() {
                 <h3 className="font-semibold text-gray-900 mb-2">Parent Guides</h3>
                 <p className="text-sm text-gray-600">
                   Resources to help parents support their Grade 6 students' academic journey
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Curriculum Download</h3>
+                <p className="text-sm text-gray-600">
+                  Download PDF versions of Grade 6 curriculum documents and teaching materials
                 </p>
               </div>
             </div>
