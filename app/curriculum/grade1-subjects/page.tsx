@@ -313,14 +313,14 @@ export default function Grade1SubjectsPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 pt-4">
-                    <Button asChild className="flex-1">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                    <Button asChild className="w-full sm:flex-1">
                       <Link href={`/curriculum/grade1-subjects/${subject.id}`}>View Curriculum</Link>
                     </Button>
-                    <Button asChild variant="outline" className="flex-1 bg-transparent">
+                    <Button asChild variant="outline" className="w-full sm:flex-1 bg-transparent">
                       <Link href={`/curriculum/grade1-subjects/activities/${subject.id}`}>View Activities</Link>
                     </Button>
-                    <Button asChild variant="secondary" className="flex-1">
+                    <Button asChild variant="secondary" className="w-full sm:flex-1">
                       <Link href={`/docs/grade1-${subject.id}-curriculum.pdf`} target="_blank">
                         Download PDF
                       </Link>
