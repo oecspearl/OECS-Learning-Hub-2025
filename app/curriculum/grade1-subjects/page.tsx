@@ -1,150 +1,393 @@
-import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, Calculator, FlaskRoundIcon as Flask, BookText } from "lucide-react"
-import { Breadcrumb } from "@/components/breadcrumb"
+import { BookOpen, Calculator, FlaskRoundIcon as Flask, BookText, Users, Target, Clock, Award } from "lucide-react"
+import Link from "next/link"
+
+// Mock Breadcrumb component since it's not in the standard shadcn/ui
+function Breadcrumb({ items }: { items: { label: string; href: string }[] }) {
+  return (
+    <nav className="flex mb-6" aria-label="Breadcrumb">
+      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        {items.map((item, index) => (
+          <li key={index} className="inline-flex items-center">
+            {index > 0 && (
+              <svg className="w-3 h-3 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+            <Link href={item.href} className="text-sm font-medium text-gray-700 hover:text-blue-600">
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
 export default function Grade1SubjectsPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16 mb-8">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Grade 1 Curriculum</h1>
-            <p className="text-lg md:text-xl text-blue-100">
-              Building a strong foundation for young learners through engaging, play-based learning experiences
-            </p>
-          </div>
-        </div>
-      </div>
+  const subjects = [
+    {
+      id: "language-arts",
+      title: "Language Arts",
+      icon: BookText,
+      description:
+        "Foundational literacy development through interactive storytelling, phonics, and creative expression",
+      color: "bg-blue-500",
+      strands: ["Listening & Speaking", "Beginning Reading", "Early Writing", "Phonics & Word Study"],
+      keyFocus: [
+        "Letter recognition and phonics sounds",
+        "Simple sentence formation and writing",
+        "Interactive storytelling and listening",
+        "Basic vocabulary building",
+        "Beginning reading comprehension",
+      ],
+      learningOutcomes: [
+        "Recognize and name all letters of the alphabet",
+        "Write simple sentences using basic sight words",
+        "Listen to stories and respond to simple questions",
+        "Use phonics to decode simple words",
+      ],
+    },
+    {
+      id: "mathematics",
+      title: "Mathematics",
+      icon: Calculator,
+      description: "Number sense and problem-solving through hands-on activities and real-world connections",
+      color: "bg-green-500",
+      strands: [
+        "Number Recognition & Counting",
+        "Basic Addition & Subtraction",
+        "Patterns & Sorting",
+        "Shapes & Spatial Awareness",
+        "Simple Measurement",
+      ],
+      keyFocus: [
+        "Numbers 1-20 recognition and counting",
+        "Simple addition and subtraction within 10",
+        "Pattern recognition and creation",
+        "Basic 2D shapes identification",
+        "Comparing sizes and simple measurements",
+      ],
+      learningOutcomes: [
+        "Count objects up to 20 and recognize written numbers",
+        "Add and subtract within 10 using concrete objects",
+        "Identify and create simple patterns",
+        "Recognize and name basic geometric shapes",
+      ],
+    },
+    {
+      id: "science",
+      title: "Science",
+      icon: Flask,
+      description: "Exploration and discovery of the natural world through hands-on investigations and observations",
+      color: "bg-purple-500",
+      strands: [
+        "Living Things & Nature",
+        "Materials & Objects",
+        "Simple Forces & Movement",
+        "Weather & Seasons",
+        "Observation & Investigation",
+      ],
+      keyFocus: [
+        "Plants, animals, and their basic needs",
+        "Properties of everyday materials",
+        "Push, pull, and simple movements",
+        "Daily weather and seasonal changes",
+        "Making observations and asking questions",
+      ],
+      learningOutcomes: [
+        "Identify basic needs of living things (food, water, shelter)",
+        "Describe simple properties of materials (hard, soft, smooth, rough)",
+        "Demonstrate push and pull movements with objects",
+        "Observe and describe daily weather patterns",
+      ],
+    },
+    {
+      id: "social-studies",
+      title: "Social Studies",
+      icon: BookOpen,
+      description: "Understanding self, family, and community through engaging activities and cultural exploration",
+      color: "bg-amber-500",
+      strands: [
+        "Self & Family Identity",
+        "Community Helpers",
+        "Basic Geography",
+        "Rules & Responsibilities",
+        "Cultural Awareness",
+      ],
+      keyFocus: [
+        "Personal identity and family structures",
+        "Community helpers and their roles",
+        "School and neighborhood geography",
+        "Classroom rules and basic responsibilities",
+        "Celebrating diversity and traditions",
+      ],
+      learningOutcomes: [
+        "Describe their own identity and family structure",
+        "Identify community helpers and explain their jobs",
+        "Locate familiar places in their school and neighborhood",
+        "Follow classroom rules and understand basic responsibilities",
+      ],
+    },
+  ]
 
-      <div className="container mx-auto px-4 pb-12">
-        {/* Introduction Card */}
-        <Card className="mb-8 border-2 border-blue-100 bg-white/50 backdrop-blur-sm">
-          <CardContent className="pt-8 pb-6">
-            <div className="w-full text-center">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Welcome to Grade 1!</h2>
-              <p className="text-gray-600 mb-4 text-lg">
-                Our Grade 1 curriculum is thoughtfully designed to nurture young minds through a balanced approach
-                to learning. We focus on developing essential skills in literacy, numeracy, scientific inquiry,
-                and social awareness.
-              </p>
-              <p className="text-gray-600 text-lg">
-                Each subject area is carefully crafted to engage students through interactive activities,
-                hands-on experiences, and real-world connections.
-              </p>
+  const gradeOverview = {
+    totalStudents: "7,200+",
+    averageAge: "6-7 years",
+    keyMilestones: [
+      "School readiness and routine establishment",
+      "Basic literacy and numeracy introduction",
+      "Social and emotional development",
+      "Curiosity and wonder cultivation",
+    ],
+    assessmentFocus: [
+      "Play-based learning observation",
+      "Hands-on activity participation",
+      "Social interaction development",
+      "Creative expression encouragement",
+    ],
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        <Breadcrumb
+          items={[
+            { label: "Curriculum", href: "/curriculum" },
+            { label: "Grade 1 Subjects", href: "/curriculum/grade1-subjects" },
+          ]}
+        />
+
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+              <span className="text-2xl font-bold text-white">1</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Grade 1 Curriculum</h1>
+              <p className="text-xl text-gray-600">Foundation Building & Early Learning Adventure</p>
+            </div>
+          </div>
+
+          <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
+            Grade 1 provides a strong foundation for young learners through engaging, play-based learning experiences
+            that nurture curiosity, creativity, and essential academic skills in a supportive and developmentally
+            appropriate environment.
+          </p>
+        </div>
+
+        {/* Grade Overview Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Users className="w-8 h-8 text-indigo-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{gradeOverview.totalStudents}</div>
+              <div className="text-sm text-gray-600">Students Enrolled</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Target className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{gradeOverview.averageAge}</div>
+              <div className="text-sm text-gray-600">Average Age</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Clock className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">4</div>
+              <div className="text-sm text-gray-600">Core Subjects</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Award className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">85%</div>
+              <div className="text-sm text-gray-600">Success Rate</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Key Milestones */}
+        <Card className="mb-12">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="w-6 h-6 text-indigo-600" />
+              Grade 1 Key Milestones & Development Focus
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Academic Milestones</h3>
+                <ul className="space-y-2">
+                  {gradeOverview.keyMilestones.map((milestone, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700">{milestone}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Assessment Focus Areas</h3>
+                <ul className="space-y-2">
+                  {gradeOverview.assessmentFocus.map((focus, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700">{focus}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Subject Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Language Arts Card */}
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-blue-100 hover:border-blue-200">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100/50">
-              <CardTitle className="flex items-center text-blue-700">
-                <BookText className="mr-3 h-6 w-6" />
-                Language Arts
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-gray-600 mb-4">
-                Develop foundational literacy skills through engaging activities in listening, speaking,
-                reading, and writing. Students explore various texts and express themselves through
-                different forms of communication.
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li>• Interactive storytelling and reading activities</li>
-                <li>• Phonics and word recognition exercises</li>
-                <li>• Creative writing and expression</li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 transition-colors">
-                <Link href="/curriculum/grade1-subjects/language-arts">Explore Language Arts</Link>
-              </Button>
-            </CardFooter>
-          </Card>
+        {/* Subjects Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {subjects.map((subject) => {
+            const IconComponent = subject.icon
+            return (
+              <Card key={subject.id} className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 ${subject.color} rounded-xl flex items-center justify-center`}>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">{subject.title}</CardTitle>
+                      <CardDescription className="text-base">{subject.description}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
 
-          {/* Mathematics Card */}
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-green-100 hover:border-green-200">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-green-100/50">
-              <CardTitle className="flex items-center text-green-700">
-                <Calculator className="mr-3 h-6 w-6" />
-                Mathematics
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-gray-600 mb-4">
-                Build number sense and problem-solving skills through hands-on activities and real-world
-                applications. Students develop spatial awareness and measurement skills in engaging ways.
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li>• Number recognition and counting activities</li>
-                <li>• Basic operations and problem-solving</li>
-                <li>• Shapes, patterns, and measurements</li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full bg-green-600 hover:bg-green-700 transition-colors">
-                <Link href="/curriculum/grade1-subjects/mathematics">Explore Mathematics</Link>
-              </Button>
-            </CardFooter>
-          </Card>
+                <CardContent className="space-y-6">
+                  {/* Strands */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Curriculum Strands</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {subject.strands.map((strand, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {strand}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
 
-          {/* Science Card */}
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-purple-100 hover:border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100/50">
-              <CardTitle className="flex items-center text-purple-700">
-                <Flask className="mr-3 h-6 w-6" />
-                Science
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-gray-600 mb-4">
-                Foster curiosity and exploration of the natural world through hands-on investigations.
-                Students develop scientific inquiry skills while exploring living things and Earth systems.
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li>• Nature exploration and observation</li>
-                <li>• Simple experiments and investigations</li>
-                <li>• Understanding living things and materials</li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full bg-purple-600 hover:bg-purple-700 transition-colors">
-                <Link href="/curriculum/grade1-subjects/science">Explore Science</Link>
-              </Button>
-            </CardFooter>
-          </Card>
+                  {/* Key Focus Areas */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Key Focus Areas</h4>
+                    <ul className="space-y-1">
+                      {subject.keyFocus.slice(0, 3).map((focus, index) => (
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                          {focus}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-          {/* Social Studies Card */}
-          <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-amber-100 hover:border-amber-200">
-            <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100/50">
-              <CardTitle className="flex items-center text-amber-700">
-                <BookOpen className="mr-3 h-6 w-6" />
-                Social Studies
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-gray-600 mb-4">
-                Help students understand their identity, community, and environment through engaging
-                activities. Explore cultural heritage, civic participation, and economic awareness.
-              </p>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li>• Community and family studies</li>
-                <li>• Cultural heritage exploration</li>
-                <li>• Basic economic concepts</li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full bg-amber-600 hover:bg-amber-700 transition-colors">
-                <Link href="/curriculum/grade1-subjects/social-studies">Explore Social Studies</Link>
-              </Button>
-            </CardFooter>
-          </Card>
+                  {/* Learning Outcomes Preview */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Sample Learning Outcomes</h4>
+                    <ul className="space-y-1">
+                      {subject.learningOutcomes.slice(0, 2).map((outcome, index) => (
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                          {outcome}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-4">
+                    <Button asChild className="flex-1">
+                      <Link href={`/curriculum/grade1-subjects/${subject.id}`}>View Curriculum</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="flex-1 bg-transparent">
+                      <Link href={`/curriculum/grade1-subjects/activities/${subject.id}`}>View Activities</Link>
+                    </Button>
+                    <Button asChild variant="secondary" className="flex-1">
+                      <Link href={`/docs/grade1-${subject.id}-curriculum.pdf`} target="_blank">
+                        Download PDF
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
+
+        {/* Additional Resources */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Grade 1 Additional Resources</CardTitle>
+            <CardDescription>Supporting materials and tools for Grade 1 education</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Assessment Tools</h3>
+                <p className="text-sm text-gray-600">
+                  Play-based observation tools and developmental checklists for Grade 1 learning milestones
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Teacher Resources</h3>
+                <p className="text-sm text-gray-600">
+                  Interactive activities and developmentally appropriate teaching methods for Grade 1 educators
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Target className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Parent Guides</h3>
+                <p className="text-sm text-gray-600">
+                  Resources to help parents support their Grade 1 students' first formal learning experiences
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Curriculum Download</h3>
+                <p className="text-sm text-gray-600">
+                  Download PDF versions of Grade 1 curriculum documents and teaching materials
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <Button asChild variant="outline">
+                <Link href="/resources">Access All Resources</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

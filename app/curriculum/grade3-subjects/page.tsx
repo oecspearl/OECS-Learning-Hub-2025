@@ -1,162 +1,392 @@
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, Calculator, FlaskRoundIcon as Flask, Globe, ChevronLeft } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Breadcrumb } from "@/components/breadcrumb"
+import { BookOpen, Calculator, FlaskRoundIcon as Flask, Globe, Users, Target, Clock, Award } from "lucide-react"
+import Link from "next/link"
+
+// Mock Breadcrumb component since it's not in the standard shadcn/ui
+function Breadcrumb({ items }: { items: { label: string; href: string }[] }) {
+  return (
+    <nav className="flex mb-6" aria-label="Breadcrumb">
+      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        {items.map((item, index) => (
+          <li key={index} className="inline-flex items-center">
+            {index > 0 && (
+              <svg className="w-3 h-3 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+            <Link href={item.href} className="text-sm font-medium text-gray-700 hover:text-blue-600">
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
 export default function Grade3SubjectsPage() {
-  return (
-    <div className="container mx-auto py-8">
-      
-      <Link href="/curriculum">
-        <Button variant="outline" className="mb-6">
-          <ChevronLeft className="mr-2 h-4 w-4" /> Back to Curriculum
-        </Button>
-      </Link>
+  const subjects = [
+    {
+      id: "language-arts",
+      title: "Language Arts",
+      icon: BookOpen,
+      description: "Communication and literacy development through listening, speaking, reading, and writing",
+      color: "bg-purple-500",
+      strands: ["Listening & Speaking", "Reading & Viewing", "Writing & Representing", "Language Foundations"],
+      keyFocus: [
+        "Foundational reading comprehension skills",
+        "Basic writing composition and structure",
+        "Oral communication and presentation",
+        "Vocabulary development and usage",
+        "Beginning critical thinking about texts",
+      ],
+      learningOutcomes: [
+        "Read and comprehend grade-appropriate texts with fluency",
+        "Write clear, organized paragraphs with proper sentence structure",
+        "Participate effectively in classroom discussions and presentations",
+        "Demonstrate understanding of basic grammar and language conventions",
+      ],
+    },
+    {
+      id: "mathematics",
+      title: "Mathematics",
+      icon: Calculator,
+      description: "Numerical reasoning and problem solving with foundational mathematical concepts",
+      color: "bg-green-500",
+      strands: [
+        "Number Sense & Operations",
+        "Patterns & Relations",
+        "Geometry & Spatial Sense",
+        "Measurement",
+        "Data Management",
+      ],
+      keyFocus: [
+        "Multi-digit addition and subtraction",
+        "Introduction to multiplication and division",
+        "Basic geometric shapes and properties",
+        "Standard units of measurement",
+        "Simple data collection and graphing",
+      ],
+      learningOutcomes: [
+        "Solve addition and subtraction problems with regrouping",
+        "Understand basic multiplication and division concepts",
+        "Identify and describe properties of 2D and 3D shapes",
+        "Measure length, mass, and capacity using standard units",
+      ],
+    },
+    {
+      id: "science",
+      title: "Science",
+      icon: Flask,
+      description: "Inquiry-based exploration of life science, physical science, and earth systems",
+      color: "bg-amber-500",
+      strands: [
+        "Life Science Exploration",
+        "Physical Science Basics",
+        "Earth & Space Systems",
+        "Scientific Inquiry",
+        "Science & Technology",
+      ],
+      keyFocus: [
+        "Plant and animal life cycles and habitats",
+        "Properties of materials and simple forces",
+        "Weather patterns and seasonal changes",
+        "Basic scientific observation and recording",
+        "Simple tools and their uses",
+      ],
+      learningOutcomes: [
+        "Describe the basic needs and characteristics of living things",
+        "Investigate properties of different materials and substances",
+        "Observe and record weather patterns and seasonal changes",
+        "Use simple tools to make observations and measurements",
+      ],
+    },
+    {
+      id: "social-studies",
+      title: "Social Studies",
+      icon: Globe,
+      description: "Understanding communities, relationships, and basic geographic and historical concepts",
+      color: "bg-blue-500",
+      strands: [
+        "Community Studies",
+        "Geographic Thinking",
+        "Historical Understanding",
+        "Citizenship & Identity",
+        "Economic Concepts",
+      ],
+      keyFocus: [
+        "Local and diverse communities around the world",
+        "Basic map skills and geographic features",
+        "Simple historical timelines and events",
+        "Rights, responsibilities, and community participation",
+        "Basic needs, wants, and simple economic concepts",
+      ],
+      learningOutcomes: [
+        "Compare and contrast different types of communities",
+        "Use simple maps and globes to locate places and features",
+        "Sequence events in chronological order using timelines",
+        "Identify rights and responsibilities as community members",
+      ],
+    },
+  ]
 
-      <div className="w-full min-w-full max-w-[100vw] mb-8">
-        <div className="bg-gradient-to-r from-green-100 to-blue-100 p-6 rounded-xl shadow-md">
-          <h1 className="text-4xl font-bold mb-4 text-center bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-            Grade 3 Curriculum
-          </h1>
-          <p className="text-lg text-gray-700 text-center max-w-3xl mx-auto">
-            The Grade 3 curriculum builds upon the foundations established in earlier grades, encouraging students to
-            develop deeper understanding, critical thinking skills, and greater independence in their learning journey.
+  const gradeOverview = {
+    totalStudents: "9,600+",
+    averageAge: "8-9 years",
+    keyMilestones: [
+      "Foundational literacy and numeracy mastery",
+      "Independent learning skill development",
+      "Critical thinking introduction",
+      "Middle primary preparation",
+    ],
+    assessmentFocus: [
+      "Foundational skill assessment",
+      "Hands-on learning activities",
+      "Collaborative group work",
+      "Creative expression and exploration",
+    ],
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        <Breadcrumb
+          items={[
+            { label: "Curriculum", href: "/curriculum" },
+            { label: "Grade 3 Subjects", href: "/curriculum/grade3-subjects" },
+          ]}
+        />
+
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center">
+              <span className="text-2xl font-bold text-white">3</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Grade 3 Curriculum</h1>
+              <p className="text-xl text-gray-600">Foundation Building & Middle Primary Development</p>
+            </div>
+          </div>
+
+          <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
+            Grade 3 builds upon the foundations established in earlier grades, encouraging students to develop deeper
+            understanding, critical thinking skills, and greater independence in their learning journey across all
+            academic disciplines.
           </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        <Card className="hover:shadow-xl transition-all duration-300 border-t-4 border-purple-500 hover:-translate-y-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-purple-700">
-              <BookOpen className="h-5 w-5" />
-              Language Arts
+        {/* Grade Overview Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Users className="w-8 h-8 text-indigo-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{gradeOverview.totalStudents}</div>
+              <div className="text-sm text-gray-600">Students Enrolled</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Target className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{gradeOverview.averageAge}</div>
+              <div className="text-sm text-gray-600">Average Age</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Clock className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">4</div>
+              <div className="text-sm text-gray-600">Core Subjects</div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardContent className="pt-6">
+              <Award className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">89%</div>
+              <div className="text-sm text-gray-600">Success Rate</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Key Milestones */}
+        <Card className="mb-12">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="w-6 h-6 text-indigo-600" />
+              Grade 3 Key Milestones & Development Focus
             </CardTitle>
-            <CardDescription>Communication and literacy development</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="mb-4">
-              The Grade 3 Language Arts curriculum focuses on developing students' abilities in listening, speaking,
-              reading, viewing, writing, and representing. Students build upon their literacy skills to become more
-              confident, independent communicators and critical thinkers.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Listening & Speaking
-              </span>
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Reading & Viewing
-              </span>
-              <span className="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Writing & Representing
-              </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Academic Milestones</h3>
+                <ul className="space-y-2">
+                  {gradeOverview.keyMilestones.map((milestone, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700">{milestone}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Assessment Focus Areas</h3>
+                <ul className="space-y-2">
+                  {gradeOverview.assessmentFocus.map((focus, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700">{focus}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <Link href="/curriculum/grade3-subjects/language-arts">
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">Explore Language Arts</Button>
-            </Link>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-xl transition-all duration-300 border-t-4 border-green-500 hover:-translate-y-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-green-700">
-              <Calculator className="h-5 w-5" />
-              Mathematics
-            </CardTitle>
-            <CardDescription>Numerical reasoning and problem solving</CardDescription>
+        {/* Subjects Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {subjects.map((subject) => {
+            const IconComponent = subject.icon
+            return (
+              <Card key={subject.id} className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 ${subject.color} rounded-xl flex items-center justify-center`}>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">{subject.title}</CardTitle>
+                      <CardDescription className="text-base">{subject.description}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-6">
+                  {/* Strands */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Curriculum Strands</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {subject.strands.map((strand, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {strand}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Key Focus Areas */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Key Focus Areas</h4>
+                    <ul className="space-y-1">
+                      {subject.keyFocus.slice(0, 3).map((focus, index) => (
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                          {focus}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Learning Outcomes Preview */}
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Sample Learning Outcomes</h4>
+                    <ul className="space-y-1">
+                      {subject.learningOutcomes.slice(0, 2).map((outcome, index) => (
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                          {outcome}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-4">
+                    <Button asChild className="flex-1">
+                      <Link href={`/curriculum/grade3-subjects/${subject.id}`}>View Curriculum</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="flex-1 bg-transparent">
+                      <Link href={`/curriculum/grade3-subjects/activities/${subject.id}`}>View Activities</Link>
+                    </Button>
+                    <Button asChild variant="secondary" className="flex-1">
+                      <Link href={`/docs/grade3-${subject.id}-curriculum.pdf`} target="_blank">
+                        Download PDF
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        {/* Additional Resources */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Grade 3 Additional Resources</CardTitle>
+            <CardDescription>Supporting materials and tools for Grade 3 education</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="mb-4">
-              The Grade 3 Mathematics curriculum deepens students' understanding of mathematical concepts, skills, and
-              problem-solving strategies. Students explore more complex number sense, operations, patterns, geometry,
-              measurement, and data analysis.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Number Sense
-              </span>
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Operations</span>
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Geometry</span>
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Measurement</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Assessment Tools</h3>
+                <p className="text-sm text-gray-600">
+                  Foundational skill assessment tools and creative evaluation methods for Grade 3 standards
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Teacher Resources</h3>
+                <p className="text-sm text-gray-600">
+                  Hands-on learning activities and collaborative teaching strategies for Grade 3 educators
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Target className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Parent Guides</h3>
+                <p className="text-sm text-gray-600">
+                  Resources to help parents support their Grade 3 students' foundational learning development
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <BookOpen className="w-6 h-6 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Curriculum Download</h3>
+                <p className="text-sm text-gray-600">
+                  Download PDF versions of Grade 3 curriculum documents and teaching materials
+                </p>
+              </div>
             </div>
-            <Link href="/curriculum/grade3-subjects/mathematics">
-              <Button className="w-full bg-green-600 hover:bg-green-700">Explore Mathematics</Button>
-            </Link>
+
+            <div className="flex justify-center mt-8">
+              <Button asChild variant="outline">
+                <Link href="/resources">Access All Resources</Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
-
-        <Card className="hover:shadow-xl transition-all duration-300 border-t-4 border-amber-500 hover:-translate-y-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-amber-700">
-              <Flask className="h-5 w-5" />
-              Science
-            </CardTitle>
-            <CardDescription>Inquiry-based exploration of the natural world</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">
-              The Grade 3 Science curriculum encourages students to explore the natural world through more advanced
-              inquiry-based learning. Students investigate ecosystems, matter, energy, and earth systems while
-              developing scientific thinking and experimental skills.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Life Science
-              </span>
-              <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Physical Science
-              </span>
-              <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                Earth Science
-              </span>
-            </div>
-            <Link href="/curriculum/grade3-subjects/science">
-              <Button className="w-full bg-amber-600 hover:bg-amber-700">Explore Science</Button>
-            </Link>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-xl transition-all duration-300 border-t-4 border-blue-500 hover:-translate-y-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-blue-700">
-              <Globe className="h-5 w-5" />
-              Social Studies
-            </CardTitle>
-            <CardDescription>Understanding communities and relationships</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">
-              The Grade 3 Social Studies curriculum expands students' understanding of their place in the world and
-              their relationships with others. Students explore diverse communities, cultural heritage, geography, and
-              historical events with greater depth.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Communities</span>
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Geography</span>
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">History</span>
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Citizenship</span>
-            </div>
-            <Link href="/curriculum/grade3-subjects/social-studies">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">Explore Social Studies</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl shadow-md border border-gray-100">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Grade 3 Curriculum Overview</h2>
-        <p className="mb-4 text-gray-700">
-          The Grade 3 curriculum is designed to build upon the foundations established in earlier grades. It encourages
-          students to develop deeper understanding, critical thinking skills, and greater independence in their learning
-          journey. The curriculum is organized around key subject areas, each with specific learning outcomes and
-          expectations.
-        </p>
-        <p className="text-gray-700">
-          Teachers are encouraged to integrate learning across subject areas where appropriate, creating meaningful
-          connections for students. Assessment is ongoing and designed to support student growth and development as they
-          prepare for the transition to upper elementary grades.
-        </p>
       </div>
     </div>
   )
